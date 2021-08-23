@@ -21,9 +21,6 @@ case $input in
 esac
 
 if $cont ; then
-    echo "sussy amogus"
-
-
     if has brew ; then
         echo "existing brew installation detected. Updating now."
         brew update
