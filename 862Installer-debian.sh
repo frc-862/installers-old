@@ -3,24 +3,32 @@ has() { type -p "$1" &> /dev/null; }
 
 if has sudo ; then
     printf "Using sudo for root privileges\n"
+    rootstring="sudo"
+elif has doas ; then
+    printf "Using doas for root privileges\m"
+    rootstring="doas"
+elif [ "$EUID" -eq 0 ] ; then
+    printf "Using current user for root privileges\m"
+    rootstring=""
 else
-    printf "sudo not found, if you're using doas or other ill just trust that you know what you're doing.\n"
+    printf "ERROR: no root privileges found.\n"
+    printf "You can try running this script as root or verifying that sudo or doas is in your PATH"
     exit
 fi
 
 if has apt ; then
     printf "existing apt installation detected. Updating now.\n"
-    sudo apt update
-    sudo apt upgrade
+    $rootstring apt update
+    $rootstring apt upgrade
 else
     printf "Apt not found in PATH. Please use the apporopriate installed for your distro or fix your PATH\n"
     exit
 fi
 
 #Required packages
-sudo apt install git openjdk-11-jdk
+$rootstring apt install git openjdk-11-jdk
 #Optional packages
-sudo apt install code
+$rootstring apt install code
 
 if has code ; then
     printf "installing vscode extensions...\n"
