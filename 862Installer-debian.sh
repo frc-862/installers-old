@@ -36,7 +36,7 @@ if [ -d "$HOME/Documents/lightning" ] ; then
     git -C "$HOME/Documents/lightning" pull
 else
     printf "lightning doesn't appear to be cloned. Cloning now.\n"
-    git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning\n"
+    git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
 fi
 
 printf "Building gradle...\n"
