@@ -8,7 +8,7 @@ else
     exit
 fi
 
-if has apt ; then
+if has pacman ; then
     printf "existing pacman installation detected. Updating now.\n"
     sudo pacman -Syu
 else
