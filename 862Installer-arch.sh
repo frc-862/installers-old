@@ -2,7 +2,7 @@
 has() { type -p "$1" &> /dev/null; }
 
 if has sudo ; then
-    printf "Using sudo for root priveleges\n"
+    printf "Using sudo for root privileges\n"
 else
     printf "sudo not found, if you're using doas or other ill just trust that you know what you're doing.\n"
     exit
