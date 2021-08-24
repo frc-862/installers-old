@@ -17,7 +17,10 @@ else
     exit
 fi
 
-sudo apt install git openjdk-11-jdk wget code
+#Required packages
+sudo apt install git openjdk-11-jdk
+#Optional packages
+sudo apt install code
 
 if has code ; then
     printf "installing vscode extensions...\n"
