@@ -2,7 +2,7 @@
 has() { type -p "$1" &> /dev/null; }
 
 if has sudo ; then
-    printf "Using sudo for root priveleges\n"
+    printf "Using sudo for root privileges\n"
 else
     printf "sudo not found, if you're using doas or other ill just trust that you know what you're doing.\n"
     exit
@@ -17,7 +17,10 @@ else
     exit
 fi
 
-sudo apt install git openjdk-11-jdk wget code
+#Required packages
+sudo apt install git openjdk-11-jdk
+#Optional packages
+sudo apt install code
 
 if has code ; then
     printf "installing vscode extensions...\n"
