@@ -16,6 +16,14 @@ else
     exit
 fi
 
+if has pacman ; then
+    printf "existing pacman installation detected. Updating now.\n"
+    $rootstring pacman -Syu
+else
+    printf "pacman not found in PATH. Please use the apporopriate installed for your distro or fix your PATH\n"
+    exit
+fi
+
 $rootstring pacman -S git jdk11-openjdk code
 
 if has code ; then
