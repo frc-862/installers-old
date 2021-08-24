@@ -20,7 +20,6 @@ if ( Test-Path "$HOME\scoop\shims\code" ) {
 } else {
     echo "WARNING: VS code not detected"
     echo "You may need to reinstall it manually"
-    exit
 }
 
 echo "Cloning lightning source code over https into $HOME\Documents\lightning"
