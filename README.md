@@ -34,7 +34,7 @@ chmod +x 862Installer-debian.sh
 ./862Installer-debian.sh
 ```
 
-## Arch-based (Archcraft, Manjaro)
+## Arch-based (Archcraft, Manjaro, etc.)
 For Arch-based operating systems, it's the same as Debian-based except for the script we are running.  
 
 ```bash
@@ -42,7 +42,7 @@ chmod +x 862Installer-arch.sh
 ./862Installer-arch.sh
 ```
 
-## Macs (Apple Mac, Hackintosh)
+## Macs (Apple Mac, Hackintosh, etc.)
 Macs are also very similar to Debian-based operating systems as well.
 
 ```bash
