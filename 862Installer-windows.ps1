@@ -23,9 +23,10 @@ if ( Test-Path "$HOME\scoop\shims\code" ) {
     exit
 }
 
-echo "Cloning lightning source code over https into $HOME\Documents\"
+echo "Cloning lightning source code over https into $HOME\Documents\lightning"
 echo "Note: you will need to clone over ssh if you want to contribute code"
 git clone "https://github.com/frc-862/lightning.git" "$HOME\Documents\lightning"
+
 echo "Building gradle..."
 iex "$HOME\Documents\lightning\gradlew build"
 
