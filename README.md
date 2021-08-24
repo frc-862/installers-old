@@ -48,7 +48,7 @@ chmod +x 862Installer-arch.sh
 ./862Installer-arch.sh
 ```
 
-## Macs (Apple Mac, Hackintosh, etc.)
+## Mac OS
 Macs are also very similar to Debian-based operating systems as well.
 
 ```bash
