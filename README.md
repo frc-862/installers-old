@@ -21,7 +21,13 @@ From here, follow the instructions for your specific type of operating system. I
 ## Windows 10 and 11
 For Windows we want to use the `862Installer-windows.ps1` script.  
 
-Simply run the script by typing `.\862installer-windows.ps1`.   
+We need to first be able to run powershell scripts by running `Set-ExecutionPolicy RemoteSigned -scope CurrentUser`
+Then simply run the script with `.\862installer-windows.ps1`.   
+
+```ps1
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+.\862installer-windows.ps1
+```
 
 ## Debian-based (Ubuntu, Pop_OS!, etc.)
 For Debian-based operating systems, we want to use the `862Installer-debian.sh` script.  
