@@ -33,8 +33,7 @@ Set-ExecutionPolicy RemoteSigned -scope CurrentUser
 ## Debian-based (Ubuntu, Pop_OS!, etc.)
 For Debian-based operating systems, use the `862Installer-debian.sh` script.
 
-First, make the script executable by running `chmod +x 862Installer-debian.sh`.
-Then, run the script by running `./862Installer-debian.sh`
+run the script by running `./862Installer-debian.sh`
 
 ```bash
 ./862Installer-debian.sh
