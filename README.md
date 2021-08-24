@@ -37,7 +37,6 @@ First, make the script executable by running `chmod +x 862Installer-debian.sh`.
 Then, run the script by running `./862Installer-debian.sh`
 
 ```bash
-chmod +x 862Installer-debian.sh
 ./862Installer-debian.sh
 ```
 
@@ -45,7 +44,6 @@ chmod +x 862Installer-debian.sh
 For Arch-based operating systems, use the `862Installer-arch.sh` script.
 
 ```bash
-chmod +x 862Installer-arch.sh
 ./862Installer-arch.sh
 ```
 
@@ -53,7 +51,6 @@ chmod +x 862Installer-arch.sh
 For MacOS, use the `862Installer-mac.sh` script
 
 ```bash
-chmod +x 862Installer-mac.sh
 ./862Installer-mac.sh
 ```
 
