@@ -17,11 +17,7 @@ else
     exit
 fi
 
-sudo apt install git openjdk-11-jdk wget
-
-wget -O vscode.deb "https://az764295.vo.msecnd.net/stable/3866c3553be8b268c8a7f8c0482c0c0177aa8bfa/code_1.59.1-1629375198_amd64.deb"
-sudo apt install vscode.deb
-rm vscode.deb
+sudo apt install git openjdk-11-jdk wget code
 
 if has code ; then
     printf "installing vscode extensions...\n"
