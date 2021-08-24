@@ -2,9 +2,9 @@
 These scripts are installing essential packages to be able to develop code for [FRC](https://www.firstinspires.org/robotics/frc)
 
 # Dependencies
-You will need to install
-[git](https://git-scm.com/)
-[bash](https://www.gnu.org/software/bash/) (linux only)
+You will need to install\
+[git](https://git-scm.com/)\
+[bash](https://www.gnu.org/software/bash/) (linux only)\
 [powershell](https://github.com/PowerShell/PowerShell) (windows only, version >= 5.0)
 
 # How to install
