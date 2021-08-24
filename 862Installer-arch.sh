@@ -16,7 +16,7 @@ else
     exit
 fi
 
-sudo pacman -S git openjdk-11-jdk code
+sudo pacman -S git jdk11-openjdk code
 
 if has code ; then
     printf "installing vscode extensions...\n"
