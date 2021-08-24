@@ -5,10 +5,10 @@ if has sudo ; then
     printf "Using sudo for root privileges\n"
     rootstring="sudo"
 elif has doas ; then
-    printf "Using doas for root privileges\m"
+    printf "Using doas for root privileges\n"
     rootstring="doas"
 elif [ "$EUID" -eq 0 ] ; then
-    printf "Using current user for root privileges\m"
+    printf "Using current user for root privileges\n"
     rootstring=""
 else
     printf "ERROR: no root privileges found.\n"
