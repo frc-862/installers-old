@@ -76,9 +76,10 @@ You will also need an ssh key to contribute code
 
 # gpr key instructions
 
-A gpr key is required to build any code besides the lightning repository. To begin, open settings after clicking on your profile picture.
+A gpr key is required to build any code besides the lightning repository.
 
 ## GitHub side
+To begin, open settings after clicking on your profile picture.
 
 ![gpr1.png](https://github.com/DerpTaterTot/DerpTaterTot/raw/main/Images/gpr1.png)
 
