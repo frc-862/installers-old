@@ -103,7 +103,7 @@ After clicking on "Generate token" add the end of the page, you will get prompte
 
 ## Local side
 
-Assuming you ran one of the install scripts, you should have a .gradle folder in your home directory, (~ for both Linux and Powershell). Navigate into the folder and open the file `gradle.properties` in your favorite text editor. (it's ok if it's not there, just create a new file with the same name).  
+Assuming you ran one of the install scripts, you should have a `.gradle/` folder in your home directory, (~ for both Linux and Powershell). Navigate into the folder and open the file `gradle.properties` in your favorite text editor. (it's ok if it's not there, just create a new file with the same name).  
 
 Then, add these two lines into `gradle.properties`
 ```bash
