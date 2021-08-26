@@ -106,7 +106,7 @@ Assuming you ran one of the install scripts, you should have a .gradle folder in
 
 Then, add these two lines into `gradle.properties`
 ```bash
-gpr.user=<username>
-gpr.key=<the key from earlier>
+gpr.user=username
+gpr.key=the key from earlier
 ```
 Save the file and you should be able to build other repositories now. As always, feel free to leave an issue if you have any issues.
