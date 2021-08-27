@@ -81,23 +81,23 @@ A gpr key is required to build any code besides the lightning repository.
 ## GitHub side
 To begin, open settings after clicking on your profile picture.
 
-![gpr1.png](https://github.com/DerpTaterTot/DerpTaterTot/raw/main/Images/gpr1.png)
+![gpr1.png](https://github.com/Fr1tzBot/862-Installers/raw/main/Assets/gpr1.png)
 
 Then, click on "Developer settings", near the end of the page.
 
-![gpr2.png](https://github.com/DerpTaterTot/DerpTaterTot/raw/main/Images/gpr2.png)
+![gpr2.png](https://github.com/Fr1tzBot/862-Installers/raw/main/Assets/gpr2.png)
 
 Afterwards, click on "Personal access tokens"
 
-![gpr3.png](https://github.com/DerpTaterTot/DerpTaterTot/raw/main/Images/gpr3.png)
+![gpr3.png](https://github.com/Fr1tzBot/862-Installers/raw/main/Assets/gpr3.png)
 
 Next, click on "Generate new token" to create a token
 
-![gpr4.png](https://github.com/DerpTaterTot/DerpTaterTot/raw/main/Images/gpr4.png)
+![gpr4.png](https://github.com/Fr1tzBot/862-Installers/raw/main/Assets/gpr4.png)
 
 Name your token something memorable, or at least be able to identify the key. For the Expiration, you can set it to expire never, but as advised by github, I would set it to 30-90 days and follow these instructions again when it expires. However, it is usually fine to set it to not expire. Finally, make sure to check the `write:packages` and `delete:packages` scopes. (The repo scope will automagically be checked)
 
-![gpr5.png](https://github.com/DerpTaterTot/DerpTaterTot/raw/main/Images/gpr5.png)
+![gpr5.png](https://github.com/Fr1tzBot/862-Installers/raw/main/Assets/gpr5.png)
 
 After clicking on "Generate token" add the end of the page, you will get prompted to copy the key for the token. Make sure the copy this and save it for the next steps.
 
