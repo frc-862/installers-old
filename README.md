@@ -111,3 +111,12 @@ gpr.user=username
 gpr.key=the key from earlier
 ```
 Save the file and you should be able to build other repositories now. As always, feel free to leave an issue if you have any issues.
+
+# SSH Key Instructions
+
+An SSH Key is required to contribute code.
+
+Instructions to create an SSH key are located at the [GitHub Docs](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/about-ssh).  
+
+Note: Make sure to clone repositories through SSH instead of HTTPS.
+
