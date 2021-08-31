@@ -43,7 +43,7 @@ else
     printf "\033[33mvscode extensions will not be installed automatically\n\033[39m"
 fi
 
-printf '\033[32mcloning lightning code into %s/Documents/\n\033[39m' "$HOME"
+printf '\033[32mcloning lightning source code into %s/Documents/\n\033[39m' "$HOME"
 printf "\033[33mnote: you will need to clone over ssh in order to contribute code\n\033[39m"
 if [ -d "$HOME/Documents/lightning" ] ; then
     printf "\033[32mlightning code detected\npulling latest version...\n\033[39m"
@@ -55,4 +55,9 @@ fi
 
 printf "\033[32mbuilding gradle...\n\033[39m"
 "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
-
+buildstatus=$?
+if [ $buildstatus -eq 0 ] ; then
+    printf "\033[32mbuild completed successfully\n\033[39m"
+else
+    printf '\033[31merror: build failed with exit code %s\nplease open an issue on github for help with this issue\n\033[39m' "$buildstatus"
+fi

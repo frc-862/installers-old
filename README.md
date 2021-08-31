@@ -30,20 +30,11 @@ Set-ExecutionPolicy RemoteSigned -scope CurrentUser
 .\862installer-windows.ps1
 ```
 
-## Debian-based (Ubuntu, Pop_OS!, etc.)
-For Debian-based operating systems, use the `862Installer-debian.sh` script.
-
-run the script by running `./862Installer-debian.sh`
+## Linux
+For linux, use the `862Installer-linux.sh` script.
 
 ```bash
-./862Installer-debian.sh
-```
-
-## Arch-based (Archcraft, Manjaro, etc.)
-For Arch-based operating systems, use the `862Installer-arch.sh` script.
-
-```bash
-./862Installer-arch.sh
+./862Installer-linux.sh
 ```
 
 ## Mac OS

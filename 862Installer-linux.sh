@@ -13,22 +13,22 @@ elif [ "$EUID" -eq 0 ] ; then
 else
     printf "\033[31merror: no root privileges\n\033[39m"
     printf "\033[31mtry running this script as root or verifying that sudo or doas is installed and in your PATH\n\033[39m"
-    exit
+    exit 1
 fi
 
 if has apt ; then
     update() { $rootstring apt update; $rootstring apt upgrade; }
-    installreqs() { $rootstring apt install git openjdk-11-jdk; }
-    installopts() { $rootstring apt install code; }
+    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
+    installopts() { $rootstring apt -y install code; }
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman -Syu; }
-    installreqs() { $rootstring pacman -S git openjdk-11-jdk; }
-    installopts() { $rootstring pacman -S code; }
+    installreqs() { $rootstring pacman --noconfirm -S git jdk11-openjdk; }
+    installopts() { $rootstring pacman --noconfirm -S code; }
     pkgmanager="pacman"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
-    exit
+    exit 1
 fi
 
 printf '\033[32m%s installation detected\nupgrading %s...\n\033[39m' "$pkgmanager" "$pkgmanager"
@@ -60,4 +60,9 @@ fi
 
 printf "\033[32mbuilding gradle...\n\033[39m"
 "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
-
+buildstatus=$?
+if [ $buildstatus -eq 0 ] ; then
+    printf "\033[32mbuild completed successfully\n\033[39m"
+else
+    printf '\033[31merror: build failed with exit code %s\nplease open an issue on github for help with this issue\n\033[39m' "$buildstatus"
+fi
