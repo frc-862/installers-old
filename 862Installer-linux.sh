@@ -17,12 +17,12 @@ else
 fi
 
 if has apt ; then
-    update() { $rootstring apt update; $rootstring apt upgrade; }
+    update() { $rootstring apt update; $rootstring apt -y upgrade; }
     installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
     installopts() { $rootstring apt -y install code; }
     pkgmanager="apt"
 elif has pacman ; then
-    update() { $rootstring pacman -Syu; }
+    update() { $rootstring pacman --noconfirm -Syu; }
     installreqs() { $rootstring pacman --noconfirm -S git jdk11-openjdk; }
     installopts() { $rootstring pacman --noconfirm -S code; }
     pkgmanager="pacman"
