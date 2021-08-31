@@ -18,13 +18,13 @@ fi
 
 if has apt ; then
     update() { $rootstring apt update; $rootstring apt upgrade; }
-    installreqs() { $rootstring apt install git openjdk-11-jdk; }
-    installopts() { $rootstring apt install code; }
+    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
+    installopts() { $rootstring apt -y install code; }
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman -Syu; }
-    installreqs() { $rootstring pacman -S git jdk11-openjdk; }
-    installopts() { $rootstring pacman -S code; }
+    installreqs() { $rootstring pacman --noconfirm -S git jdk11-openjdk; }
+    installopts() { $rootstring pacman --noconfirm -S code; }
     pkgmanager="pacman"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
