@@ -55,4 +55,9 @@ fi
 
 printf "\033[32mbuilding gradle...\n\033[39m"
 "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
-
+buildstatus=$?
+if [ $buildstatus -eq 0 ] ; then
+    printf "\033[32mbuild completed successfully\n\033[39m"
+else
+    printf '\033[31merror: build failed with exit code %s\nplease open an issue on github for help with this issue\n\033[39m' "$buildstatus"
+fi
