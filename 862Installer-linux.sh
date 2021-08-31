@@ -23,7 +23,7 @@ if has apt ; then
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman -Syu; }
-    installreqs() { $rootstring pacman -S git jdk-11-openjdk; }
+    installreqs() { $rootstring pacman -S git jdk11-openjdk; }
     installopts() { $rootstring pacman -S code; }
     pkgmanager="pacman"
 else
