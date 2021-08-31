@@ -17,9 +17,8 @@ else
 fi
 
 if has apt ; then
-    updatestring="$rootstring apt update ; $rootstring apt upgrade"
-    installstring="$rootstring apt install"
-    packages="git openjdk-11-jdk code"
+    update() { $rootstring apt update; $rootstring apt upgrade }
+    installpkgs() { $rootstring apt install git openjdk-11-jdk code }
     pkgmanager="apt"
 elif has pacman ; then
     updatestring="$rootstring pacman -Syu"
@@ -32,10 +31,10 @@ else
 fi
 
 printf '\033[32m%s installation detected\nupgrading %s...\n\033[39m' "$pkgmanager" "$pkgmanager"
-$updatestring
+update
 
 printf "\033[32minstalling packages...\n\033[39m"
-$installstring $packages
+installpkgs
 
 if has code ; then
     printf "\033[32minstalling vscode extensions...\n\033[39m"
