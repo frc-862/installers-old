@@ -17,8 +17,8 @@ else
 fi
 
 if has apt ; then
-    update() { $rootstring apt update; $rootstring apt upgrade }
-    installpkgs() { $rootstring apt install git openjdk-11-jdk code }
+    update() { $rootstring apt update; $rootstring apt upgrade; }
+    installpkgs() { $rootstring apt install git openjdk-11-jdk code; }
     pkgmanager="apt"
 elif has pacman ; then
     updatestring="$rootstring pacman -Syu"
