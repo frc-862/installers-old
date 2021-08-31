@@ -18,12 +18,13 @@ fi
 
 if has apt ; then
     update() { $rootstring apt update; $rootstring apt upgrade; }
-    installpkgs() { $rootstring apt install git openjdk-11-jdk code; }
+    installreqs() { $rootstring apt install git openjdk-11-jdk; }
+    installopts() { $rootstring apt install code; }
     pkgmanager="apt"
 elif has pacman ; then
-    updatestring="$rootstring pacman -Syu"
-    installstring="$rootstring pacman -S"
-    packages="git openjdk-11-jdk code"
+    update() { $rootstring pacman -Syu; }
+    installreqs() { $rootstring pacman -S git openjdk-11-jdk; }
+    installopts() { $rootstring pacman -S code; }
     pkgmanager="pacman"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
@@ -33,8 +34,10 @@ fi
 printf '\033[32m%s installation detected\nupgrading %s...\n\033[39m' "$pkgmanager" "$pkgmanager"
 update
 
-printf "\033[32minstalling packages...\n\033[39m"
-installpkgs
+printf "\033[32minstalling required packages...\n\033[39m"
+installreqs
+printf "\033[32minstalling optional packages...\n\033[39m"
+installopts
 
 if has code ; then
     printf "\033[32minstalling vscode extensions...\n\033[39m"
