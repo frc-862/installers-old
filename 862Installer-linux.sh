@@ -19,7 +19,7 @@ fi
 if has apt ; then
     updatestring="$rootstring apt update ; $rootstring apt upgrade"
     installstring="$rootstring apt install"
-    packages="git jdk11-openjdk code"
+    packages="git openjdk-11-jdk code"
     pkgmanager="apt"
 elif has pacman ; then
     updatestring="$rootstring pacman -Syu"
