@@ -17,7 +17,7 @@ else
 fi
 
 if has apt ; then
-    updatestring="$rootstring apt update && $rootstring apt upgrade"
+    updatestring="$rootstring apt update ; $rootstring apt upgrade"
     installstring="$rootstring apt install"
     packages="git jdk11-openjdk code"
     pkgmanager="apt"
