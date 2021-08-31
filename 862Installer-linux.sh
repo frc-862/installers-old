@@ -13,7 +13,7 @@ elif [ "$EUID" -eq 0 ] ; then
 else
     printf "\033[31merror: no root privileges\n\033[39m"
     printf "\033[31mtry running this script as root or verifying that sudo or doas is installed and in your PATH\n\033[39m"
-    exit
+    exit 1
 fi
 
 if has apt ; then
@@ -28,7 +28,7 @@ elif has pacman ; then
     pkgmanager="pacman"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
-    exit
+    exit 1
 fi
 
 printf '\033[32m%s installation detected\nupgrading %s...\n\033[39m' "$pkgmanager" "$pkgmanager"
