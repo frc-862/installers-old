@@ -20,14 +20,10 @@ cd 862-installers/
 From here, follow the instructions for your specific type of operating system. If it's not there feel free to open an issue.
 
 ## Windows 10 and 11
-For Windows, use the `862Installer-windows.ps1` script.
+For Windows, use the `862Installer-windows.cmd` script.
 
-We need to first be able to run powershell scripts by running `Set-ExecutionPolicy RemoteSigned -scope CurrentUser`
-Then simply run the script with `.\862installer-windows.ps1`.
-
-```ps1
-Set-ExecutionPolicy RemoteSigned -scope CurrentUser
-.\862installer-windows.ps1
+```cmd
+.\862installer-windows.cmd
 ```
 
 ## Linux
