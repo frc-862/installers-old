@@ -111,3 +111,8 @@ Instructions to create an SSH key are located at the [GitHub Docs](https://docs.
 
 Note: Make sure to clone repositories through SSH instead of HTTPS.
 
+# Driver Station (Windows Only)
+
+There's a video on installing the Driver Station and other relevant tools [here](https://drive.google.com/file/d/161bp7iFEciRYEJMP1MONmpF_pKdheI-W/view).
+
+The link to the NI Tools install can be found [here](https://www.ni.com/en-us/support/downloads/drivers/download.frc-game-tools.html#369633).
