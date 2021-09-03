@@ -39,4 +39,3 @@ if exist "%UserProfile%\Documents\lightning\" (
 
 echo Building gradle...
 call %UserProfile%\Documents\lightning\gradlew.bat -p "%UserProfile%\Documents\lightning" "build"
-
