@@ -4,43 +4,30 @@
 #Has: check if a program is in PATH
 has() { type -p "$1" &> /dev/null; }
 
-#detect if brew is installed
-if has brew ; then
-    #if it is, update brew
-    printf "\033[32mexisting brew installation detected\nupdating brew...\n\033[39m"
-    brew update
-    brew upgrade
-else
-    #if it isn't, install it now
+if ! has brew ; then
+    #if brew isn't installed, install it now
     printf "\033[32mno brew installation detected\ninstalling brew...\n\033[39m"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-#install required packages
-if [ -d "$(brew --prefix)/Cellar/git" ] ; then
-    printf "\033[32mgit installation detected\nupgrading git...\n\033[39m"
-    brew upgrade git
-else
-    printf "\033[32mgit not found\ninstalling git...\n\033[39m"
-    brew install git
+if has brew ; then
+    #define the standard functions
+    update() { brew update; brew upgrade; }
+    #installreqs: install required packages
+    installreqs() { brew install git openjdk@11; }
+    #installopts: install optional packages
+    installopts() { brew install visual-studio-code; }
+    #pkgmanager: the name of the detected package manager
+    pkgmanager="brew"
 fi
 
-if [ -d "$(brew --prefix)/Cellar/openjdk@11" ] ; then
-    printf "\033[32mopenjdk installation detected\nupgrading openjdk...\n\033[39m"
-    brew upgrade openjdk@11
-else
-    printf "\033[32mopenjdk not found\ninstalling openjdk...\n\033[39m"
-    brew install openjdk@11
-fi
-
-#install optional packages
-if [ -d "$(brew --prefix)/Caskroom/visual-studio-code" ] ; then
-    printf "\033[32mvs code installation detected\nupgrading vs code...\n\033[39m"
-    brew upgrade visual-studio-code
-else
-    printf "\033[32mvs code not found\ninstalling vs code...\n\033[39m"
-    brew install visual-stuio-code
-fi
+#run the defined update, installreqs, and installopts functions
+printf '\033[32m%s installation detected\nupgrading %s...\n\033[39m' "$pkgmanager" "$pkgmanager"
+update
+printf "\033[32minstalling required packages...\n\033[39m"
+installreqs
+printf "\033[32minstalling optional packages...\n\033[39m"
+installopts
 
 #install vscode extensions
 if has code ; then
