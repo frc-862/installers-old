@@ -9,15 +9,17 @@ os=$(uname -s)
 
 #detect a program to use to obtain root privileges
 #set rootstring variable to say what command to use
-if has sudo ; then
-    printf "\033[32musing sudo for root privileges\n\033[39m"
+if [ "$os" == "Darwin" ] ; then
+    printf "\033[32mno root privileges needed on macos\n\033[39m"
+elif has sudo ; then
     rootstring="sudo"
+    printf "\033[32musing sudo ($(type -p $rootstring)) for root privileges\n\033[39m"
 elif has doas ; then
-    printf "\033[32musing doas for root privileges\n\033[39m"
     rootstring="doas"
+    printf "\033[32musing doas ($(type -p $rootstring)) for root privileges\n\033[39m"
 elif [ "$EUID" -eq 0 ] ; then
-    printf "\033[32musing current user for root privileges\n\033[39m"
     rootstring=""
+    printf "\033[32musing current user ($(whoami)) for root privileges\n\033[39m"
 else
     printf "\033[31merror: no root privileges\n\033[39m"
     printf "\033[31mtry running this script as root or verifying that sudo or doas is installed and in your PATH\n\033[39m"
@@ -65,10 +67,34 @@ fi
 #run the defined update, installreqs, and installopts functions
 printf '\033[32m%s installation detected\nupgrading %s...\n\033[39m' "$pkgmanager" "$pkgmanager"
 update
+updateexitcode=$?
+if [ $updateexitcode -eq 0 ] ; then
+    printf "\033[32mupdate completed successfully\n\033[39m"
+else
+    #don't exit if the update fails
+    printf '\033[33mwarning: update failed with exit code %s\n\033[39m' "$updateexitcode"
+fi
+
 printf "\033[32minstalling required packages...\n\033[39m"
 installreqs
+installexitcode=$?
+if [ $installexitcode -eq 0 ] ; then
+    printf "\033[32minstallreqs completed successfully\n\033[39m"
+else
+    #exit if a non-0 exit code is recieved
+    printf '\033[31merror: installreqs failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$installexitcode"
+    exit $installexitcode
+fi
+
 printf "\033[32minstalling optional packages...\n\033[39m"
 installopts
+installexitcode=$?
+if [ $installexitcode -eq 0 ] ; then
+    printf "\033[32minstallopts completed successfully\n\033[39m"
+else
+    #don't exit if installopts fails, as the build can still work
+    printf '\033[33mwarning: installopts failed with exit code %s\n\033[39m' "$installexitcode"
+fi
 
 #install vscode extensions
 if has code ; then
@@ -77,7 +103,7 @@ if has code ; then
     code --install-extension wpilibsuite.vscode-wpilib #wpilib extension
 else
     #don't exit if vscode breaks, as the build can still work without vscode
-    printf "\033[33merror: vscode failed to install\n\033[39m"
+    printf "\033[33mwarning: vscode failed to install\n\033[39m"
     printf "\033[33mvscode extensions will not be installed automatically\n\033[39m"
 fi
 
@@ -88,14 +114,28 @@ printf "\033[33mnote: you will need to clone over ssh in order to contribute cod
 if [ -d "$HOME/Documents/lightning" ] ; then
     printf "\033[32mlightning code detected\npulling latest version...\n\033[39m"
     git -C "$HOME/Documents/lightning" pull
+    gitexitcode=$?
+    if [ $gitexitcode -eq 0 ] ; then
+        printf "\033[32mpull completed successfully\n\033[39m"
+    else
+        printf '\033[31merror: pull failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$gitexitcode"
+        exit $gitexitcode
+    fi
 else
     printf "\033[32mno lightning code detected\ncloning new code...\n\033[39m"
     git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
+    gitexitcode=$?
+    if [ $gitexitcode -eq 0 ] ; then
+        printf "\033[32mpull completed successfully\n\033[39m"
+    else
+        printf '\033[31merror: clone failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$gitexitcode"
+        exit $gitexitcode
+    fi
 fi
 
 #build lightning repo
 printf "\033[32mbuilding gradle...\n\033[39m"
-"$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
+"$HOME/Documents/lightning/gradlew" -q -p "$HOME/Documents/lightning" build
 buildstatus=$?
 if [ $buildstatus -eq 0 ] ; then
     printf "\033[32mbuild completed successfully\n\033[39m"
