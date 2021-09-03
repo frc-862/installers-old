@@ -4,6 +4,9 @@
 #Has: check if a program is in PATH
 has() { type -p "$1" &> /dev/null; }
 
+#Define constants
+os=$(uname -s)
+
 #detect a program to use to obtain root privileges
 #set rootstring variable to say what command to use
 if has sudo ; then
@@ -22,16 +25,25 @@ else
 fi
 
 #detect a compatible package manager to install packages
-if has apt ; then
+if has brew && [ "$os" == "Darwin" ] ; then
     #define functions for each package manager
     #these functions apply to all other package managers also
     #update: get the latest version of all packages
-    update() { $rootstring apt update; $rootstring apt -y upgrade; }
+    update() { brew update; brew upgrade; }
     #installreqs: install required packages
-    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
+    installreqs() { brew install git openjdk@11; }
     #installopts: install optional packages
-    installopts() { $rootstring apt -y install code; }
+    installopts() { brew install visual-studio-code; }
     #pkgmanager: the name of the detected package manager
+    pkgmanager="brew"
+elif [ "$os" == "Darwin" ] ; then
+    #if brew isn't installed and we are on mac, then install it
+    printf "\033[32mno brew installation detected\ninstalling brew...\n\033[39m"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+elif has apt ; then
+    update() { $rootstring apt update; $rootstring apt -y upgrade; }
+    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
+    installopts() { $rootstring apt -y install code; }
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman --noconfirm -Syu; }
