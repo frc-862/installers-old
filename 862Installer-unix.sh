@@ -25,7 +25,13 @@ else
 fi
 
 #detect a compatible package manager to install packages
-if has brew && [ "$os" == "Darwin" ] ; then
+
+if [ "$os" == "Darwin" ] ; then
+    if ! has brew ; then
+        #if brew isn't installed and we are on mac, then install it
+        printf "\033[32mno brew installation detected\ninstalling brew...\n\033[39m"
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
     #define functions for each package manager
     #these functions apply to all other package managers also
     #update: get the latest version of all packages
@@ -36,10 +42,6 @@ if has brew && [ "$os" == "Darwin" ] ; then
     installopts() { brew install visual-studio-code; }
     #pkgmanager: the name of the detected package manager
     pkgmanager="brew"
-elif [ "$os" == "Darwin" ] ; then
-    #if brew isn't installed and we are on mac, then install it
-    printf "\033[32mno brew installation detected\ninstalling brew...\n\033[39m"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 elif has apt ; then
     update() { $rootstring apt update; $rootstring apt -y upgrade; }
     installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
@@ -50,6 +52,11 @@ elif has pacman ; then
     installreqs() { $rootstring pacman --noconfirm -S git jdk11-openjdk; }
     installopts() { $rootstring pacman --noconfirm -S code; }
     pkgmanager="pacman"
+elif has brew ; then
+    update() { brew update; brew upgrade; }
+    installreqs() { brew install git openjdk@11; }
+    installopts() { brew install visual-studio-code; }
+    pkgmanager="brew"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
     exit 1
@@ -93,5 +100,5 @@ buildstatus=$?
 if [ $buildstatus -eq 0 ] ; then
     printf "\033[32mbuild completed successfully\n\033[39m"
 else
-    printf '\033[31merror: build failed with exit code %s\nplease open an issue on github for help with this issue\n\033[39m' "$buildstatus"
+    printf '\033[31merror: build failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$buildstatus"
 fi
