@@ -1,21 +1,38 @@
 @echo off
-if exist %UserProfile%\scoop\shims\scoop.cmd (
-    echo Existing Scoop installation found. Updating now.
-    call scoop install git
-    call scoop update
-) else (
+setlocal
+if NOT exist %UserProfile%\scoop\shims\scoop.cmd (
+    ::if scoop is not installed, install it
     echo Scoop Not found. Installing now.
     powershell -ExecutionPolicy Unrestricted -Command "iwr -useb get.scoop.sh | iex"
-    set PATH=%path%;%UserProfile%\scoop\shims
+    set PATH=%PATH%;%UserProfile%\scoop\shims
 )
-echo Installing git...
-call scoop install git
-echo Installing scoop buckets...
-call scoop bucket add java
-call scoop bucket add extras
-echo Installing java and vscode...
-call scoop install openjdk11 vscode
-set PATH=%path%;%UserProfile%\scoop\apps\openjdk11\current\bin
+
+::define functions for each package manager
+::these functions apply to all other package managers also
+::update: get the latest version of all packages
+:update
+    call scoop install git
+    call scoop update
+    exit /B 0
+::installreqs: install required packages
+:installreqs
+    call scoop install git
+    call scoop bucket add java
+    call scoop install openjdk11
+    set PATH=%path%;%UserProfile%\scoop\apps\openjdk11\current\bin
+    exit /B 0
+::installopts: install optional packages
+:installopts
+    call scoop bucket add extras
+    call scoop install vscode
+    exit /B 0
+::pkgmanager: the name of the detected package manager
+set pkgmanager=scoop
+
+::run the defined update, installreqs, and installopts functions
+call :update
+call :installreqs
+call :installopts
 
 if exist "%UserProfile%\scoop\shims\code" (
     echo Installing vs code extensions
@@ -39,3 +56,5 @@ if exist "%UserProfile%\Documents\lightning\" (
 
 echo Building gradle...
 call %UserProfile%\Documents\lightning\gradlew.bat -p "%UserProfile%\Documents\lightning" "build"
+endlocal
+pause
