@@ -3,27 +3,28 @@ These scripts are installing essential packages to be able to develop code for [
 
 # Dependencies
 You will need to install\
-[git](https://git-scm.com/)\
-[bash](https://www.gnu.org/software/bash/) (Linux only)\
+[bash](https://www.gnu.org/software/bash/) (Linux, Macos, Windows, etc.)\
 [PowerShell](https://github.com/PowerShell/PowerShell) (Windows only, version >= 5.0)
 
 # How to install
 
-For all of these, we need to first clone this repository and run the scripts from there.
-First, open the terminal (Powershell for Windows) and type `git clone https://github.com/frc-862/862-installers.git`.
-Then, navigate into the directory by typing `cd 862-installers/`.
-
+if you already have git installed, open up a terminal window and type `git clone https://github.com/frc-862/862-installers.git`\
+Then, navigate into the directory by typing `cd 862-installers/`\
 ```bash
 git clone https://github.com/frc-862/862-installers.git
 cd 862-installers/
 ```
+
+otherwise, you can click on the green clone button on the github page and click "Download ZIP"\
+Then extract the files from the zip, and navigate into the 862-installers folder.
+
 From here, follow the instructions for your specific type of operating system. If it's not there feel free to open an issue.
 
 ## Windows 10 and 11
 For Windows, use the `862Installer-windows.cmd` script.
 
 ```cmd
-.\862installer-windows.cmd
+.\862Installer-windows.cmd
 ```
 
 ## Linux, Mac OS, etc.
