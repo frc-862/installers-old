@@ -24,7 +24,7 @@ if NOT exist %UserProfile%\scoop\shims\scoop.cmd (
 ::installopts: install optional packages
 :installopts
     call scoop bucket add extras
-    call scoop install vscode
+    call scoop install vscode lazygit
     exit /B 0
 ::pkgmanager: the name of the detected package manager
 set pkgmanager=scoop

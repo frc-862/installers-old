@@ -41,7 +41,7 @@ if [ "$os" == "Darwin" ] ; then
     #installreqs: install required packages
     installreqs() { brew install git openjdk@11; }
     #installopts: install optional packages
-    installopts() { brew install visual-studio-code; }
+    installopts() { brew install visual-studio-code lazygit; }
     #pkgmanager: the name of the detected package manager
     pkgmanager="brew"
 elif has apt ; then
@@ -50,19 +50,20 @@ elif has apt ; then
     installopts() {
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
         $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+        $rootstring add-apt-repository "ppa:lazygit-team/release"
         $rootstring apt update
-        $rootstring apt -y install code
+        $rootstring apt -y install code lazygit
     }
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman --noconfirm -Syu; }
     installreqs() { $rootstring pacman --noconfirm -S git jdk11-openjdk; }
-    installopts() { $rootstring pacman --noconfirm -S code; }
+    installopts() { $rootstring pacman --noconfirm -S code lazygit; }
     pkgmanager="pacman"
 elif has brew ; then
     update() { brew update; brew upgrade; }
     installreqs() { brew install git openjdk@11; }
-    installopts() { brew install visual-studio-code; }
+    installopts() { brew install visual-studio-code lazygit; }
     pkgmanager="brew"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
