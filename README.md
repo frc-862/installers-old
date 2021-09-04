@@ -4,12 +4,12 @@ These scripts are installing essential packages to be able to develop code for [
 # Dependencies
 You will need to install\
 [git](https://git-scm.com/)\
-[bash](https://www.gnu.org/software/bash/) (linux only)\
-[powershell](https://github.com/PowerShell/PowerShell) (windows only, version >= 5.0)
+[bash](https://www.gnu.org/software/bash/) (Linux only)\
+[PowerShell](https://github.com/PowerShell/PowerShell) (Windows only, version >= 5.0)
 
 # How to install
 
-For all of these we need to first clone this repository and run the scripts from there.
+For all of these, we need to first clone this repository and run the scripts from there.
 First, open the terminal (Powershell for Windows) and type `git clone https://github.com/frc-862/862-installers.git`.
 Then, navigate into the directory by typing `cd 862-installers/`.
 
@@ -58,12 +58,12 @@ Finally, the script builds the lightning repository, and if any errors occur fee
 If no errors occur, you have installed all the necessary applications/packages to build FRC code
 
 Notes:
-You will need a gpr key to build code other than the lightning repository
+You will need a GPR key to build code other than the lightning repository
 You will also need an ssh key to contribute code
 
-# gpr key instructions
+# GPR key instructions
 
-A gpr key is required to build any code besides the lightning repository.
+A GPR key is required to build any code besides the lightning repository.
 
 ## GitHub side
 To begin, open settings after clicking on your profile picture.
@@ -74,7 +74,7 @@ Then, click on "Developer settings", near the end of the page.
 
 ![gpr2.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr2.png)
 
-Afterwards, click on "Personal access tokens"
+Afterward, click on "Personal access tokens"
 
 ![gpr3.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr3.png)
 
@@ -82,11 +82,11 @@ Next, click on "Generate new token" to create a token
 
 ![gpr4.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr4.png)
 
-Name your token something memorable, or at least be able to identify the key. For the Expiration, you can set it to expire never, but as advised by github, I would set it to 30-90 days and follow these instructions again when it expires. However, it is usually fine to set it to not expire. Finally, make sure to check the `write:packages` and `delete:packages` scopes. (The repo scope will automagically be checked)
+Name your token something memorable, or at least be able to identify the key. For the Expiration, you can set it to expire never, but as advised by GitHub, I would set it to 30-90 days and follow these instructions again when it expires. However, it is usually fine to set it to not expire. Finally, make sure to check the `write:packages` and `delete:packages` scopes. (The repo scope will automagically be checked)
 
 ![gpr5.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr5.png)
 
-After clicking on "Generate token" add the end of the page, you will get prompted to copy the key for the token. Make sure the copy this and save it for the next steps.
+After clicking on "Generate token" at the end of the page, you will get prompted to copy the key for the token. Make sure the copy this and save it for the next steps.
 
 ## Local side
 
