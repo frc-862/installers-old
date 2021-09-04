@@ -13,13 +13,13 @@ if [ "$os" == "Darwin" ] ; then
     printf "\033[32mno root privileges needed on macos\n\033[39m"
 elif has sudo ; then
     rootstring="sudo"
-    printf "\033[32musing sudo ($(type -p $rootstring)) for root privileges\n\033[39m"
+    printf '\033[32musing sudo (%s) for root privileges\n\033[39m' "$(type -p $rootstring)"
 elif has doas ; then
     rootstring="doas"
-    printf "\033[32musing doas ($(type -p $rootstring)) for root privileges\n\033[39m"
+    printf '\033[32musing doas (%s) for root privileges\n\033[39m' "$(type -p $rootstring)"
 elif [ "$EUID" -eq 0 ] ; then
     rootstring=""
-    printf "\033[32musing current user ($(whoami)) for root privileges\n\033[39m"
+    printf '\033[32musing current user (%s) for root privileges\n\033[39m' "$(whoami)"
 else
     printf "\033[31merror: no root privileges\n\033[39m"
     printf "\033[31mtry running this script as root or verifying that sudo or doas is installed and in your PATH\n\033[39m"
@@ -46,8 +46,13 @@ if [ "$os" == "Darwin" ] ; then
     pkgmanager="brew"
 elif has apt ; then
     update() { $rootstring apt update; $rootstring apt -y upgrade; }
-    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
-    installopts() { $rootstring apt -y install code; }
+    installreqs() { $rootstring apt -y install git openjdk-11-jdk wget software-properties-common; }
+    installopts() {
+        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+        $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+        $rootstring apt update
+        $rootstring apt -y install code
+    }
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman --noconfirm -Syu; }
