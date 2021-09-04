@@ -65,6 +65,11 @@ elif has brew ; then
     installreqs() { brew install git openjdk@11; }
     installopts() { brew install visual-studio-code lazygit; }
     pkgmanager="brew"
+elif has scoop ; then
+    update() { scoop install git; scoop update; }
+    installreqs() { scoop install git; scoop bucket add java; scoop install openjdk11; export PATH="$PATH;$HOME/scoop/apps/openjdk11/current/bin;"; }
+    installopts() { scoop bucket add extras; scoop install vscode lazygit; }
+    pkgmanager="scoop"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
     exit 1
