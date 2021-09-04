@@ -26,18 +26,11 @@ For Windows, use the `862Installer-windows.cmd` script.
 .\862installer-windows.cmd
 ```
 
-## Linux
-For linux, use the `862Installer-linux.sh` script.
+## Linux, Mac OS, etc.
+For systems with bash, use the `862Installer-bash.sh` script.
 
 ```bash
-./862Installer-linux.sh
-```
-
-## Mac OS
-For MacOS, use the `862Installer-mac.sh` script
-
-```bash
-./862Installer-mac.sh
+./862Installer-bash.sh
 ```
 
 # Info
