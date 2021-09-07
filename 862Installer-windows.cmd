@@ -13,16 +13,22 @@ if NOT exist %UserProfile%\scoop\shims\scoop.cmd (
 :update
     call scoop install git
     call scoop update
+    exit /b
+
 ::installreqs: install required packages
 :installreqs
     call scoop install git
     call scoop bucket add java
     call scoop install openjdk11
     set PATH=%path%;%UserProfile%\scoop\apps\openjdk11\current\bin
+    exit /b
+
 ::installopts: install optional packages
 :installopts
     call scoop bucket add extras
     call scoop install vscode lazygit
+    exit /b
+
 ::pkgmanager: the name of the detected package manager
 set pkgmanager=scoop
 
@@ -55,3 +61,4 @@ echo Building gradle...
 call %UserProfile%\Documents\lightning\gradlew.bat -p "%UserProfile%\Documents\lightning" "build"
 endlocal
 pause
+exit /b
