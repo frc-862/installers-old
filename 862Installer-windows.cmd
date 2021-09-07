@@ -33,9 +33,9 @@ if NOT exist %UserProfile%\scoop\shims\scoop.cmd (
 set pkgmanager=scoop
 
 ::run the defined update, installreqs, and installopts functions
-call :update
-call :installreqs
-call :installopts
+call update
+call installreqs
+call installopts
 
 if exist "%UserProfile%\scoop\shims\code" (
     echo Installing vs code extensions
