@@ -13,7 +13,6 @@ if NOT exist %UserProfile%\scoop\shims\scoop.cmd (
 :update
     call scoop install git
     call scoop update
-    exit /b
 
 ::installreqs: install required packages
 :installreqs
@@ -21,13 +20,11 @@ if NOT exist %UserProfile%\scoop\shims\scoop.cmd (
     call scoop bucket add java
     call scoop install openjdk11
     set PATH=%path%;%UserProfile%\scoop\apps\openjdk11\current\bin
-    exit /b
 
 ::installopts: install optional packages
 :installopts
     call scoop bucket add extras
     call scoop install vscode lazygit
-    exit /b
 
 ::pkgmanager: the name of the detected package manager
 set pkgmanager=scoop
