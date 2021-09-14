@@ -46,8 +46,9 @@ if [ "$os" == "Darwin" ] ; then
     pkgmanager="brew"
 elif has apt ; then
     update() { $rootstring apt update; $rootstring apt -y upgrade; }
-    installreqs() { $rootstring apt -y install git openjdk-11-jdk wget software-properties-common; }
+    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
     installopts() {
+        $rootstring apt -y install wget software-properties-common
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
         $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
         $rootstring add-apt-repository "ppa:lazygit-team/release"
