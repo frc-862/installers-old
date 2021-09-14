@@ -52,7 +52,7 @@ elif has apt ; then
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
         $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
         $rootstring add-apt-repository "ppa:lazygit-team/release"
-        $rootstring apt update
+        $rootstring apt -y update
         $rootstring apt -y install code lazygit
     }
     pkgmanager="apt"
