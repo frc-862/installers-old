@@ -9,7 +9,7 @@ You will need to install\
 # How to install
 
 if you already have git installed, open up a terminal window and type `git clone https://github.com/frc-862/862-installers.git`\
-Then, navigate into the directory by typing `cd 862-installers/`\
+Then, navigate into the directory by typing `cd 862-installers/`
 ```bash
 git clone https://github.com/frc-862/862-installers.git
 cd 862-installers/
