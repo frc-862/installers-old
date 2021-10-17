@@ -51,9 +51,8 @@ elif has apt ; then
         $rootstring apt -y install wget software-properties-common
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
         $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-        $rootstring add-apt-repository "ppa:lazygit-team/release"
         $rootstring apt -y update
-        $rootstring apt -y install code lazygit
+        $rootstring apt -y install code
     }
     pkgmanager="apt"
 elif has pacman ; then
