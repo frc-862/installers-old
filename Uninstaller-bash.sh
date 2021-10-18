@@ -28,10 +28,23 @@ fi
 
 #detect a compatible package manager to uninstall packages
 if has apt && [ -f "/etc/ubuntu-release" ] ; then
-    uninstall() { $rootstring apt -y purge git openjdk-11-jdk wget software-properties-common code lazygit; }
+    uninstall() {
+        $rootstring apt -y purge git;
+        $rootstring apt -y purge openjdk-11-jdk;
+        $rootstring apt -y purge wget;
+        $rootstring apt -y purge software-properties-common;
+        $rootstring apt -y purge code;
+        $rootstring apt -y purge lazygit;
+    }
     pkgmanager="apt (ubuntu)"
 elif has apt ; then
-    uninstall() { $rootstring apt -y purge git openjdk-11-jdk wget software-properties-common code; }
+    uninstall() {
+        $rootstring apt -y purge git;
+        $rootstring apt -y purge openjdk-11-jdk;
+        $rootstring apt -y purge wget;
+        $rootstring apt -y purge software-properties-common;
+        $rootstring apt -y purge code;
+    }
     pkgmanager="apt"
 elif has pacman ; then
     uninstall() { $rootstring pacman --noconfirm -R git jdk11-openjdk code lazygit; }
@@ -53,6 +66,8 @@ uninstall
 exitcode=$?
 if [ $exitcode -eq 0 ] ; then
     printf "\033[32muninstall completed successfully\n\033[39m"
+if [ $exitcode -eq 100 ] ; then
+    printf "\033[33mwarning: one or more packages were not previously installed fully\n\033[39m"
 else
     #don't exit if the update fails
     printf '\033[31merror: uninstall failed with exit code %s\n\033[39m' "$exitcode"
