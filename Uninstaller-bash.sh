@@ -66,10 +66,9 @@ uninstall
 exitcode=$?
 if [ $exitcode -eq 0 ] ; then
     printf "\033[32muninstall completed successfully\n\033[39m"
-if [ $exitcode -eq 100 ] ; then
-    printf "\033[33mwarning: one or more packages were not previously installed fully\n\033[39m"
+elif [ $exitcode -eq 100 ] ; then
+    printf "\033[33mwarning: one or more packages were not previously installed\n\033[39m"
 else
-    #don't exit if the update fails
     printf '\033[31merror: uninstall failed with exit code %s\n\033[39m' "$exitcode"
 fi
 
