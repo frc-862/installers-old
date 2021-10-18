@@ -38,16 +38,16 @@ For systems with bash, use the `862Installer-bash.sh` script.
 
 Name | Repository/Link | Use
 --- | --- | ---
-Visual Studio Code | [link](https://code.visualstudio.com/) | An IDE to develop code efficiently for WPILib.
-git | [link](https://git-scm.com/) | A version control tool to make code development a lot easier.
-openjdk11 | [link](https://openjdk.java.net/projects/jdk/11/) | The Java development kit is required to develop code in Java.
-WPILib (extension) | [link](https://wpilib.org/) | It's required to deploy code onto robots.
-brew (Mac, Linux) | [link](https://brew.sh/) | It's a package manager that makes installing certain packages a lot easier.
-scoop (Windows) | [link](https://scoop.sh/) | It's a package manager to install certain packages much easier.
+Visual Studio Code | [link](https://code.visualstudio.com/) | An Editor to develop code efficiently.
+git | [link](https://git-scm.com/) | the version control system that we use to manage all of our code.
+openjdk11 | [link](https://openjdk.java.net/projects/jdk/11/) | The language we use to write our code.
+WPILib (extension) | [link](https://wpilib.org/) | An extension for Visual Studio Code that makes working on wpilib projects easier.
+brew (Mac, Linux) | [link](https://brew.sh/) | A package manager that makes installing software a lot easier.
+scoop (Windows) | [link](https://scoop.sh/) | Another package manager that makes installing software a lot easier.
 
-At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `C:\Users\<username>\Documents\lightning` (Windows) or `/home/<username>/Documents/lightning` (Linux).
+At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `$HOME/Documents/lightning`
 
-Finally, the script builds the lightning repository, and if any errors occur feel free to make a jira ticket, and someone will help you out.
+Finally, the script builds the lightning repository. If any errors occur feel free to make a jira ticket, and someone will help you out.
 
 If no errors occur, you have installed all the necessary applications/packages to build FRC code
 
