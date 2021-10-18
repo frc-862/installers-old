@@ -14,25 +14,25 @@ To install, you can either clone this repository and run the scripts directly or
 
 ### Windows 10 and 11
 
-For the Windows Command Prompt, use the `Installer-windows.cmd` script.
+For the Windows Command Prompt, use the `windowsInstaller.cmd` script.
 
 ```cmd
-curl.exe --output install.cmd --url https://github.com/frc-862/installers/blob/main/Installer-windows.cmd && ./install.cmd && del ./install.cmd
+curl.exe --output install.cmd --url https://github.com/frc-862/installers/blob/main/windowsInstaller.cmd && ./install.cmd && del ./install.cmd
 ```
 
-Or the `installer-powershell.ps1` script for PowerShell.
+Or the `powershellInstaller.ps1` script for PowerShell.
 
 ```PowerShell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/Installer-powershell.ps1" -OutFile ".\install.ps1"; .\install.ps1; rm .\install.ps1
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/powershellInstaller.ps1" -OutFile ".\install.ps1"; .\install.ps1; rm .\install.ps1
 ```
 
 ### Linux, Mac OS, etc
 
-For systems with bash, use the `Installer-bash.sh` script.\
+For systems with bash, use the `bashInstaller.sh` script.\
 You may need to install `curl`. Follow [this guide](https://www.tecmint.com/install-curl-in-linux/).
 
 ```bash
-bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/Installer-bash.sh)
+bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh)
 ```
 
 ## Included Packages
@@ -63,17 +63,17 @@ Additionally, you will need to setup an ssh key to contribute code to our reposi
 
 A GPR key is required to build any code besides the lightning repository.\
 To begin, open settings after clicking on your profile picture.\
-![gpr1.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr1.png)\
+![gpr1.png](https://github.com/frc-862/installers/raw/main/assets/gpr1.png)\
 Then, click on "Developer settings", near the end of the page.\
-![gpr2.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr2.png)\
+![gpr2.png](https://github.com/frc-862/installers/raw/main/assets/gpr2.png)\
 Afterward, click on "Personal access tokens".\
-![gpr3.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr3.png)\
+![gpr3.png](https://github.com/frc-862/installers/raw/main/assets/gpr3.png)\
 Next, click on "Generate new token" to create a token.\
-![gpr4.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr4.png)\
+![gpr4.png](https://github.com/frc-862/installers/raw/main/assets/gpr4.png)\
 Name your token something memorable, or at least be able to identify the key.\
 For the Expiration, you can set it to expire never, but as advised by GitHub, I would set it to 30-90 days and follow these instructions again when it expires. However, it is usually fine to set it to not expire.\
 Finally, make sure to check the `write:packages` and `delete:packages` scopes (The repo scope will automagically be checked).\
-![gpr5.png](https://github.com/frc-862/862-installers/raw/main/assets/gpr5.png)\
+![gpr5.png](https://github.com/frc-862/installers/raw/main/assets/gpr5.png)\
 After clicking on "Generate token" at the end of the page, you will get prompted to copy the key for the token. Make sure the copy this and save it for the next steps.\
 Assuming you ran one of the install scripts, you should have a `.gradle/` folder in your home directory, (`~` for Linux, Mac OSX, and Powershell).\
 Navigate into the folder and open the file `gradle.properties` in your favorite text editor (it's ok if it's not there, just create a new file with the same name).\
