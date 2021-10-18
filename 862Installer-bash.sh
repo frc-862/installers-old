@@ -44,6 +44,19 @@ if [ "$os" == "Darwin" ] ; then
     installopts() { brew install visual-studio-code lazygit; }
     #pkgmanager: the name of the detected package manager
     pkgmanager="brew"
+elif has apt && [ -f "/etc/ubuntu-release" ] ; then
+    update() { $rootstring apt update; $rootstring apt -y upgrade; }
+    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
+    installopts() {
+        $rootstring apt -y install wget software-properties-common
+        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+        $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+        #Lazygit PPA is Ubuntu only
+        $rootstring add-apt-repository "ppa:lazygit-team/release"
+        $rootstring apt -y update
+        $rootstring apt -y install code lazygit
+    }
+    pkgmanager="apt (ubuntu)"
 elif has apt ; then
     update() { $rootstring apt update; $rootstring apt -y upgrade; }
     installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
@@ -51,9 +64,8 @@ elif has apt ; then
         $rootstring apt -y install wget software-properties-common
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
         $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-        $rootstring add-apt-repository "ppa:lazygit-team/release"
         $rootstring apt -y update
-        $rootstring apt -y install code lazygit
+        $rootstring apt -y install code
     }
     pkgmanager="apt"
 elif has pacman ; then
