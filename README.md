@@ -18,7 +18,7 @@ cd 862-installers/
 otherwise, you can click on the green clone button on the github page and click "Download ZIP"\
 Then extract the files from the zip, and navigate into the 862-installers folder.
 
-From here, follow the instructions for your specific type of operating system. If it's not there feel free to open an issue.
+From here, follow the instructions for your specific type of operating system. If it's not there feel free to open a Jira Ticket.
 
 ## Windows 10 and 11
 For Windows, use the `862Installer-windows.cmd` script.
@@ -47,7 +47,7 @@ scoop (Windows) | [link](https://scoop.sh/) | It's a package manager to install 
 
 At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `C:\Users\<username>\Documents\lightning` (Windows) or `/home/<username>/Documents/lightning` (Linux).
 
-Finally, the script builds the lightning repository, and if any errors occur feel free to leave an issue.
+Finally, the script builds the lightning repository, and if any errors occur feel free to make a jira ticket, and someone will help you out.
 
 If no errors occur, you have installed all the necessary applications/packages to build FRC code
 
@@ -91,7 +91,7 @@ Then, add these two lines into `gradle.properties`
 gpr.user=username
 gpr.key=the key from earlier
 ```
-Save the file and you should be able to build other repositories now. As always, feel free to leave an issue if you have any issues.
+Save the file and you should be able to build other repositories now. As always, feel free to make a jira ticket if you have any issues.
 
 # SSH Key Instructions
 
