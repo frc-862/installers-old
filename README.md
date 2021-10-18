@@ -29,10 +29,10 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/mai
 ### Linux, Mac OS, etc
 
 For systems with bash, use the `Installer-bash.sh` script.\
-You may need to install `wget`. Follow [this guide](https://www.tecmint.com/install-wget-in-linux/).
+You may need to install `curl`. Follow [this guide](https://www.tecmint.com/install-curl-in-linux/).
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/frc-862/installers/main/Installer-bash.sh)
+bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/Installer-bash.sh)
 ```
 
 ## Included Packages
