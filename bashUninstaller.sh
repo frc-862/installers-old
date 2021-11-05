@@ -19,7 +19,7 @@ elif has doas ; then
     printf '\033[32musing doas (%s) for root privileges\n\033[39m' "$(type -p $rootstring)"
 elif [ "$EUID" -eq 0 ] ; then
     rootstring=""
-    printf '\033[32musing current user (%s) for root privileges\n\033[39m' "$(whoami)"
+    printf '\033[32musing current user (%s) for root privileges\n\033[39m' "$USER)"
 else
     printf "\033[31merror: no root privileges\n\033[39m"
     printf "\033[31mtry running this script as root or verifying that sudo or doas is installed and in your PATH\n\033[39m"
