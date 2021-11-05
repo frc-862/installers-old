@@ -29,6 +29,7 @@ fi
 #detect a compatible package manager to install packages
 
 if [ "$os" == "Darwin" ] ; then
+    # only install brew from scratch on mac
     if ! has brew ; then
         #if brew isn't installed and we are on mac, then install it
         printf "\033[32mno brew installation detected\ninstalling brew...\n\033[39m"
@@ -37,16 +38,28 @@ if [ "$os" == "Darwin" ] ; then
     #define functions for each package manager
     #these functions apply to all other package managers also
     #update: get the latest version of all packages
-    update() { brew update; brew upgrade; }
+    update() {
+        brew update;
+        brew upgrade;
+    }
     #installreqs: install required packages
-    installreqs() { brew install git microsoft-openjdk11; }
+    installreqs() {
+        brew install git microsoft-openjdk11;
+    }
     #installopts: install optional packages
-    installopts() { brew install visual-studio-code lazygit; }
+    installopts() {
+        brew install visual-studio-code lazygit;
+    }
     #pkgmanager: the name of the detected package manager
     pkgmanager="brew"
-elif has apt && [ -f "/etc/ubuntu-release" ] ; then
-    update() { $rootstring apt update; $rootstring apt -y upgrade; }
-    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
+elif has apt && [ -f "/etc/ubuntu-release" ] ; then # seperate ubuntu and debian installers because of lazygit PPA
+    update() {
+        $rootstring apt update;
+        $rootstring apt -y upgrade;
+    }
+    installreqs() {
+        $rootstring apt -y install git openjdk-11-jdk;
+    }
     installopts() {
         $rootstring apt -y install wget software-properties-common
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
@@ -58,8 +71,13 @@ elif has apt && [ -f "/etc/ubuntu-release" ] ; then
     }
     pkgmanager="apt (ubuntu)"
 elif has apt ; then
-    update() { $rootstring apt update; $rootstring apt -y upgrade; }
-    installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
+    update() {
+        $rootstring apt update;
+        $rootstring apt -y upgrade;
+    }
+    installreqs() {
+        $rootstring apt -y install git openjdk-11-jdk;
+    }
     installopts() {
         $rootstring apt -y install wget software-properties-common
         wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | $rootstring apt-key add -
@@ -74,14 +92,27 @@ elif has pacman ; then
     installopts() { $rootstring pacman --noconfirm -S code lazygit; }
     pkgmanager="pacman"
 elif has brew ; then
-    update() { brew update; brew upgrade; }
+    update() {
+        brew update;
+        brew upgrade;
+    }
     installreqs() { brew install git microsoft-openjdk11; }
     installopts() { brew install visual-studio-code lazygit; }
     pkgmanager="brew"
 elif has scoop ; then
-    update() { scoop install git; scoop update; }
-    installreqs() { scoop install git; scoop bucket add java; scoop install openjdk11; export PATH="$PATH;$HOME/scoop/apps/openjdk11/current/bin;"; }
-    installopts() { scoop bucket add extras; scoop install vscode lazygit; }
+    update() {
+        scoop install git;
+        scoop update;
+    }
+    installreqs() { scoop install git;
+        scoop bucket add java;
+        scoop install openjdk11;
+        export PATH="$PATH;$HOME/scoop/apps/openjdk11/current/bin;";
+    }
+    installopts() {
+        scoop bucket add extras;
+        scoop install vscode lazygit;
+    }
     pkgmanager="scoop"
 else
     printf "\033[31mno supported package manager found\ntry verifying that one is installed and in your PATH\n\033[39m"
