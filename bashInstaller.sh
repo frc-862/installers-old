@@ -75,7 +75,7 @@ elif has pacman ; then
     pkgmanager="pacman"
 elif has brew ; then
     update() { brew update; brew upgrade; }
-    installreqs() { brew install git openjdk@11; }
+    installreqs() { brew install git microsoft-openjdk11; }
     installopts() { brew install visual-studio-code lazygit; }
     pkgmanager="brew"
 elif has scoop ; then
