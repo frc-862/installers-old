@@ -137,7 +137,7 @@ if [ $installexitcode -eq 0 ] ; then
     printf "\033[32minstallreqs completed successfully\n\033[39m"
 else
     #exit if a non-0 exit code is recieved
-    printf '\033[31merror: installreqs failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$installexitcode"
+    printf '\033[31merror: installreqs failed with exit code %s\nplease open an issue on jira for assistance\n\033[39m' "$installexitcode"
     exit $installexitcode
 fi
 
@@ -173,7 +173,7 @@ if [ -d "$HOME/Documents/lightning" ] ; then
     if [ $gitexitcode -eq 0 ] ; then
         printf "\033[32mpull completed successfully\n\033[39m"
     else
-        printf '\033[31merror: pull failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$gitexitcode"
+        printf '\033[31merror: pull failed with exit code %s\nplease open an issue on jira for assistance\n\033[39m' "$gitexitcode"
         exit $gitexitcode
     fi
 else
@@ -183,7 +183,7 @@ else
     if [ $gitexitcode -eq 0 ] ; then
         printf "\033[32mpull completed successfully\n\033[39m"
     else
-        printf '\033[31merror: clone failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$gitexitcode"
+        printf '\033[31merror: clone failed with exit code %s\nplease open an issue on jira for assistance\n\033[39m' "$gitexitcode"
         exit $gitexitcode
     fi
 fi
@@ -195,5 +195,5 @@ buildstatus=$?
 if [ $buildstatus -eq 0 ] ; then
     printf "\033[32mbuild completed successfully\n\033[39m"
 else
-    printf '\033[31merror: build failed with exit code %s\nplease open an issue on github for assistance\n\033[39m' "$buildstatus"
+    printf '\033[31merror: build failed with exit code %s\nplease open an issue on jira for assistance\n\033[39m' "$buildstatus"
 fi
