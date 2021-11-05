@@ -39,7 +39,7 @@ if [ "$os" == "Darwin" ] ; then
     #update: get the latest version of all packages
     update() { brew update; brew upgrade; }
     #installreqs: install required packages
-    installreqs() { brew install git openjdk@11; }
+    installreqs() { brew install git microsoft-openjdk11; }
     #installopts: install optional packages
     installopts() { brew install visual-studio-code lazygit; }
     #pkgmanager: the name of the detected package manager
