@@ -62,7 +62,7 @@ elif has apt ; then
     installreqs() { $rootstring apt -y install git openjdk-11-jdk; }
     installopts() {
         $rootstring apt -y install wget software-properties-common
-        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | $rootstring apt-key add -
         $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
         $rootstring apt -y update
         $rootstring apt -y install code
