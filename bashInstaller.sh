@@ -154,8 +154,8 @@ fi
 #install vscode extensions
 if has code ; then
     printf "\033[32minstalling vscode extensions...\n\033[39m"
-    code --install-extension vscjava.vscode-java-pack #java extension pack
-    code --install-extension wpilibsuite.vscode-wpilib #wpilib extension
+    code --install-extension vscjava.vscode-java-pack --force #java extension pack
+    code --install-extension wpilibsuite.vscode-wpilib --force #wpilib extension
 else
     #don't exit if vscode breaks, as the build can still work without vscode
     printf "\033[33mwarning: vscode failed to install\n\033[39m"
