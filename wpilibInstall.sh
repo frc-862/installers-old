@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#this script download and runs the wpilib installer
+#the user will still need to step through the installer
+
 os="$(uname -s)"
 wpilibVersion="2021.3.1"
 
@@ -29,5 +32,5 @@ elif [ "$wpilibExtension" == "tar.gz" ] ; then
     tar -xvzf "./$wpilibFilename" #tgz is extractable by tar
     "./WPILib_$wpilibType-$wpilibVersion/WPILibInstaller"
 elif [ "$wpilibExtension" == "iso" ] ; then
-    7z x -y -o "./$wpilibType" "./$wpilibFilename"
+    7z x -y -o "./$wpilibType" "./$wpilibFilename" #iso can be extracted with 7zip
 fi
