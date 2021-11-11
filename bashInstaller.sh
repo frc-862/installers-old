@@ -80,7 +80,7 @@ elif has apt ; then
     installreqs() {
         $rootstring apt -y install git wget tar;
     }
-    installopts() {}
+    installopts() { true; }
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman --noconfirm -Syu; }
@@ -164,17 +164,26 @@ fi
 
 wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$wpilibVersion/WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
 wpilibFilename="WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
+ok "downloading wpilib installer..."
 wget "$wpilibUrl" -O "$wpilibFilename"
 
 if [ "$wpilibExtension" == "dmg" ] ; then
+    ok "Mounting wpilib installer..."
     hdiutil attach -readonly "./$wpilibFilename" #dmg needs to be mounted
+    ok "Launching wpilib installer..."
     /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
+    ok "Unmounting wpilib installer..."
     hdiutil detach /Volumes/WPILibInstaller
 elif [ "$wpilibExtension" == "tar.gz" ] ; then
+    ok "extracting wpilib installer..."
     tar -xvzf "./$wpilibFilename" #tgz is extractable by tar
+    ok "launching wpilib installer..."
     "./WPILib_$wpilibType-$wpilibVersion/WPILibInstaller"
 elif [ "$wpilibExtension" == "iso" ] ; then
-    7z x -y -o "./$wpilibType" "./$wpilibFilename" #iso can be extracted with 7zip
+    ok "extracting wpilib installer..."
+    7z x -y -o"./$wpilibType" "./$wpilibFilename" #iso can be extracted with 7zip
+    ok "launching wpilib installer..."
+    "./$wpilibType/WPILibInstaller.exe"
 fi
 
 #build section
