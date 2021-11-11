@@ -3,6 +3,19 @@
 #this script download and runs the wpilib installer
 #the user will still need to step through the installer
 
+#NEW DEPENDENCIES:
+#wget (for all systems)
+#tar (linux)
+#7zip (windows)
+
+#BUNDLED SOFTWARE
+#Wpilib vscode
+#gradle
+#a jdk
+#wpilib tools
+#wpilib deps
+#wpilib vs code extensions
+
 os="$(uname -s)"
 wpilibVersion="2021.3.1"
 
