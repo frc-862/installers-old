@@ -27,7 +27,6 @@ else
 fi
 
 #detect a compatible package manager to install packages
-
 if [ "$os" == "Darwin" ] ; then
     # only install brew from scratch on mac
     if ! has brew ; then
@@ -192,6 +191,7 @@ fi
 printf "\033[32mbuilding gradle...\n\033[39m"
 "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
 buildstatus=$?
+#detect if the build failed based on its exit code
 if [ $buildstatus -eq 0 ] ; then
     printf "\033[32mbuild completed successfully\n\033[39m"
 else
