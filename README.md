@@ -46,7 +46,7 @@ Name | Use
 [scoop (Windows)](https://scoop.sh/) | Another package manager that makes installing software a lot easier.
 [gradle](https://gradle.org/) | An open-source build system for java we use to manage dependencies.
 
-At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `$HOME/Documents/lightning`
+At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `~/Documents/lightning`
 
 Finally, the script builds the lightning repository. If any errors occur feel free to make a JIRA ticket or put a note on discord, and someone will help you out.
 
