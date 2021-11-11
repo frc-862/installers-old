@@ -61,10 +61,10 @@ elif has apt && [ -f "/etc/ubuntu-release" ] ; then # seperate ubuntu and debian
         $rootstring apt -y upgrade;
     }
     installreqs() {
-        $rootstring apt -y install git wget;
+        $rootstring apt -y install git wget tar;
     }
     installopts() {
-        $rootstring apt -y install wget software-properties-common
+        $rootstring apt -y install software-properties-common
         #Lazygit PPA is Ubuntu only
         $rootstring add-apt-repository "ppa:lazygit-team/release"
         $rootstring apt -y update
@@ -77,15 +77,13 @@ elif has apt ; then
         $rootstring apt -y upgrade;
     }
     installreqs() {
-        $rootstring apt -y install git wget;
+        $rootstring apt -y install git wget tar;
     }
-    installopts() {
-        $rootstring apt -y install wget software-properties-common;
-    }
+    installopts() {}
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman --noconfirm -Syu; }
-    installreqs() { $rootstring pacman --noconfirm -S git wget; }
+    installreqs() { $rootstring pacman --noconfirm -S git wget tar; }
     installopts() { $rootstring pacman --noconfirm -S lazygit; }
     pkgmanager="pacman"
 elif has brew ; then
@@ -104,6 +102,7 @@ elif has scoop ; then
     installreqs() { scoop install git;
         scoop bucket add java;
         scoop install wget;
+        scoop install 7zip;
         export PATH="$PATH;$HOME/scoop/apps/openjdk11/current/bin;";
     }
     installopts() {
