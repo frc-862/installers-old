@@ -47,11 +47,11 @@ if [ "$os" == "Darwin" ] ; then
     }
     #installreqs: install required packages
     installreqs() {
-        brew install git microsoft-openjdk11 wget;
+        brew install git wget;
     }
     #installopts: install optional packages
     installopts() {
-        brew install visual-studio-code lazygit;
+        brew install lazygit;
     }
     #pkgmanager: the name of the detected package manager
     pkgmanager="brew"
@@ -61,16 +61,14 @@ elif has apt && [ -f "/etc/ubuntu-release" ] ; then # seperate ubuntu and debian
         $rootstring apt -y upgrade;
     }
     installreqs() {
-        $rootstring apt -y install git openjdk-11-jdk wget;
+        $rootstring apt -y install git wget;
     }
     installopts() {
         $rootstring apt -y install wget software-properties-common
-        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-        $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
         #Lazygit PPA is Ubuntu only
         $rootstring add-apt-repository "ppa:lazygit-team/release"
         $rootstring apt -y update
-        $rootstring apt -y install code lazygit
+        $rootstring apt -y install lazygit
     }
     pkgmanager="apt (ubuntu)"
 elif has apt ; then
@@ -79,28 +77,24 @@ elif has apt ; then
         $rootstring apt -y upgrade;
     }
     installreqs() {
-        $rootstring apt -y install git openjdk-11-jdk wget;
+        $rootstring apt -y install git wget;
     }
     installopts() {
-        $rootstring apt -y install wget software-properties-common
-        wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | $rootstring apt-key add -
-        $rootstring add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-        $rootstring apt -y update
-        $rootstring apt -y install code
+        $rootstring apt -y install wget software-properties-common;
     }
     pkgmanager="apt"
 elif has pacman ; then
     update() { $rootstring pacman --noconfirm -Syu; }
-    installreqs() { $rootstring pacman --noconfirm -S git jdk11-openjdk wget; }
-    installopts() { $rootstring pacman --noconfirm -S code lazygit; }
+    installreqs() { $rootstring pacman --noconfirm -S git wget; }
+    installopts() { $rootstring pacman --noconfirm -S lazygit; }
     pkgmanager="pacman"
 elif has brew ; then
     update() {
         brew update;
         brew upgrade;
     }
-    installreqs() { brew install git microsoft-openjdk11 wget; }
-    installopts() { brew install visual-studio-code lazygit; }
+    installreqs() { brew install git wget; }
+    installopts() { brew install lazygit; }
     pkgmanager="brew"
 elif has scoop ; then
     update() {
@@ -109,13 +103,12 @@ elif has scoop ; then
     }
     installreqs() { scoop install git;
         scoop bucket add java;
-        scoop install openjdk11;
         scoop install wget;
         export PATH="$PATH;$HOME/scoop/apps/openjdk11/current/bin;";
     }
     installopts() {
         scoop bucket add extras;
-        scoop install vscode lazygit;
+        scoop install lazygit;
     }
     pkgmanager="scoop"
 else
