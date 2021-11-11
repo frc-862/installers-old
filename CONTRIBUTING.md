@@ -9,4 +9,4 @@ please run your code through one of the following linters before you commit:
     1. install [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) with `Install-Module -Name PSScriptAnalyzer`
     2. run via `Invoke-ScriptAnalyzer <filename>`
 
-It's okay if you don't know how to fix the warnings that the linter throws, just write a comment
+It's okay if you don't know how to fix the warnings that the linter throws, just write a comment in the code or on your commit
