@@ -190,7 +190,7 @@ fi
 
 #build lightning repo
 printf "\033[32mbuilding gradle...\n\033[39m"
-"$HOME/Documents/lightning/gradlew" -q -p "$HOME/Documents/lightning" build
+"$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
 buildstatus=$?
 if [ $buildstatus -eq 0 ] ; then
     printf "\033[32mbuild completed successfully\n\033[39m"
