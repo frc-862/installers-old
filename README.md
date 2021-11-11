@@ -53,6 +53,7 @@ Finally, the script builds the lightning repository. If any errors occur feel fr
 If no errors occur, you have installed all the necessary applications/packages to build FRC code
 
 ## Other Things You Should Set Up
+
 Some of our robot projects depend on [lightning](https://github.com/frc-862/lightning), which is published on the GitHub Package Registry (we will just call this the "gpr"). Unfortunately, the gpr requires authentication to use public repositories (not sure why, or when this will change). There are instructions for how to set this up below.\
 Additionally, you will need to setup an ssh key to contribute code to our repositories. You can also find instructions for setting this up below.
 
