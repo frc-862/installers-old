@@ -1,32 +1,32 @@
 if ( Test-Path "$HOME\scoop\shims\scoop" ) {
-    echo "Existing Scoop installation found."
+    Write-Output "Existing Scoop installation found."
 } else {
-    echo "Scoop Not found. Installing now."
-    iwr -useb get.scoop.sh | iex
+    Write-Output "Scoop Not found. Installing now."
+    Invoke-WebRequest -useb get.scoop.sh | Invoke-Expression
 }
 
-echo "Installing git..."
+Write-Output "Installing git..."
 scoop install git
-echo "Updating Scoop..."
+Write-Output "Updating Scoop..."
 scoop update
-echo "Installing scoop buckets..."
+Write-Output "Installing scoop buckets..."
 scoop bucket add java
 scoop bucket add extras
-echo "Installing java and vscode..."
+Write-Output "Installing java and vscode..."
 scoop install openjdk11 vscode
 
 if ( Test-Path "$HOME\scoop\shims\code" ) {
-    echo "Installing vs code extensions"
+    Write-Output "Installing vs code extensions"
     code --install-extension vscjava.vscode-java-pack
     code --install-extension wpilibsuite.vscode-wpilib
 } else {
-    echo "WARNING: VS code not detected"
-    echo "You may need to reinstall it manually"
+    Write-Output "WARNING: VS code not detected"
+    Write-Output "You may need to reinstall it manually"
 }
 
-echo "Cloning lightning source code over https into $HOME\Documents\lightning"
-echo "Note: you will need to clone over ssh if you want to contribute code"
+Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
+Write-Output "Note: you will need to clone over ssh if you want to contribute code"
 git clone "https://github.com/frc-862/lightning.git" "$HOME\Documents\lightning"
 
-echo "Building gradle..."
-iex "$HOME\Documents\lightning\gradlew build"
+Write-Output "Building gradle..."
+Invoke-Expression "$HOME\Documents\lightning\gradlew build"
