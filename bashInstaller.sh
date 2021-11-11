@@ -10,6 +10,7 @@ ok() { printf "\033[32m$1\n\033[39m"; }
 
 #Define constants
 os=$(uname -s)
+wpilibVersion="2021.3.1"
 
 #detect a program to use to obtain root privileges
 #set rootstring variable to say what command to use
@@ -147,15 +148,33 @@ else
     warn "warning: installopts failed with exit code $installexitcode"
 fi
 
-#install vscode extensions
-if has code ; then
-    printf "\033[32minstalling vscode extensions...\n\033[39m"
-    code --install-extension vscjava.vscode-java-pack --force #java extension pack
-    code --install-extension wpilibsuite.vscode-wpilib --force #wpilib extension
-else
-    #don't exit if vscode breaks, as the build can still work without vscode
-    printf "\033[33mwarning: vscode failed to install\n\033[39m"
-    printf "\033[33mvscode extensions will not be installed automatically\n\033[39m"
+if [ "$os" == "Linux" ] ; then
+    wpilibType="Linux"
+    wpilibExtension="tar.gz"
+elif [ "$os" == "Darwin" ] ; then
+    wpilibType="macOS"
+    wpilibExtension="dmg"
+elif [[ "$os" == *"MINGW64"* ]] ; then
+    wpilibType="Windows64"
+    wpilibExtension="iso"
+elif [[ "$os" == *"MINGW"* ]] ; then
+    wpilibType="Windows32"
+    wpilibExtension="iso"
+fi
+
+wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$wpilibVersion/WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
+wpilibFilename="WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
+wget "$wpilibUrl" -O "$wpilibFilename"
+
+if [ "$wpilibExtension" == "dmg" ] ; then
+    hdiutil attach -readonly "./$wpilibFilename" #dmg needs to be mounted
+    /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
+    hdiutil detach /Volumes/WPILibInstaller
+elif [ "$wpilibExtension" == "tar.gz" ] ; then
+    tar -xvzf "./$wpilibFilename" #tgz is extractable by tar
+    "./WPILib_$wpilibType-$wpilibVersion/WPILibInstaller"
+elif [ "$wpilibExtension" == "iso" ] ; then
+    7z x -y -o "./$wpilibType" "./$wpilibFilename" #iso can be extracted with 7zip
 fi
 
 #build section

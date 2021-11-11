@@ -9,12 +9,12 @@
 #7zip (windows)
 
 #BUNDLED SOFTWARE
-#Wpilib vscode
-#gradle
-#a jdk
-#wpilib tools
+#Wpilib vscode (probably won't use)
+#gradle (installed when you run a build)
+#a jdk (good alternative to installing from a package manager)
+#wpilib tools (pathweaver, etc.)
 #wpilib deps
-#wpilib vs code extensions
+#wpilib vs code extensions (probably won't use)
 
 os="$(uname -s)"
 wpilibVersion="2021.3.1"
