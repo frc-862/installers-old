@@ -2,7 +2,7 @@ if ( Test-Path "$HOME\scoop\shims\scoop" ) {
     Write-Output "Existing Scoop installation found."
 } else {
     Write-Output "Scoop Not found. Installing now."
-    Invoke-WebRequest -useb get.scoop.sh | Invoke-Expression
+    Invoke-WebRequest -useb "https://get.scoop.sh" | Invoke-Expression
 }
 
 Write-Output "Installing git..."
