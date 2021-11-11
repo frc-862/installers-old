@@ -4,12 +4,13 @@
 #Has: check if a program is in PATH
 has() { type -p "$1" &> /dev/null; }
 #Error, Warn, ok: print message in red, orange, or green text
+#use of a variable in printf fstring is intentional here
 error() { printf "\033[31m$1\n\033[39m"; }
 warn() { printf "\033[33m$1\n\033[39m"; }
 ok() { printf "\033[32m$1\n\033[39m"; }
 
 #Define constants
-os=$(uname -s)
+os="$(uname -s)"
 wpilibVersion="2021.3.1"
 
 #detect a program to use to obtain root privileges
@@ -29,6 +30,21 @@ else
     error "error: no root privileges"
     error "try running this script as root or verifying that sudo or doas is installed and in your PATH"
     exit 1
+fi
+
+#detect which wpilib release to download
+if [ "$os" == "Linux" ] ; then
+    wpilibType="Linux"
+    wpilibExtension="tar.gz"
+elif [ "$os" == "Darwin" ] ; then
+    wpilibType="macOS"
+    wpilibExtension="dmg"
+elif [[ "$os" == *"MINGW64"* ]] ; then
+    wpilibType="Windows64"
+    wpilibExtension="iso"
+elif [[ "$os" == *"MINGW"* ]] ; then
+    wpilibType="Windows32"
+    wpilibExtension="iso"
 fi
 
 #detect a compatible package manager to install packages
@@ -56,22 +72,6 @@ if [ "$os" == "Darwin" ] ; then
     }
     #pkgmanager: the name of the detected package manager
     pkgmanager="brew"
-elif has apt && [ -f "/etc/ubuntu-release" ] ; then # seperate ubuntu and debian installers because of lazygit PPA
-    update() {
-        $rootstring apt update;
-        $rootstring apt -y upgrade;
-    }
-    installreqs() {
-        $rootstring apt -y install git wget tar;
-    }
-    installopts() {
-        $rootstring apt -y install software-properties-common
-        #Lazygit PPA is Ubuntu only
-        $rootstring add-apt-repository "ppa:lazygit-team/release"
-        $rootstring apt -y update
-        $rootstring apt -y install lazygit
-    }
-    pkgmanager="apt (ubuntu)"
 elif has apt ; then
     update() {
         $rootstring apt update;
@@ -80,8 +80,19 @@ elif has apt ; then
     installreqs() {
         $rootstring apt -y install git wget tar;
     }
-    installopts() { true; }
-    pkgmanager="apt"
+    if [ -f "/etc/ubuntu-release" ] ; then # seperate ubuntu and debian installers because of lazygit PPA
+        installopts() {
+            $rootstring apt -y install software-properties-common
+            #Lazygit PPA is Ubuntu only
+            $rootstring add-apt-repository "ppa:lazygit-team/release"
+            $rootstring apt -y update
+            $rootstring apt -y install lazygit
+        }
+        pkgmanager="apt (ubuntu)"
+    else
+        installopts() { true; }
+        pkgmanager="apt"
+    fi
 elif has pacman ; then
     update() { $rootstring pacman --noconfirm -Syu; }
     installreqs() { $rootstring pacman --noconfirm -S git wget tar; }
@@ -148,20 +159,6 @@ else
     warn "warning: installopts failed with exit code $installexitcode"
 fi
 
-if [ "$os" == "Linux" ] ; then
-    wpilibType="Linux"
-    wpilibExtension="tar.gz"
-elif [ "$os" == "Darwin" ] ; then
-    wpilibType="macOS"
-    wpilibExtension="dmg"
-elif [[ "$os" == *"MINGW64"* ]] ; then
-    wpilibType="Windows64"
-    wpilibExtension="iso"
-elif [[ "$os" == *"MINGW"* ]] ; then
-    wpilibType="Windows32"
-    wpilibExtension="iso"
-fi
-
 wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$wpilibVersion/WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
 wpilibFilename="WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
 ok "downloading wpilib installer..."
@@ -186,10 +183,9 @@ elif [ "$wpilibExtension" == "iso" ] ; then
     "./$wpilibType/WPILibInstaller.exe"
 fi
 
-#build section
+#clone lightning repo
 ok "cloning lightning source code into $HOME/Documents/"
 warn "note: you will need to clone over ssh in order to contribute code"
-#clone lightning repo
 if [ -d "$HOME/Documents/lightning" ] ; then
     ok "lightning code detected\npulling latest version..."
     git -C "$HOME/Documents/lightning" pull
