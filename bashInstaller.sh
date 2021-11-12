@@ -107,7 +107,6 @@ elif has scoop ; then
         scoop bucket add java;
         scoop install wget;
         scoop install 7zip;
-        export PATH="$PATH;$HOME/scoop/apps/openjdk11/current/bin;";
     }
     installopts() {
         scoop bucket add extras;

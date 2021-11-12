@@ -33,6 +33,27 @@ You may need to install `curl`. Follow [this guide](https://www.tecmint.com/inst
 bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh)
 ```
 
+## Wpilib Install Proccess
+
+This script downloads and runs the wpilib installer, which is not a fully automated progam.
+
+After the installer downloads the wpilib installer, (this can take several minutes on slower connections) a new windows will launch that should look something like this:\
+![wpilib1.png](https://github.com/frc-862/installers/raw/main/assets/wpilib1.png)
+
+Press start, and you will see the vscode install screen:\
+![wpilib2.png](https://github.com/frc-862/installers/raw/main/assets/wpilib2.png)
+
+*If you already have vs code, you can press skip and move past the installation instructions.*
+
+*If you already have vs code downloaded for installation, you can select the "Use downloaded installer" option.*
+
+Otherwise, press "download vs code for single install."\
+Press continue once the loading bar has finished.
+
+On the next screen, select the following options:\
+![wpilib3.png](https://github.com/frc-862/installers/raw/main/assets/wpilib3.png)
+
+
 ## Included Packages
 
 Name | Use
