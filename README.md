@@ -42,7 +42,7 @@ Name | Use
 [openjdk11](https://openjdk.java.net/projects/jdk/11/) | The language we use to write our code.
 [WPILib (extension)](https://wpilib.org/) | An extension for Visual Studio Code that makes working on WPILib projects easier.
 [Java Extension Pack (extension)](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) | Contains several extensions that make writing java code much easier
-[brew (Mac, Linux)](https://brew.sh/) | A package manager that makes installing software a lot easier.
+[brew (Mac)](https://brew.sh/) | A package manager that makes installing software a lot easier.
 [scoop (Windows)](https://scoop.sh/) | Another package manager that makes installing software a lot easier.
 [gradle](https://gradle.org/) | An open-source build system for java we use to manage dependencies.
 

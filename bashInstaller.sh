@@ -98,14 +98,6 @@ elif has pacman ; then
     installreqs() { $rootstring pacman --noconfirm -S git wget tar; }
     installopts() { $rootstring pacman --noconfirm -S lazygit; }
     pkgmanager="pacman"
-elif has brew ; then
-    update() {
-        brew update;
-        brew upgrade;
-    }
-    installreqs() { brew install git wget; }
-    installopts() { brew install lazygit; }
-    pkgmanager="brew"
 elif has scoop ; then
     update() {
         scoop install git;
