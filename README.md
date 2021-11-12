@@ -53,6 +53,12 @@ Press continue once the loading bar has finished.
 On the next screen, select the following options:\
 ![wpilib3.png](https://github.com/frc-862/installers/raw/main/assets/wpilib3.png)
 
+Press "Install for single user" to install.
+
+If nothing goes wrong, you should see a screen like this:\
+![wpilib4.png](https://github.com/frc-862/installers/raw/main/assets/wpilib4.png)
+
+Press Finish, and the installer script will continue.
 
 ## Included Packages
 
