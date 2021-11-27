@@ -1,3 +1,7 @@
+$wpilibVersion="2021.3.1"
+$wpilibType="Windows64"
+$wpilibExtension="iso"
+
 #check if scoop is installed
 if ( Test-Path "$HOME\scoop\shims\scoop" ) {
     #if it is, continue
@@ -14,21 +18,15 @@ scoop install git
 Write-Output "Updating Scoop..."
 scoop update
 Write-Output "Installing scoop buckets..."
-scoop bucket add java
 scoop bucket add extras
-Write-Output "Installing java and vscode..."
-scoop install openjdk11 vscode
+Write-Output "Installing lazygit, wget, and 7zip..."
+scoop install lazygit
+scoop install wget
+scoop install 7zip
 
-#check if vs code installed correctly
-if ( Test-Path "$HOME\scoop\shims\code" ) {
-    #if it did, install wpilib extension and java extension pack
-    Write-Output "Installing vs code extensions"
-    code --install-extension vscjava.vscode-java-pack
-    code --install-extension wpilibsuite.vscode-wpilib
-} else {
-    Write-Output "WARNING: VS code not detected"
-    Write-Output "You may need to reinstall it manually"
-}
+$wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$wpilibVersion/WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
+#$wpilibFilename="WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
+wget "$wpilibUrl"
 
 Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
