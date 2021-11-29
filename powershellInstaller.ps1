@@ -40,7 +40,7 @@ if ( -not (Test-Path ".\$WPILIB_TYPE") ) {
 }
 
 Write-Output "Running wpilib installer"
-Invoke-Expression ".\$WPILIB_TYPE\WPILibInstaller.exe"
+Start-Process -FilePath ".\$WPILIB_TYPE\WPILibInstaller.exe" -ArgumentList "build"  -Wait -NoNewWindow
 Pause
 
 Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
@@ -55,4 +55,3 @@ if ( Test-Path "$HOME\Documents\lightning" ) {
 #run a gradle build in the lighning folder
 Write-Output "Building gradle..."
 Start-Process -FilePath "$HOME\Documents\lightning\gradlew.bat" -ArgumentList "build"  -Wait -NoNewWindow
-#Invoke-Expression "$HOME\Documents\lightning\gradlew build"
