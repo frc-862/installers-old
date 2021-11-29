@@ -24,13 +24,13 @@ Write-Output "Installing scoop buckets..."
 scoop bucket add extras
 Write-Output "Installing lazygit, wget, and 7zip..."
 scoop install lazygit
-scoop install wget #install wget to download wget
+scoop install aria2 #install aria2 to download wget
 scoop install 7zip #install 7zip to extract wpilib iso
 
 Write-Output "Downloading wpilib installer..."
 $wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 $wpilibFilename="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
-wget "$wpilibUrl"
+aria2 "$wpilibUrl"
 
 Write-Output "Extracting wpilib installer..."
 7z x -y -o".\$WPILIB_TYPE" ".\$wpilibFilename"
