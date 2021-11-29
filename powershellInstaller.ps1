@@ -50,4 +50,5 @@ if ( Test-Path "$HOME\Documents\lightning" ) {
 
 #run a gradle build in the lighning folder
 Write-Output "Building gradle..."
-Invoke-Expression "$HOME\Documents\lightning\gradlew build"
+Start-Process -FilePath "$HOME\Documents\lightning\gradlew" -ArgumentList "build"  -Wait -NoNewWindow
+#Invoke-Expression "$HOME\Documents\lightning\gradlew build"
