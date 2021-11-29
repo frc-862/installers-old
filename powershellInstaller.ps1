@@ -36,7 +36,7 @@ Write-Output "Extracting wpilib installer..."
 7z x -y -o".\$WPILIB_TYPE" ".\$wpilibFilename"
 
 Write-Output "Running wpilib installer"
-".\$WPILIB_TYPE\WPILibInstaller.exe"
+Invoke-Expression ".\$WPILIB_TYPE\WPILibInstaller.exe"
 
 Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
