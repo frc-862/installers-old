@@ -2,8 +2,8 @@
 $WPILIB_VERSION="2021.3.1"
 $WPILIB_TYPE="Windows64"
 $WPILIB_EXTENSION="iso"
-$wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
-$wpilibFilename="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
+$WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
+$WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 
 #check if scoop is installed
 if ( Test-Path "$HOME\scoop\shims\scoop" ) {
@@ -29,14 +29,14 @@ scoop install lazygit
 scoop install aria2 #install aria2 to download wget
 scoop install 7zip #install 7zip to extract wpilib iso
 
-if ( -not (Test-Path ".\$wpilibFilename") ) {
+if ( -not (Test-Path ".\$WPILIB_FILENAME") ) {
     Write-Output "Downloading wpilib installer..."
-    aria2c "$wpilibUrl"
+    aria2c "$WPILIB_URL"
 }
 
 if ( -not (Test-Path ".\$WPILIB_TYPE") ) {
     Write-Output "Extracting wpilib installer..."
-    7z x -y -o".\$WPILIB_TYPE" ".\$wpilibFilename"
+    7z x -y -o".\$WPILIB_TYPE" ".\$WPILIB_FILENAME"
 }
 
 Write-Output "Running wpilib installer"
