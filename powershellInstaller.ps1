@@ -25,8 +25,14 @@ scoop install wget
 scoop install 7zip
 
 $wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$wpilibVersion/WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
-#$wpilibFilename="WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
+$wpilibFilename="WPILib_$wpilibType-$wpilibVersion.$wpilibExtension"
 wget "$wpilibUrl"
+
+Write-Output "Extracting wpilib installer..."
+7z x -y -o".\$wpilibType" ".\$wpilibFilename"
+
+Write-Output "Running wpilib installer"
+".\$wpilibType/WPILibInstaller.exe"
 
 Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
