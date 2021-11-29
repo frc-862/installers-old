@@ -41,7 +41,6 @@ if ( -not (Test-Path ".\$WPILIB_TYPE") ) {
 
 Write-Output "Running wpilib installer"
 Start-Process -FilePath ".\$WPILIB_TYPE\WPILibInstaller.exe" -ArgumentList "build"  -Wait -NoNewWindow
-Pause
 
 Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
