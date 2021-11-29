@@ -4,7 +4,7 @@ $WPILIB_TYPE="Windows64"
 $WPILIB_EXTENSION="iso"
 
 #check if scoop is installed
-if ( Test-Path -Path "$HOME\scoop\shims\scoop" -PathType Container ) {
+if ( Test-Path "$HOME\scoop\shims\scoop" ) {
     #if it is, continue
     Write-Output "Existing Scoop installation found."
 } else {
@@ -42,7 +42,7 @@ Pause
 Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
 #clone lighning into ~/Documents/lighning
-if ( Test-Path -Path "$HOME\Documents\lightning" -PathType Container ) {
+if ( Test-Path "$HOME\Documents\lightning" ) {
     git -C "$HOME/Documents/lightning" pull
 } else {
     git clone "https://github.com/frc-862/lightning.git" "$HOME\Documents\lightning"
