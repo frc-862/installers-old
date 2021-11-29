@@ -30,7 +30,7 @@ scoop install 7zip #install 7zip to extract wpilib iso
 Write-Output "Downloading wpilib installer..."
 $wpilibUrl="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 $wpilibFilename="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
-aria2 "$wpilibUrl"
+aria2c "$wpilibUrl"
 
 Write-Output "Extracting wpilib installer..."
 7z x -y -o".\$WPILIB_TYPE" ".\$wpilibFilename"
