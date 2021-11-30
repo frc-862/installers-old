@@ -227,7 +227,7 @@ if [ -d "$HOME/Documents/lightning" ] ; then
 else
     ok "no lightning code detected\ncloning new code..."
     #check if ssh is set up
-    if [ -f "$HOME/.ssh/id_ed25519" ] ; then
+    if [[ "$(ssh -o StrictHostKeyChecking=no git@github.com &> /dev/stdout)" == *"success"* ]] ; then
         git clone "git@github.com:frc-862/lightning.git" "$HOME/Documents/lightning"
     else
         git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
