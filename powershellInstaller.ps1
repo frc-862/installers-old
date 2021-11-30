@@ -6,13 +6,14 @@ $WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB
 $WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 
 #check if scoop is installed
-if ( Test-Path "$HOME\scoop\shims\scoop" ) {
+if ( Test-Path "$HOME/scoop/shims/scoop" ) {
     #if it is, continue
     Write-Output "Existing Scoop installation found."
 } else {
     Write-Output "Scoop Not found. Installing now."
     #if it isn't, get the install script from the scoop website
-    Invoke-WebRequest -useb "https://get.scoop.sh" | Invoke-Expression
+    aria2c --auto-file-renaming=false "https://raw.githubusercontent.com/lukesampson/scoop/master/bin/install.ps1"
+    & "$PSScriptRoot/install.ps1"
 }
 
 #install git in order to allow updating scoop
@@ -29,28 +30,28 @@ scoop install lazygit
 scoop install aria2 #install aria2 to download wget
 scoop install 7zip #install 7zip to extract wpilib iso
 
-if ( -not (Test-Path ".\$WPILIB_FILENAME") ) {
+if ( -not (Test-Path "$PSScriptRoot/$WPILIB_FILENAME") ) {
     Write-Output "Downloading wpilib installer..."
     aria2c --auto-file-renaming=false "$WPILIB_URL"
 }
 
-if ( -not (Test-Path ".\$WPILIB_TYPE") ) {
+if ( -not (Test-Path "$PSScriptRoot/$WPILIB_TYPE") ) {
     Write-Output "Extracting wpilib installer..."
-    7z x -y -o".\$WPILIB_TYPE" ".\$WPILIB_FILENAME"
+    7z x -y -o"$PSScriptRoot/$WPILIB_TYPE" "$PSScriptRoot/$WPILIB_FILENAME"
 }
 
 Write-Output "Running wpilib installer"
-Start-Process -FilePath ".\$WPILIB_TYPE\WPILibInstaller.exe" -ArgumentList "build"  -Wait -NoNewWindow
+& "$PSScriptRoot/$WPILIB_TYPE/WPILibInstaller.exe"
 
-Write-Output "Cloning lightning source code over https into $HOME\Documents\lightning"
+Write-Output "Cloning lightning source code over https into $HOME/Documents/lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
 #clone lighning into ~/Documents/lighning
-if ( Test-Path "$HOME\Documents\lightning" ) {
+if ( Test-Path "$HOME/Documents/lightning" ) {
     git -C "$HOME/Documents/lightning" pull
 } else {
-    git clone "https://github.com/frc-862/lightning.git" "$HOME\Documents\lightning"
+    git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
 }
 
 #run a gradle build in the lighning folder
 Write-Output "Building gradle..."
-Start-Process -FilePath "$HOME\Documents\lightning\gradlew.bat" -ArgumentList "build"  -Wait -NoNewWindow
+& "$HOME/Documents/lightning/gradlew.bat" "build"
