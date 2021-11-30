@@ -31,7 +31,7 @@ scoop install 7zip #install 7zip to extract wpilib iso
 
 if ( -not (Test-Path ".\$WPILIB_FILENAME") ) {
     Write-Output "Downloading wpilib installer..."
-    aria2c "$WPILIB_URL"
+    aria2c --auto-file-renaming=false "$WPILIB_URL"
 }
 
 if ( -not (Test-Path ".\$WPILIB_TYPE") ) {
