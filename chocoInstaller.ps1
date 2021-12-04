@@ -15,17 +15,18 @@ choco install frc-radioconfigurationutility ctre-phoenixframework -y
 
 
 refreshenv
-. $Profile
 
 Write-Output "Cloning lightning source code over https into $HOME/Documents/lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
 #clone lighning into ~/Documents/lighning
 if ( Test-Path "$HOME/Documents/lightning" ) {
-    git -C "$HOME/Documents/lightning" pull
+    # manually call git because git doesn't get added to path automatically even with refreshenv
+    & "C:\Program Files\Git\cmd\git" "-C" "$HOME/Documents/lightning" "pull"
 } else {
-    git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
+    & "C:\Program Files\Git\cmd\git" "clone" "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
 }
 
 #run a gradle build in the lighning folder
 Write-Output "Building gradle..."
+$env:JAVA_HOME = 'C:\Program Files\OpenJDK\openjdk-11.0.13_8'
 & "$HOME/Documents/lightning/gradlew.bat" "build"
