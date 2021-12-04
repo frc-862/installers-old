@@ -1,21 +1,26 @@
 
 #Install Chocolatey
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-choco install git
+choco install git -y
 
-choco install lazygit
+choco install lazygit -y
+
+choco install openjdk11 -y
 
 #Install NI game tools (driver station, rio imager, etc.)
-choco install ni-frcgametools -y
+#choco install ni-frcgametools -y
 
 #Install WPLIB
-choco install wpilib -y --params="'/ProgrammingLanguage:java /AllowUserInteraction:true'"
+choco install wpilib -y --params="'/ProgrammingLanguage:java'"#/AllowUserInteraction:true
 
-choco install frc-radioconfigurationutility
+#choco install frc-radioconfigurationutility -y
 
-choco install ctre-phoenixframework
+choco install ctre-phoenixframework -y
 
+
+refreshenv
 
 Write-Output "Cloning lightning source code over https into $HOME/Documents/lightning"
 Write-Output "Note: you will need to clone over ssh if you want to contribute code"
