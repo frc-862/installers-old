@@ -245,7 +245,7 @@ fi
 
 #Check if user has a properly set up gradle.properties file
 if [ -f "$HOME/.gradle/gradle.properties" ] ; then
-    if [[ "$(<$HOME/.gradle/gradle.properties)" == *"gpr.key"*"gpr.user"* ]] || [[ "$(<$HOME/.gradle/gradle.properties)" == *"gpr.user"*"gpr.key"* ]] ; then
+    if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] || [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
         ok "gradle.properties properly configured"
     else
         warn "gradle.properties missing one or more required values"
