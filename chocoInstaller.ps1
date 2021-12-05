@@ -1,17 +1,17 @@
 #Install Chocolatey
-Write-Output "Installing Chocolatey..."
+Write-Host "Installing Chocolatey..." -ForegroundColor Green
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 #Install specified packages, in order
-Write-Output "Installing packages..."
+Write-Host "Installing packages..." -ForegroundColor Green
 choco install -y git lazygit openjdk11 ni-frcgametools wpilib frc-radioconfigurationutility ctre-phoenixframework
 
 refreshenv
 
-Write-Output "Cloning lightning source code over https into $HOME/Documents/lightning"
-Write-Output "Note: you will need to clone over ssh if you want to contribute code"
+Write-Host "Cloning lightning source code over https into $HOME/Documents/lightning" -ForegroundColor Green
+Write-Host "Note: you will need to clone over ssh if you want to contribute code" -ForegroundColor Yellow
 
 if ( Test-Path "$HOME/Documents/lightning" ) {
     # manually call git's path because git doesn't get added to path automatically even with refreshenv
@@ -22,6 +22,6 @@ if ( Test-Path "$HOME/Documents/lightning" ) {
 }
 
 #run a gradle build in the lighning folder
-Write-Output "Building gradle..."
+Write-Host "Building gradle..." -ForegroundColor Green
 $env:JAVA_HOME = 'C:\Program Files\OpenJDK\openjdk-11.0.13_8'
 & "$HOME/Documents/lightning/gradlew.bat" "build"
