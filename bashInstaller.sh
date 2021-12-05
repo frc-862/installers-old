@@ -243,6 +243,17 @@ else
     esac
 fi
 
+#Check if user has a properly set up gradle.properties file
+if [ -f "$HOME/.gradle/gradle.properties" ] ; then
+    if [[ "$(<$HOME/.gradle/gradle.properties)" == *"gpr.key"*"gpr.user"* ]] || [[ "$(<$HOME/.gradle/gradle.properties)" == *"gpr.user"*"gpr.key"* ]] ; then
+        ok "gradle.properties properly configured"
+    else
+        warn "gradle.properties missing one or more required values"
+    fi
+else
+    warn "no gradle.properties file found"
+fi
+
 #build lightning repo
 ok "building gradle..."
 "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
