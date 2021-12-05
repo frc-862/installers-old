@@ -1,57 +1,28 @@
-#define constants
-$WPILIB_VERSION="2021.3.1"
-$WPILIB_TYPE="Windows64"
-$WPILIB_EXTENSION="iso"
-$WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
-$WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
+#Install Chocolatey
+Write-Host "Installing Chocolatey..." -ForegroundColor Green
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-#check if scoop is installed
-if ( Test-Path "$HOME/scoop/shims/scoop" ) {
-    #if it is, continue
-    Write-Output "Existing Scoop installation found."
-} else {
-    Write-Output "Scoop Not found. Installing now."
-    #if it isn't, get the install script from the scoop website
-    aria2c --auto-file-renaming=false "https://raw.githubusercontent.com/lukesampson/scoop/master/bin/install.ps1"
-    & "$PSScriptRoot/install.ps1"
-}
+#Install specified packages, in order
+Write-Host "Installing packages..." -ForegroundColor Green
+#thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
+choco install -y git lazygit openjdk11 ni-frcgametools wpilib frc-radioconfigurationutility ctre-phoenixframework
 
-#install git in order to allow updating scoop
-Write-Output "Installing git..."
-scoop install git
-#update scoop
-Write-Output "Updating Scoop..."
-scoop update
-#add extras bucket for lazygit
-Write-Output "Installing scoop buckets..."
-scoop bucket add extras
-Write-Output "Installing lazygit, wget, and 7zip..."
-scoop install lazygit
-scoop install aria2 #install aria2 to download wget
-scoop install 7zip #install 7zip to extract wpilib iso
+refreshenv
 
-if ( -not (Test-Path "$PSScriptRoot/$WPILIB_FILENAME") ) {
-    Write-Output "Downloading wpilib installer..."
-    aria2c --auto-file-renaming=false "$WPILIB_URL"
-}
+Write-Host "Cloning lightning source code over https into $HOME/Documents/lightning" -ForegroundColor Green
+Write-Host "Note: you will need to clone over ssh if you want to contribute code" -ForegroundColor Yellow
 
-if ( -not (Test-Path "$PSScriptRoot/$WPILIB_TYPE") ) {
-    Write-Output "Extracting wpilib installer..."
-    7z x -y -o"$PSScriptRoot/$WPILIB_TYPE" "$PSScriptRoot/$WPILIB_FILENAME"
-}
-
-Write-Output "Running wpilib installer"
-& "$PSScriptRoot/$WPILIB_TYPE/WPILibInstaller.exe"
-
-Write-Output "Cloning lightning source code over https into $HOME/Documents/lightning"
-Write-Output "Note: you will need to clone over ssh if you want to contribute code"
-#clone lighning into ~/Documents/lighning
 if ( Test-Path "$HOME/Documents/lightning" ) {
-    git -C "$HOME/Documents/lightning" pull
+    # manually call git's path because git doesn't get added to path automatically even with refreshenv
+    & "C:\Program Files\Git\cmd\git" "-C" "$HOME/Documents/lightning" "pull"
 } else {
-    git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
+    #clone lighning into ~/Documents/lighning
+    & "C:\Program Files\Git\cmd\git" "clone" "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
 }
 
 #run a gradle build in the lighning folder
-Write-Output "Building gradle..."
+Write-Host "Building gradle..." -ForegroundColor Green
+$env:JAVA_HOME = 'C:\Program Files\OpenJDK\openjdk-11.0.13_8'
 & "$HOME/Documents/lightning/gradlew.bat" "build"
