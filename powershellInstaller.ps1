@@ -7,7 +7,7 @@ Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://com
 #Install specified packages, in order
 Write-Host "Installing packages..." -ForegroundColor Green
 #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-choco install -y git lazygit openjdk11 ni-frcgametools wpilib frc-radioconfigurationutility ctre-phoenixframework
+choco install -y git openjdk11 wpilib lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility
 
 refreshenv
 
