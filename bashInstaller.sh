@@ -131,11 +131,12 @@ elif has choco ; then
     }
 
     installReqs() {
-        choco install git openjdk11 wpilib;
+        choco install openjdk11 wpilib;
         refreshenv;
     }
 
     installOpts() {
+        #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
         choco install lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility;
         refreshenv;
     }
