@@ -35,20 +35,19 @@ fi
 case $OS in
 
     "Linux")
+        NEEDS_WPILIB_DOWNLOAD=true
         WPILIB_TYPE="Linux"
         WPILIB_EXTENSION="tar.gz" ;;
 
     "Darwin")
+        NEEDS_WPILIB_DOWNLOAD=true
         WPILIB_TYPE="macOS"
         WPILIB_EXTENSION="dmg" ;;
 
-    *"MINGW64"*)
-        WPILIB_TYPE="Windows64"
-        WPILIB_EXTENSION="iso" ;;
-
     *"MINGW"*)
-        WPILIB_TYPE="Windows32"
-        WPILIB_EXTENSION="iso" ;;
+        NEEDS_WPILIB_DOWNLOAD=false
+        WPILIB_TYPE=""
+        WPILIB_EXTENSION="" ;;
 
 esac
 
@@ -125,26 +124,21 @@ elif has pacman ; then
 
     PKG_MANAGER="pacman"
 
-elif has scoop ; then
+elif has choco ; then
 
     update() {
-        scoop install git;
-        scoop update;
+        choco upgrade all;
     }
 
     installReqs() {
-        scoop install git;
-        scoop bucket add java;
-        scoop install wget;
-        scoop install 7zip; #7zip is required to extract windows iso
+        choco install git openjdk11 wpilib;
     }
 
     installOpts() {
-        scoop bucket add extras;
-        scoop install lazygit;
+        choco install lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility;
     }
 
-    PKG_MANAGER="scoop"
+    PKG_MANAGER="chocolatey"
 
 else
     error "no supported package manager found\ntry verifying that one is installed and in your PATH"
@@ -180,34 +174,30 @@ case $installExitCode in
     *)  warn "installOpts failed with exit code $installExitCode" #don't exit if installOpts fails, as the build can still work
 esac
 
-ok "downloading wpilib installer..."
-if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded
-    wget "$WPILIB_URL" -O "$WPILIB_FILENAME"
+if [ $NEEDS_WPILIB_DOWNLOAD ] ; then
+    ok "downloading wpilib installer..."
+    if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
+        wget "$WPILIB_URL" -O "$WPILIB_FILENAME"
+    fi
+
+    case $WPILIB_EXTENSION in #different methods for installing and running each archive
+        "dmg")
+            ok "Mounting wpilib installer..."
+            hdiutil attach -readonly "./$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
+
+            ok "Launching wpilib installer..."
+            /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
+
+            ok "Unmounting wpilib installer..."
+            hdiutil detach /Volumes/WPILibInstaller ;;
+        "tar.gz")
+            ok "extracting wpilib installer..."
+            tar -xvzf "./$WPILIB_FILENAME" #.tar.gz can be extracted using tar
+
+            ok "launching wpilib installer..."
+            "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
+    esac
 fi
-
-case $WPILIB_EXTENSION in #different methods for installing and running each archive
-    "dmg")
-        ok "Mounting wpilib installer..."
-        hdiutil attach -readonly "./$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
-
-        ok "Launching wpilib installer..."
-        /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
-
-        ok "Unmounting wpilib installer..."
-        hdiutil detach /Volumes/WPILibInstaller ;;
-    "tar.gz")
-        ok "extracting wpilib installer..."
-        tar -xvzf "./$WPILIB_FILENAME" #.tar.gz can be extracted using tar
-
-        ok "launching wpilib installer..."
-        "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
-    "iso")
-        ok "extracting wpilib installer..."
-        7z x -y -o"./$WPILIB_TYPE" "./$WPILIB_FILENAME" #iso can be extracted with 7zip
-
-        ok "launching wpilib installer..."
-        "./$WPILIB_TYPE/WPILibInstaller.exe" ;;
-esac
 
 #clone lightning repo
 ok "cloning lightning source code into $HOME/Documents/"
