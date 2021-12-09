@@ -132,10 +132,12 @@ elif has choco ; then
 
     installReqs() {
         choco install git openjdk11 wpilib;
+        refreshenv;
     }
 
     installOpts() {
         choco install lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility;
+        refreshenv;
     }
 
     PKG_MANAGER="chocolatey"
