@@ -9,4 +9,4 @@ Write-Host "Installing git..." -ForegroundColor Green
 choco install -y git
 refreshenv
 
-& sh --login -i -c "./bashInstaller.sh"
+& git-bash --login -i -c "./bashInstaller.sh"
