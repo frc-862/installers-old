@@ -9,4 +9,4 @@ Write-Host "Installing git..." -ForegroundColor Green
 choco install -y git
 refreshenv
 
-& "$Env:Programfiles\git\cmd\git-bash.exe" --login -i -c "./bashInstaller.sh"
+& "$Env:Programfiles\git\git-bash.exe" --login -i -c "./bashInstaller.sh"
