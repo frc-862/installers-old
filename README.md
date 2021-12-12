@@ -1,20 +1,43 @@
 # FRC Installers
 
-These scripts are installing essential packages to be able to develop code for [FRC](https://www.firstinspires.org/robotics/frc).
+These scripts can be used to install the essential software for [FRC](https://www.firstinspires.org/robotics/frc) code development.
 
-## Dependencies
+# Dependencies
 
-You will need to install one of the following:  
-[bash](https://www.gnu.org/software/bash/) (Linux, Macos, Windows, etc.)  
-[PowerShell](https://github.com/PowerShell/PowerShell) (Windows only, version >= 5.0)
+- Unix based systems:
+    - [bash](https://www.gnu.org/software/bash/) (works in git bash also)
+    - [curl]((https://www.tecmint.com/install-curl-in-linux/))
+     - Administrator priveleges
+- Windows:
+    - [PowerShell](https://github.com/PowerShell/PowerShell) (v2 or higher)
+    - [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework) (version ≥ 4)
+    - Administrator priveleges
 
-## Installation Instructions
+# Included Packages
+
+Name | Use
+--- | ---
+[Visual Studio Code](https://code.visualstudio.com/) | An editor to develop code efficiently.
+[git](https://git-scm.com/) | The version control system that we use to manage all of our code.
+[openjdk11](https://openjdk.java.net/projects/jdk/11/) | The language we use to write our code.
+[WPILib (extension)](https://wpilib.org/) | An extension for Visual Studio Code that makes working on WPILib projects easier.
+[Java Extension Pack (extension)](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) | Contains several extensions that make writing java code much easier.
+[brew (Mac)](https://brew.sh/) | A package manager that makes installing software a lot easier.
+[chocolatey (Windows)](https://chocolatey.org/) | Another package manager but for windows.
+[gradle](https://gradle.org/) | An open-source build system for java we use to manage dependencies.
+[lazygit](https://github.com/jesseduffield/lazygit) | A TUI that makes version control with git a whole lot easier.
+
+
+At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `~/Documents/lightning`
+
+Finally, the script builds the lightning repository. If any errors occur feel free to make a JIRA ticket or put a note on discord, and someone will help you out.
+
+# Installation Instructions
 
 To install, you can either clone this repository and run the scripts directly or run the following commands.
 
-### Windows 10 and 11
-
-To run the script, you are required to have Administrative permissions.  
+## Windows 10 and 11
+ 
 Start by opening powershell as an administrator.  
 Then, run
 ```PowerShell
@@ -24,21 +47,20 @@ and then
 ```PowerShell
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/powershellInstaller.ps1" -OutFile ".\install.ps1"; .\install.ps1; rm .\install.ps1
 ```
-The powershell installer has a built-in macro that automatically runs through the WPILib Installer, so you can skip past the WPILib installer window.  
-On a similar note, you should leave the computer alone while running the script, as to not mess up the macro.
+The powershell installer has a built-in macro that automatically clicks through the WPILib, NI, phoenix, and radio configuration installers, so you should leave the computer alone while running the script.
 
-### Linux, Mac OS, etc
+The only time you may need to click is during the phoenix install, where you will need to press the `install` button on a pop up.
+
+## Unix Based Systems
 
 For systems with bash, use the `bashInstaller.sh` script.  
-You may need to install `curl`. Follow [this guide](https://www.tecmint.com/install-curl-in-linux/).
 
 ```bash
 bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh)
 ```
 
-## WPILib Install Proccess (NOTE: Non-Windows Only)
-After the installer downloads the WPILib installer, (this can take several minutes on slower connections) a new window  launches that will look something like this:  
-
+### WPILib Install Proccess
+After the installer downloads the WPILib installer, (this can take several minutes on slower connections) a new window will launch that will look something like this:  
 ![wpilib1.png](https://github.com/frc-862/installers/raw/main/assets/wpilib1.png)
 
 Press start, and you will see the vscode install screen:  
@@ -61,7 +83,7 @@ If nothing goes wrong, you should see a screen like this:
 
 Press Finish, and the installer script will continue.
 
-## GPR Key
+# GPR Key
 Some of our robot projects depend on [lightning](https://github.com/frc-862/lightning), which is published on the GitHub Package Registry (we will just call this the "gpr"). Unfortunately, the gpr requires authentication to use public repositories (not sure why, or when this will change). There are instructions for how to set this up below.
 
 To begin, open settings after clicking on your profile picture.  
@@ -89,7 +111,7 @@ gpr.key=KEY
 Where `USERNAME` is your GitHub Username, and `KEY` is the key you got earlier.  
 Save the file and you should be able to build other repositories now. As always, feel free to make a JIRA ticket if you have any issues.
 
-## SSH Key Instructions
+# SSH Key Instructions
 
 An SSH Key is required to contribute code.
 
@@ -97,24 +119,3 @@ Instructions to create an SSH key are located at the [GitHub Docs](https://docs.
 
 Note: Make sure to clone repositories through SSH instead of HTTPS.  
 The repository address will look something like `git@github.com:USER/REPO.git` (SSH) as opposed to `https://github.com/USER/REPO.git` (HTTPS).
-
-## Included Packages
-
-Name | Use
---- | ---
-[Visual Studio Code](https://code.visualstudio.com/) | An editor to develop code efficiently.
-[git](https://git-scm.com/) | The version control system that we use to manage all of our code.
-[openjdk11](https://openjdk.java.net/projects/jdk/11/) | The language we use to write our code.
-[WPILib (extension)](https://wpilib.org/) | An extension for Visual Studio Code that makes working on WPILib projects easier.
-[Java Extension Pack (extension)](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) | Contains several extensions that make writing java code much easier.
-[brew (Mac)](https://brew.sh/) | A package manager that makes installing software a lot easier.
-[chocolatey (Windows)](https://chocolatey.org/) | Another package manager but for windows.
-[gradle](https://gradle.org/) | An open-source build system for java we use to manage dependencies.
-[lazygit](https://github.com/jesseduffield/lazygit) | A TUI that makes version control with git a whole lot easier.
-
-
-At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `~/Documents/lightning`
-
-Finally, the script builds the lightning repository. If any errors occur feel free to make a JIRA ticket or put a note on discord, and someone will help you out.
-
-If no errors occur, you have installed all the necessary applications/packages to build FRC code
