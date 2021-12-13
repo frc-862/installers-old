@@ -5,16 +5,15 @@ These scripts can be used to install the essential software for [FRC](https://ww
 # Table of Contents
 - [Dependencies](#Dependencies)
 - [Included Packages](#Included-Packages)
-- [Installation Insructions](#Installation-Instructions)
-    - [Windows 10 and 11](#Windows-10-and-11)
-    - [Unix Based Systems](#Unix-Based-Systems)
-        - [WPILib Install Proccess](#WPILib-Install-Proccess)
+- [Windows Installation](#Windows-Installation)
+- [Unix Installation](#Unix-Intallation)
+    - [WPILib Install Proccess](#WPILib-Install-Proccess)
 - [GPR Key Instructions](#GPR-Key-Instructions)
 - [SSH Key Instructions](#SSH-Key-Instructions)
 
 # Dependencies
 
-- Unix based systems:
+- Unix:
     - [bash](https://www.gnu.org/software/bash/) (works in git bash also)
     - [curl]((https://www.tecmint.com/install-curl-in-linux/))
      - Administrator priveleges
@@ -42,11 +41,7 @@ At the end of all the installations, the script clones the [lightning](https://g
 
 Finally, the script builds the lightning repository. If any errors occur feel free to make a JIRA ticket or put a note on discord, and someone will help you out.
 
-# Installation Instructions
-
-To install, you can either clone this repository and run the scripts directly or run the following commands.
-
-## Windows 10 and 11
+# Windows Installation
  
 Start by opening powershell as an administrator.  
 Then, run
@@ -61,7 +56,7 @@ The powershell installer has a built-in macro that automatically clicks through 
 
 The only time you may need to click is during the phoenix install, where you will need to press the `install` button on a pop up.
 
-## Unix Based Systems
+## Unix Installation
 
 For systems with bash, use the `bashInstaller.sh` script.  
 
