@@ -2,6 +2,16 @@
 
 These scripts can be used to install the essential software for [FRC](https://www.firstinspires.org/robotics/frc) code development.
 
+# Table of Contents
+- [Dependencies](#Dependencies)
+- [Included Packages](#Included-Packages)
+- [Installation Insructions](#Installation-Instructions)
+    - [Windows 10 and 11](#Windows-10-and-11)
+    - [Unix Based Systems](#Unix-Based-Systems)
+        - [WPILib Install Proccess](#WPILib-Install-Proccess)
+- [GPR Key Instructions](#GPR-Key-Instructions)
+- [SSH Key Instructions](#SSH-Key-Instructions)
+
 # Dependencies
 
 - Unix based systems:
@@ -83,7 +93,7 @@ If nothing goes wrong, you should see a screen like this:
 
 Press Finish, and the installer script will continue.
 
-# GPR Key
+# GPR Key Instructions
 Some of our robot projects depend on [lightning](https://github.com/frc-862/lightning), which is published on the GitHub Package Registry (we will just call this the "gpr"). Unfortunately, the gpr requires authentication to use public repositories (not sure why, or when this will change). There are instructions for how to set this up below.
 
 To begin, open settings after clicking on your profile picture.  
