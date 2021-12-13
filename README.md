@@ -3,7 +3,9 @@
 These scripts can be used to install the essential software for [FRC](https://www.firstinspires.org/robotics/frc) code development.
 
 # Table of Contents
-- [Dependencies](#Dependencies)
+- [What You Need](#What-You-Need)
+    - [Unix](#Unix:)
+    - [Windows:](#Windows:)
 - [Included Packages](#Included-Packages)
 - [Windows Installation](#Windows-Installation)
 - [Unix Installation](#Unix-Intallation)
@@ -11,16 +13,26 @@ These scripts can be used to install the essential software for [FRC](https://ww
 - [GPR Key Instructions](#GPR-Key-Instructions)
 - [SSH Key Instructions](#SSH-Key-Instructions)
 
-# Dependencies
+# What You Need
 
-- Unix:
+## Unix:
+
+- Software:
     - [bash](https://www.gnu.org/software/bash/) (works in git bash also)
     - [curl]((https://www.tecmint.com/install-curl-in-linux/))
-     - Administrator priveleges
-- Windows:
+    - Administrator priveleges
+- Hardware:
+    - Hey kyle could you fill out this plz thx
+
+## Windows:
+
+- Software:
     - [PowerShell](https://github.com/PowerShell/PowerShell) (v2 or higher)
     - [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework) (version ≥ 4)
     - Administrator priveleges
+- Hardware
+    - 8-10 minutes of free time (may vary based on internet speed)
+    - Hey kyle could you fill out this plz thx
 
 # Included Packages
 
