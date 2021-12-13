@@ -4,8 +4,8 @@ These scripts can be used to install the essential software for [FRC](https://ww
 
 # Table of Contents
 - [What You Need](#What-You-Need)
-    - [Unix](#Unix:)
-    - [Windows:](#Windows:)
+    - [Unix](#Unix-Requirements)
+    - [Windows](#Windows-Requirements)
 - [Included Packages](#Included-Packages)
 - [Windows Installation](#Windows-Installation)
 - [Unix Installation](#Unix-Intallation)
@@ -15,7 +15,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
 
 # What You Need
 
-## Unix:
+## Unix Requirements
 
 - Software:
     - [bash](https://www.gnu.org/software/bash/) (works in git bash also)
@@ -24,7 +24,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
 - Hardware:
     - Hey kyle could you fill out this plz thx
 
-## Windows:
+## Windows Requirements
 
 - Software:
     - [PowerShell](https://github.com/PowerShell/PowerShell) (v2 or higher)
