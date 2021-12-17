@@ -8,7 +8,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
     - [Windows Requirements](#Windows-Requirements)
 - [Included Packages](#Included-Packages)
 - [Windows Installation](#Windows-Installation)
-- [Unix Installation](#Unix-Intallation)
+- [Unix Installation](#Unix-Installation)
     - [WPILib Install Proccess](#WPILib-Install-Proccess)
 - [GPR Key Instructions](#GPR-Key-Instructions)
 - [SSH Key Instructions](#SSH-Key-Instructions)
