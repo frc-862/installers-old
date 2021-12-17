@@ -1,12 +1,3 @@
-#Check elevation and powershell ver first
-#requires -version 4.0
-#requires -RunAsAdministrator
-Write-Host "PS Version and Admin Permissions passed" -ForegroundColor DarkBlue
-
-# Pre-install warning/starting
-Write-Host "Starting install (check back here in about 10 minutes)..." -ForegroundColor DarkGreen
-Write-Host "Please do not touch or terminate this install (a macro is setup to do everything for you)" -ForegroundColor DarkRed
-
 #Install Chocolatey
 Write-Host "Installing Chocolatey..." -ForegroundColor Green
 
