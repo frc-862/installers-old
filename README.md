@@ -9,7 +9,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
 - [Included Packages](#Included-Packages)
 - [Windows Installation](#Windows-Installation)
 - [Unix Installation](#Unix-Installation)
-    - [WPILib Install Proccess](#WPILib-Install-Proccess)
+    - [WPILib Install Proccess](#WPILib-Install-Process)
 - [GPR Key Instructions](#GPR-Key-Instructions)
 - [SSH Key Instructions](#SSH-Key-Instructions)
 
@@ -20,7 +20,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
 - Software:
     - [bash](https://www.gnu.org/software/bash/) (works in git bash also)
     - [curl]((https://www.tecmint.com/install-curl-in-linux/))
-    - Administrator priveleges
+    - Administrator privileges
 - Hardware:
     - Hey kyle could you fill out this plz thx
 
@@ -29,7 +29,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
 - Software:
     - [PowerShell](https://github.com/PowerShell/PowerShell) (v2 or higher)
     - [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework) (version ≥ 4)
-    - Administrator priveleges
+    - Administrator privileges
 - Hardware
     - 8-10 minutes of free time (may vary based on internet speed)
     - Hey kyle could you fill out this plz thx
