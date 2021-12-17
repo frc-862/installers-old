@@ -9,8 +9,7 @@ Write-Host "Please do not touch or terminate this install (a macro is setup to d
 
 #Install Chocolatey
 Write-Host "Installing Chocolatey..." -ForegroundColor Green
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 #Install specified packages, in order
