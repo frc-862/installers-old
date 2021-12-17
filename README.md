@@ -4,8 +4,8 @@ These scripts can be used to install the essential software for [FRC](https://ww
 
 # Table of Contents
 - [What You Need](#What-You-Need)
-    - [Unix](#Unix-Requirements)
-    - [Windows](#Windows-Requirements)
+    - [Unix Requirements](#Unix-Requirements)
+    - [Windows Requirements](#Windows-Requirements)
 - [Included Packages](#Included-Packages)
 - [Windows Installation](#Windows-Installation)
 - [Unix Installation](#Unix-Intallation)
@@ -36,6 +36,16 @@ These scripts can be used to install the essential software for [FRC](https://ww
 
 # Included Packages
 
+## Unix
+
+Name | Use
+--- | ---
+[git](https://git-scm.com/) | The version control system that we use to manage all of our code.
+wget | for some reason we don't use curl? will fix this soon
+tar | used to extract wpilib image
+lazygit | ubuntu only, a nice cui tool for working with git
+
+## Windows
 Name | Use
 --- | ---
 [Visual Studio Code](https://code.visualstudio.com/) | An editor to develop code efficiently.
