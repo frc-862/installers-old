@@ -138,7 +138,7 @@ elif has choco ; then
 
     installOpts() {
         #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-        choco install -y lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility;
+        choco install -y lazygit ni-frcgametools ctre-phoenixframework;
     }
 
     PKG_MANAGER="chocolatey"
