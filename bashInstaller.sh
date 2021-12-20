@@ -132,6 +132,7 @@ elif has choco ; then
 
     installReqs() {
         choco install -y openjdk11 wpilib;
+        export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
     }
 
     installOpts() {
