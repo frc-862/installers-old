@@ -17,6 +17,8 @@ WPILIB_VERSION="2021.3.1"
 # andset ROOT_STRING variable to the found command
 if [ "$OS" == "Darwin" ] ; then
     ok "no root privileges needed on macOS"
+elif [[ "$OS" == *"MINGW"* ]] ; then
+    ok "windows os detected"
 elif has sudo ; then
     ROOT_STRING="sudo"
     ok "using sudo ($(type -p $ROOT_STRING)) for root privileges"
