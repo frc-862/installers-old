@@ -128,9 +128,7 @@ elif has pacman ; then
 
 elif has choco ; then
 
-    update() {
-        choco upgrade all;
-    }
+    update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
 
     installReqs() {
         choco install -y openjdk11 wpilib;
