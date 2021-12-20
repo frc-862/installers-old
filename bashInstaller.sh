@@ -133,14 +133,12 @@ elif has choco ; then
     }
 
     installReqs() {
-        choco install openjdk11 wpilib;
-        refreshenv;
+        choco install -y openjdk11 wpilib;
     }
 
     installOpts() {
         #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-        choco install lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility;
-        refreshenv;
+        choco install -y lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility;
     }
 
     PKG_MANAGER="chocolatey"
