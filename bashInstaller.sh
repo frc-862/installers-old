@@ -17,6 +17,8 @@ WPILIB_VERSION="2021.3.1"
 # andset ROOT_STRING variable to the found command
 if [ "$OS" == "Darwin" ] ; then
     ok "no root privileges needed on macOS"
+elif [[ "$OS" == *"MINGW"* ]] ; then
+    ok "windows os detected"
 elif has sudo ; then
     ROOT_STRING="sudo"
     ok "using sudo ($(type -p $ROOT_STRING)) for root privileges"
@@ -126,18 +128,16 @@ elif has pacman ; then
 
 elif has choco ; then
 
-    update() {
-        choco upgrade all;
-    }
+    update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
 
     installReqs() {
-        choco install git openjdk11 wpilib;
-        refreshenv;
+        choco install -y openjdk11 wpilib;
+        export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
     }
 
     installOpts() {
-        choco install lazygit ni-frcgametools ctre-phoenixframework frc-radioconfigurationutility;
-        refreshenv;
+        #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
+        choco install -y lazygit ni-frcgametools ctre-phoenixframework;
     }
 
     PKG_MANAGER="chocolatey"
