@@ -29,7 +29,8 @@ elif [ "$EUID" -eq 0 ] ; then
     ROOT_STRING=""
     ok "using current user ($USER) for root privileges"
 else
-    error "no root privileges\ntry running this script as root and verifying that sudo/doas is installed and in your PATH"
+    error "no root privilege"
+    error "try running this script as root and verifying that sudo/doas is installed and in your PATH"
     exit 1
 fi
 
@@ -61,7 +62,7 @@ WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 if [ "$OS" == "Darwin" ] ; then
     # only install brew from scratch on mac
     if ! has brew ; then
-        ok "no brew installation detected\ninstalling brew..."
+        ok "no brew installation detected, installing brew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
     #define functions for each package manager
@@ -143,12 +144,12 @@ elif has choco ; then
     PKG_MANAGER="chocolatey"
 
 else
-    error "no supported package manager found\ntry verifying that one is installed and in your PATH"
+    error "no supported package manager found, try verifying that one is installed and in your PATH"
     exit 1
 fi
 
 #run the defined update, installReqs, and installOpts functions
-ok "$PKG_MANAGER installation detected\nupgrading $PKG_MANAGER..."
+ok "$PKG_MANAGER installation detected, upgrading $PKG_MANAGER..."
 update
 
 updateExitCode=$?
@@ -163,7 +164,7 @@ installReqs
 installExitCode=$?
 case $installExitCode in
     0)  ok "installReqs completed successfully" ;;
-    *)  error "installReqs failed with exit code $installExitCode\nplease open an issue on jira for assistance"
+    *)  error "installReqs failed with exit code $installExitCode. please open an issue on jira for assistance"
         exit $installExitCode ;; #exit if a non-0 exit code is recieved 
 esac
 
@@ -206,18 +207,18 @@ ok "cloning lightning source code into $HOME/Documents/"
 
 #check if lightning is already cloned
 if [ -d "$HOME/Documents/lightning" ] ; then
-    ok "lightning code detected\npulling latest version..."
+    ok "lightning code detected, pulling latest version..."
     git -C "$HOME/Documents/lightning" pull
 
     gitExitCode=$?
     case $gitExitCode in
         0)  ok "pull completed successfully" ;;
         *)
-            error "pull failed with exit code $gitExitCode\nplease open an issue on jira for assistance"
+            error "pull failed with exit code $gitExitCode. please open an issue on jira for assistance"
             exit $gitExitCode ;;
     esac
 else
-    ok "no lightning code detected\ncloning new code..."
+    ok "no lightning code detected, cloning new code..."
     #check if ssh is set up
     if [[ "$(ssh -o StrictHostKeyChecking=no git@github.com &> /dev/stdout)" == *"success"* ]] ; then
         git clone "git@github.com:frc-862/lightning.git" "$HOME/Documents/lightning"
@@ -230,7 +231,7 @@ else
     case $gitExitCode in
         0)  ok "pull completed successfully" ;;
         *)
-            error "clone failed with exit code $gitExitCode\nplease open an issue on jira for assistance"
+            error "clone failed with exit code $gitExitCode. please open an issue on jira for assistance"
             exit $gitExitCode ;;
     esac
 fi
@@ -259,5 +260,5 @@ fi
 buildExitCode=$?
 case $buildExitCode in
     0) ok "build completed successfully" ;;
-    *) error "build failed with exit code $buildExitCode\nplease open an issue on jira for assistance" ;;
+    *) error "build failed with exit code $buildExitCode. please open an issue on jira for assistance" ;;
 esac
