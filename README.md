@@ -31,7 +31,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
     - [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework) (version ≥ 4)
     - Administrator privileges
 - Hardware
-    - 8-10 minutes of free time (may vary based on internet speed)
+    - 10-30 minutes of free time (may vary based on internet speed)
     - Hey kyle could you fill out this plz thx
 
 # Included Packages
