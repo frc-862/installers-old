@@ -176,7 +176,7 @@ case $installExitCode in
     *)  warn "installOpts failed with exit code $installExitCode" #don't exit if installOpts fails, as the build can still work
 esac
 
-if [ $NEEDS_WPILIB_DOWNLOAD ] ; then
+if $NEEDS_WPILIB_DOWNLOAD ; then
     ok "downloading wpilib installer..."
     if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
         wget "$WPILIB_URL" -O "$WPILIB_FILENAME"
