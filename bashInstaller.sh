@@ -5,9 +5,9 @@
 has() { type -p "$1" &> /dev/null; }
 #Error, Warn, ok: print message in red, orange, or green text
 #use of a variable in printf fstring is intentional here
-error() { printf "\033[31mERROR: $1\n\033[39m"; }
-warn() { printf "\033[33mWARNING: $1\n\033[39m"; }
-ok() { printf "\033[32mOK: $1\n\033[39m"; }
+error() { printf "\033[91mERROR: $1\n\033[39m"; }
+warn() { printf "\033[93mWARNING: $1\n\033[39m"; }
+ok() { printf "\033[92mOK: $1\n\033[39m"; }
 
 #Define constants
 OS="$(uname -s)"
