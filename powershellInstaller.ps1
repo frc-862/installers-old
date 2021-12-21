@@ -17,7 +17,7 @@ Write-Host "Installing git..." -ForegroundColor DarkGreen
 choco install -y git
 refreshenv
 
-& "$Env:Programfiles\git\bin\bash.exe" --login -i -c "./bashInstaller.sh"
+& "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh"
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
 $env:JAVA_HOME = "C:\Program Files\OpenJDK\openjdk-11.0.13_8"
