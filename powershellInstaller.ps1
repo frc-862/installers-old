@@ -18,3 +18,6 @@ choco install -y git
 refreshenv
 
 & "$Env:Programfiles\git\bin\bash.exe" --login -i -c "./bashInstaller.sh"
+
+#Run build in powershell to avoid some weirdness with gradle's loading bar
+& "$HOME/Documents/lightning/gradlew.bat" "build"

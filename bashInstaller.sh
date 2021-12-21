@@ -248,6 +248,12 @@ fi
 
 #build lightning repo
 ok "building gradle..."
+
+#Don't run build if running from git bash inside powershell terminal, as gradle special characters won't work
+if [[ $OS == *"MINGW"* ]] && [ -n "$PSExecutionPolicyPreference" ] ; then
+    exit 0
+fi
+
 "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
 
 buildExitCode=$?
