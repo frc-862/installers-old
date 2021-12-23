@@ -86,6 +86,32 @@ if [ "$OS" == "Darwin" ] ; then
     #PKG_MANAGER: the name of the detected package manager
     PKG_MANAGER="brew"
 
+elif [[ $OS == *"MINGW"* ]] ; then
+
+    if ! has choco ; then
+        ok "no chocolatey installation detected, installing chocolatey..."
+        powershell.exe -ExecutionPolicy Bypass -NoProfile
+        #requires -version 4.0
+        #requires -RunAsAdministrator
+        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        choco install -y git
+        refreshenv
+
+    update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
+
+    installReqs() {
+        choco install -y openjdk11 wpilib;
+        export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
+    }
+
+    installOpts() {
+        #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
+        choco install -y lazygit ni-frcgametools ctre-phoenixframework;
+    }
+
+    PKG_MANAGER="chocolatey"
+
+
 elif has apt ; then
 
     update() {
@@ -126,22 +152,6 @@ elif has pacman ; then
     }
 
     PKG_MANAGER="pacman"
-
-elif has choco ; then
-
-    update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
-
-    installReqs() {
-        choco install -y openjdk11 wpilib;
-        export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
-    }
-
-    installOpts() {
-        #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-        choco install -y lazygit ni-frcgametools ctre-phoenixframework;
-    }
-
-    PKG_MANAGER="chocolatey"
 
 else
     error "no supported package manager found, try verifying that one is installed and in your PATH"
