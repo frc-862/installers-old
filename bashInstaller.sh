@@ -75,7 +75,7 @@ if [ "$OS" == "Darwin" ] ; then
 
     #installReqs: install required packages
     installReqs() {
-        brew install git wget;
+        brew install git;
     }
 
     #installOpts: install optional packages
@@ -123,7 +123,7 @@ elif has apt ; then
     }
 
     installReqs() {
-        $ROOT_STRING apt -y install git wget tar;
+        $ROOT_STRING apt -y install git curl tar;
     }
 
     if [ -f "/etc/ubuntu-release" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
@@ -147,7 +147,7 @@ elif has pacman ; then
     }
 
     installReqs() {
-        $ROOT_STRING pacman --noconfirm -S git wget tar;
+        $ROOT_STRING pacman --noconfirm -S git curl tar;
     }
 
     installOpts() {
@@ -193,7 +193,7 @@ esac
 if $NEEDS_WPILIB_DOWNLOAD ; then
     ok "downloading wpilib installer..."
     if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
-        wget "$WPILIB_URL" -O "$WPILIB_FILENAME"
+        curl "$WPILIB_URL" --output "$WPILIB_FILENAME"
     fi
 
     case $WPILIB_EXTENSION in #different methods for installing and running each archive

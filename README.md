@@ -19,7 +19,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
 
 - Software:
     - [bash](https://www.gnu.org/software/bash/) (works in git bash also)
-    - [curl]((https://www.tecmint.com/install-curl-in-linux/))
+    - [curl]((https://curl.se/download.html))
     - Administrator privileges
 - Hardware:
     - Hey kyle could you fill out this plz thx
@@ -41,9 +41,9 @@ These scripts can be used to install the essential software for [FRC](https://ww
 Name | Use
 --- | ---
 [git](https://git-scm.com/) | The version control system that we use to manage all of our code.
-wget | for some reason we don't use curl? will fix this soon
-tar | used to extract wpilib image
-lazygit | ubuntu only, a nice cui tool for working with git
+[curl](https://curl.se/download.html) | A common utility used in command lines or scripts to transfer data.
+[tar](https://www.gnu.org/software/tar/) | used to extract wpilib image
+[lazygit](https://github.com/jesseduffield/lazygit) | ubuntu only, a nice cui tool for working with git
 
 ## Windows
 Name | Use
