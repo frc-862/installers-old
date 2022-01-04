@@ -1,7 +1,24 @@
+# Define script parameters -> Ex. '.\script.ps1 -doMacro 0'
+# Many params do not work, they are just defined here for future implemenation
+param (
+    [string]$chocoPath = "C:\ProgramData\chocolatey",
+    [switch]$noMacro = $false
+)
+
 #Check elevation and powershell ver first
 #requires -version 4.0
 #requires -RunAsAdministrator
-Write-Host "PS Version and Admin Permissions passed" -ForegroundColor Green
+Write-Host "PS Version and Admin Permissions check passed" -ForegroundColor Green
+
+# Handle parameters here
+if ($chocoPath -ne "C:\ProgramData\chocolatey") {
+    Write-Host "You have selected the 'chocoPath' parameter, however it has not been implemented and will not affect the installation." -ForegroundColor Red
+}
+if ($noMacro) {
+    Write-Host "You have selected the 'noMacro' parameter, however it has not been implemented and will not affect the installation" -ForegroundColor Red
+}
+
+exit
 
 # Pre-install warning/starting
 Write-Host "Starting install (check back here in about 10 minutes)..." -ForegroundColor Green
