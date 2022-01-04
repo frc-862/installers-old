@@ -29,7 +29,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
     - [curl]((https://curl.se/download.html)) (used to download wpilib)
     - Administrator privileges (not required on mac)
 - Hardware:
-    - 15-25 gigabytes of space
+    - ~2 gigabytes of space
 
 ## Windows Requirements
 
