@@ -4,15 +4,19 @@ These scripts can be used to install the essential software for [FRC](https://ww
 
 # Table of Contents
 
-- [What You Need](#What-You-Need)
-    - [Unix Requirements](#Unix-Requirements)
-    - [Windows Requirements](#Windows-Requirements)
-- [Included Packages](#Included-Packages)
-- [Windows Installation](#Windows-Installation)
-- [Unix Installation](#Unix-Installation)
-    - [WPILib Install Proccess](#WPILib-Install-Process)
-- [GPR Key Instructions](#GPR-Key-Instructions)
-- [SSH Key Instructions](#SSH-Key-Instructions)
+- [FRC Installers](#frc-installers)
+- [Table of Contents](#table-of-contents)
+- [What You Need](#what-you-need)
+  - [Unix Requirements](#unix-requirements)
+  - [Windows Requirements](#windows-requirements)
+- [Included Packages](#included-packages)
+  - [Unix](#unix)
+  - [Windows](#windows)
+- [Windows Installation](#windows-installation)
+  - [Unix Installation](#unix-installation)
+    - [WPILib Install Proccess](#wpilib-install-proccess)
+- [GPR Key Instructions](#gpr-key-instructions)
+- [SSH Key Instructions](#ssh-key-instructions)
 
 # What You Need
 
@@ -25,7 +29,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
     - [curl]((https://curl.se/download.html)) (used to download wpilib)
     - Administrator privileges (not required on mac)
 - Hardware:
-    - Hey kyle could you fill out this plz thx
+    - 15-25 gigabytes of space
 
 ## Windows Requirements
 
@@ -35,7 +39,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
     - Administrator privileges
 - Hardware
     - 10-30 minutes of free time (may vary based on internet speed)
-    - Hey kyle could you fill out this plz thx
+    - 15-25 gigabytes of space
 
 # Included Packages
 
@@ -68,14 +72,14 @@ Finally, the script builds the lightning repository. If any errors occur feel fr
 
 # Windows Installation
 
-Start by opening powershell as an administrator.  
-Then, run
+Start by opening powershell as an administrator (will throw an error if not done properly).  
+Then, to make sure our scripts can run, execute
 
 ```PowerShell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
 ```
 
-and then
+and finally to install all required libraries, execute
 
 ```PowerShell
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/powershellInstaller.ps1" -OutFile ".\install.ps1"; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh" -OutFile ".\bashInstaller.sh"; .\install.ps1; rm .\install.ps1; rm .\bashInstaller.sh
