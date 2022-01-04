@@ -7,13 +7,13 @@ These scripts can be used to install the essential software for [FRC](https://ww
 - [FRC Installers](#frc-installers)
 - [Table of Contents](#table-of-contents)
 - [What You Need](#what-you-need)
-  - [Unix Requirements](#unix-requirements)
-  - [Windows Requirements](#windows-requirements)
+    - [Unix Requirements](#unix-requirements)
+    - [Windows Requirements](#windows-requirements)
 - [Included Packages](#included-packages)
-  - [Unix](#unix)
-  - [Windows](#windows)
+    - [Unix](#unix)
+    - [Windows](#windows)
 - [Windows Installation](#windows-installation)
-  - [Unix Installation](#unix-installation)
+- [Unix Installation](#unix-installation)
     - [WPILib Install Proccess](#wpilib-install-proccess)
 - [GPR Key Instructions](#gpr-key-instructions)
 - [SSH Key Instructions](#ssh-key-instructions)
@@ -73,13 +73,13 @@ Finally, the script builds the lightning repository. If any errors occur feel fr
 # Windows Installation
 
 Start by opening powershell as an administrator (will throw an error if not done properly).  
-Then, to make sure our scripts can run, execute
+Then, to allow powershell script execution, execute
 
 ```PowerShell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
 ```
 
-and finally to install all required libraries, execute
+and finally, execute (this is a convenient one line script to download, run, and remove the scripts)
 
 ```PowerShell
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/powershellInstaller.ps1" -OutFile ".\install.ps1"; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh" -OutFile ".\bashInstaller.sh"; .\install.ps1; rm .\install.ps1; rm .\bashInstaller.sh
@@ -89,7 +89,7 @@ The powershell installer uses an autohotkey scipt to automatically click through
 
 The only time you may need to click is during the phoenix install, where you will need to press the `install` button on a pop up.
 
-## Unix Installation
+# Unix Installation
 
 For systems with bash, use the `bashInstaller.sh` script.  
 
@@ -97,7 +97,7 @@ For systems with bash, use the `bashInstaller.sh` script.
 bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh)
 ```
 
-### WPILib Install Proccess
+## WPILib Install Proccess
 
 After the installer downloads the WPILib installer, (this can take several minutes on slower connections) a new window will launch that will look something like this:  
 ![wpilib1.png](https://github.com/frc-862/installers/raw/main/assets/wpilib1.png)
