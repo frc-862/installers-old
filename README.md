@@ -79,11 +79,13 @@ Then, to allow powershell script execution, execute
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
 ```
 
-and finally, execute (this is a convenient one line script to download, run, and remove the scripts)
+and finally, execute
 
 ```PowerShell
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/powershellInstaller.ps1" -OutFile ".\install.ps1"; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh" -OutFile ".\bashInstaller.sh"; .\install.ps1; rm .\install.ps1; rm .\bashInstaller.sh
 ```
+
+(this is a convenient one line script to download and run the installer.)
 
 The powershell installer uses an autohotkey scipt to automatically click through the WPILib installer, so you should leave the cursor alone while running the script.
 
