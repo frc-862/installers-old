@@ -51,20 +51,17 @@ Name | Use
 [curl](https://curl.se/download.html) | A common utility used in command lines or scripts to transfer data.
 [tar](https://www.gnu.org/software/tar/) | used to extract wpilib image
 [lazygit](https://github.com/jesseduffield/lazygit) | ubuntu only, a nice cui tool for working with git
+[wpilib](https://github.com/wpilibsuite/allwpilib) | a single image containing vs code, a jdk, and all of the wpilib tools
 
 ## Windows
 
 Name | Use
 --- | ---
-[Visual Studio Code](https://code.visualstudio.com/) | An editor to develop code efficiently.
-[git](https://git-scm.com/) | The version control system that we use to manage all of our code.
-[openjdk11](https://openjdk.java.net/projects/jdk/11/) | The language we use to write our code.
-[WPILib (extension)](https://wpilib.org/) | An extension for Visual Studio Code that makes working on WPILib projects easier.
-[Java Extension Pack (extension)](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) | Contains several extensions that make writing java code much easier.
-[brew (Mac)](https://brew.sh/) | A package manager that makes installing software a lot easier.
-[chocolatey (Windows)](https://chocolatey.org/) | Another package manager but for windows.
-[gradle](https://gradle.org/) | An open-source build system for java we use to manage dependencies.
-[lazygit](https://github.com/jesseduffield/lazygit) | A TUI that makes version control with git a whole lot easier.
+[openjdk11](https://github.com/openjdk/)
+[wpilib](https://github.com/wpilibsuite/allwpilib) | a single image containing vs code, a jdk, and all of the wpilib tools
+[lazygit](https://github.com/jesseduffield/lazygit) | a nice cui tool for working with git
+[ni-frcgametools](https://www.ni.com/en-us/support/downloads/drivers/download.frc-game-tools.html) | a package of tools including the driver station and roborio imaging tool
+[ctre-phoenixframework](https://github.com/CrossTheRoadElec/Phoenix-Releases/releases) | a tool for managing ctre devices over CAN
 
 At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `~/Documents/lightning`
 
