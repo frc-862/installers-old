@@ -1,27 +1,24 @@
-# Define script parameters -> Ex. '.\script.ps1 -noMacro'
+# Define script parameters -> Ex. '.\script.ps1 -doMacro 0'
 # Many params do not work, they are just defined here for future implemenation
 param (
-    [string]$path = "$HOME\Documents\lightning",
+    [string]$chocoPath = "C:\ProgramData\chocolatey",
     [switch]$noMacro = $false
 )
 
-# Run checks to make sure the installer can install
+#Check elevation and powershell ver first
 #requires -version 4.0
 #requires -RunAsAdministrator
-$freespace = (Get-CimInstance CIM_LogicalDisk -Filter "DeviceId='C:'").FreeSpace
-if ($freespace -lt 15gb){
-    Write-Host "You do not have enough disk space ('C:\') for this install! You need at least 15 gigabytes to run this installer." -ForegroundColor Red
-    exit
-}
-Write-Host "All checks have passed" -ForegroundColor Green
+Write-Host "PS Version and Admin Permissions check passed" -ForegroundColor Green
 
 # Handle parameters here
-if ($path -ne "$HOME\Documents\lightning") {
-    Write-Host "You have defined the 'path' parameter, however it has not been implemented and will not affect the installation." -ForegroundColor Red
+if ($chocoPath -ne "C:\ProgramData\chocolatey") {
+    Write-Host "You have selected the 'chocoPath' parameter, however it has not been implemented and will not affect the installation." -ForegroundColor Red
 }
 if ($noMacro) {
     Write-Host "You have selected the 'noMacro' parameter, however it has not been implemented and will not affect the installation" -ForegroundColor Red
 }
+
+exit
 
 # Pre-install warning/starting
 Write-Host "Starting install (check back here in about 10 minutes)..." -ForegroundColor Green
