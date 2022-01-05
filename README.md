@@ -72,7 +72,7 @@ Finally, the script builds the lightning repository. If any errors occur feel fr
 
 # Windows Installation
 
-Start by opening powershell as an administrator (will throw an error if not done properly).  
+Start by opening powershell as an administrator.  
 Then, to allow powershell script execution, execute
 
 ```PowerShell
