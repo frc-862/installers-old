@@ -90,6 +90,20 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+#give a warning if running a dev build
+if [[ "$INSTALLER_VERSION" == *"DEV" ]] ; then
+    warn "You are running a development version of the installer. Some features may not work properly. Only continue if you know what you're doing."
+    read -rp "Continue Anyway? [y/N] "
+    #TODO: make this less awful
+    case $REPLY in
+        "y") true;;
+        "Y") true;;
+        "yes") true;;
+        "Yes") true;;
+        *) exit 1;;
+    esac
+fi
+
 #detect a program to use for root privileges
 # andset ROOT_STRING variable to the found command
 if [ "$OS" == "Darwin" ] ; then
