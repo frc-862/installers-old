@@ -1,6 +1,8 @@
 # Contributing Guidelines
 
-please run your code through one of the following linters before you commit:
+*If you're on the team: please don't push to master directly. Create a new branch and make a pull request.*
+
+please run your code through the appropriate linter before you commit:
 
 - bash:
     1. install [shellcheck](https://github.com/koalaman/shellcheck) via `apt`, `brew`, `pacman`, etc.
