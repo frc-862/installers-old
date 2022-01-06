@@ -8,7 +8,6 @@ WPILIB_VERSION="2021.3.1"
 NI_VERSION="20.0.1"
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
-VERBOSE=false
 INSTALL_PATH=""
 
 #Define functions
@@ -47,7 +46,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         -v|--verbose)
             #Toggle verbose output on
-            VERBOSE=true
+            set -x
             shift
             ;;
         --path)
