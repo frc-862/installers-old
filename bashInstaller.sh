@@ -9,7 +9,6 @@ WPILIB_VERSION="2021.3.1"
 NI_VERSION="20.0.1"
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
-INSTALL_PATH=""
 
 #Define functions
 
@@ -24,7 +23,6 @@ showHelp() { printf "Usage: bashInstaller --option \"value\" --option \"value\"
         --help, -h          show this help message
         --verbose, -v       give a more verbose output
         --version, -V       show program version
-        --path              set the path to install programs to (experimental, windows only)
         --wpilib_version    set the version of wpilib to install
         --ni_version        set the version of ni to install (windows only)
         --no_update         don't update installed packages when running installer
@@ -55,12 +53,6 @@ while [[ $# -gt 0 ]]; do
             #Print the current version and exit
             printf 'bashInstaller %s\n' "$INSTALLER_VERSION"
             exit 0
-            ;;
-        --path)
-            #Set install path
-            INSTALL_PATH=$2
-            shift
-            shift
             ;;
         --wpilib_version)
             #set wpilib version
