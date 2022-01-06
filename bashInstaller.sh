@@ -2,6 +2,7 @@
 
 #Define constants
 OS="$(uname -s)"
+INSTALLER_VERSION="2022-2"
 
 #Defaults
 WPILIB_VERSION="2021.3.1"
@@ -22,6 +23,7 @@ showHelp() { printf "Usage: bashInstaller --option \"value\" --option \"value\"
     Options:
         --help, -h          show this help message
         --verbose, -v       give a more verbose output
+        --version, -V       show program version
         --path              set the path to install programs to (experimental, windows only)
         --wpilib_version    set the version of wpilib to install
         --ni_version        set the version of ni to install (windows only)
@@ -48,6 +50,11 @@ while [[ $# -gt 0 ]]; do
             #Toggle verbose output on
             set -x
             shift
+            ;;
+        -V|--version)
+            #Print the current version and exit
+            printf 'bashInstaller %s\n' "$INSTALLER_VERSION"
+            exit 0
             ;;
         --path)
             #Set install path
