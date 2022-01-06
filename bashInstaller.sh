@@ -12,6 +12,7 @@ ok() { printf "\033[92mOK: $1\n\033[39m"; }
 #Define constants
 OS="$(uname -s)"
 WPILIB_VERSION="2021.3.1"
+NI_VERSION="20.0.1"
 
 #detect a program to use for root privileges
 # andset ROOT_STRING variable to the found command
@@ -103,13 +104,16 @@ elif [[ $OS == *"MINGW"* ]] ; then
     update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
 
     installReqs() {
-        choco install -y openjdk11 wpilib;
+        choco install -y openjdk11
+        choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
         export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
     }
 
     installOpts() {
         #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-        choco install -y lazygit ni-frcgametools ctre-phoenixframework;
+        choco install -y lazygit;
+        choco install -y ni-frcgametools --version="$NI_VERSION";
+        choco install -y ctre-phoenixframework;
     }
 
     PKG_MANAGER="chocolatey"
