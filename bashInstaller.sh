@@ -2,7 +2,7 @@
 
 #Define constants
 OS="$(uname -s)"
-INSTALLER_VERSION="2022-2"
+INSTALLER_VERSION="2022-2 DEV"
 
 #Defaults
 WPILIB_VERSION="2021.3.1"
