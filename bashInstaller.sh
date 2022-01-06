@@ -1,18 +1,53 @@
 #!/bin/bash
 
+#Define constants
+OS="$(uname -s)"
+WPILIB_VERSION="2021.3.1"
+NI_VERSION="20.0.1"
+RUN_UPDATE=true
+RUN_INSTALLOPTS=true
+
 #Define functions
+
 #Has: check if a program is in PATH
 has() { type -p "$1" &> /dev/null; }
+
 #Error, Warn, ok: print message in red, orange, or green text
 #use of a variable in printf fstring is intentional here
 error() { >&2 printf "\033[91mERROR: $1\n\033[39m"; }
 warn() { >&2 printf "\033[93mWARNING: $1\n\033[39m"; }
 ok() { printf "\033[92mOK: $1\n\033[39m"; }
 
-#Define constants
-OS="$(uname -s)"
-WPILIB_VERSION="2021.3.1"
-NI_VERSION="20.0.1"
+#Interpret parameters
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            #Display Help message and exit
+            ;;
+        -v|--verbose)
+            #Toggle verbose output
+            ;;
+        --path)
+            #Set install path
+            ;;
+        --wpilib_version)
+            #set wpilib version
+            ;;
+        --ni_version)
+            #set ni version
+            ;;
+        --no_update)
+            #toggle update off
+            ;;
+        --no_opts)
+            #toggle optional packages off
+            ;;
+        -*)
+            error "Unknown option $1"
+            exit 1
+            ;;
+    esac
+done
 
 #detect a program to use for root privileges
 # andset ROOT_STRING variable to the found command
