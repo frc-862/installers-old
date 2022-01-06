@@ -197,7 +197,7 @@ esac
 if $NEEDS_WPILIB_DOWNLOAD ; then
     ok "downloading wpilib installer..."
     if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
-        curl "$WPILIB_URL" --output "$WPILIB_FILENAME"
+        curl -L "$WPILIB_URL" --output "$WPILIB_FILENAME"
     fi
 
     case $WPILIB_EXTENSION in #different methods for installing and running each archive
