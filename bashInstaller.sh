@@ -17,18 +17,21 @@ UNINSTALL=false
 has() { type -p "$1" &> /dev/null; }
 
 #showHelp: show help information for the program
-showHelp() { printf "Usage: bashInstaller --option \"value\" --option \"value\"
+showHelp() { printf "Usage:
+    bashInstaller --option \"value\" --option \"value\"
+
+Description:
     bashInstaller is a script to automatically install toold used for developing code for FIRST Robotics Competition.
 
-    Options:
-        --help, -h          show this help message
-        --verbose, -v       give a more verbose output
-        --version, -V       show program version
-        --uninstall         uninstall previously installed programs
-        --wpilib_version    set the version of wpilib to install
-        --ni_version        set the version of ni to install (windows only)
-        --no_update         don't update installed packages when running installer
-        --no_opts           don't install optional packages when running installer
+Options:
+    --help, -h          show this help message
+    --verbose, -v       give a more verbose output
+    --version, -V       show program version
+    --uninstall         uninstall previously installed programs
+    --wpilib_version    set the version of wpilib to install
+    --ni_version        set the version of ni to install (windows only)
+    --no_update         don't update installed packages when running installer
+    --no_opts           don't install optional packages when running installer
 ";
 }
 
@@ -105,7 +108,7 @@ if [[ "$INSTALLER_VERSION" == *"DEV" ]] ; then
 fi
 
 #detect a program to use for root privileges
-# andset ROOT_STRING variable to the found command
+#and set ROOT_STRING variable to the found command
 if [ "$OS" == "Darwin" ] ; then
     ok "no root privileges needed on macOS"
 elif [[ "$OS" == *"MINGW"* ]] ; then
