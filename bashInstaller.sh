@@ -9,6 +9,7 @@ WPILIB_VERSION="2021.3.1"
 NI_VERSION="20.0.1"
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
+UNINSTALL=false
 
 #Define functions
 
@@ -23,6 +24,7 @@ showHelp() { printf "Usage: bashInstaller --option \"value\" --option \"value\"
         --help, -h          show this help message
         --verbose, -v       give a more verbose output
         --version, -V       show program version
+        --uninstall         uninstall previously installed programs
         --wpilib_version    set the version of wpilib to install
         --ni_version        set the version of ni to install (windows only)
         --no_update         don't update installed packages when running installer
@@ -54,17 +56,22 @@ while [[ $# -gt 0 ]]; do
             printf 'bashInstaller %s\n' "$INSTALLER_VERSION"
             exit 0
             ;;
+        --uninstall)
+            #Switch to uninstall mode
+            RUN_UPDATE=false
+            RUN_INSTALLOPTS=false
+            UNINSTALL=true
+            shift
+            ;;
         --wpilib_version)
             #set wpilib version
             WPILIB_VERSION=$2
-            shift
-            shift
+            shift 2
             ;;
         --ni_version)
             #set ni version
             NI_VERSION=$2
-            shift
-            shift
+            shift 2
             ;;
         --no_update)
             #Toggle updating on install off
@@ -153,6 +160,11 @@ if [ "$OS" == "Darwin" ] ; then
         brew install lazygit;
     }
 
+    #uninstall: remove all previosuly installed programs
+    uninstall() {
+        brew uninstall git lazygit
+    }
+
     #PKG_MANAGER: the name of the detected package manager
     PKG_MANAGER="brew"
 
@@ -185,6 +197,10 @@ elif [[ $OS == *"MINGW"* ]] ; then
         choco install -y ctre-phoenixframework;
     }
 
+    uninstall() {
+        choco uninstall openjdk11 wpilib lazygit ni-frcgametools ctre-phoenixframework
+    }
+
     PKG_MANAGER="chocolatey"
 
 
@@ -207,9 +223,18 @@ elif has apt ; then
             $ROOT_STRING apt -y update
             $ROOT_STRING apt -y install lazygit
         }
+
+        uninstall() {
+            $ROOT_STRING apt -y uninstall git lazygit
+        }
         PKG_MANAGER="apt (ubuntu)"
     else
         installOpts() { true; } #no optional packages on debian
+
+        uninstall() {
+            $ROOT_STRING apt -y uninstall git
+        }
+
         PKG_MANAGER="apt"
     fi
 
@@ -225,6 +250,10 @@ elif has pacman ; then
 
     installOpts() {
         $ROOT_STRING pacman --noconfirm -S lazygit;
+    }
+
+    uninstall() {
+        $ROOT_STRING pacman --noconfirm -R git lazygit
     }
 
     PKG_MANAGER="pacman"
@@ -245,8 +274,13 @@ if $RUN_UPDATE ; then
     esac
 fi
 
-ok "installing required packages..."
-installReqs
+if $UNINSTALL ; then
+    ok "uninstalling all packages..."
+    uninstall
+else
+    ok "installing required packages..."
+    installReqs
+fi
 
 installExitCode=$?
 case $installExitCode in
@@ -258,7 +292,6 @@ esac
 if $RUN_INSTALLOPTS ; then
     ok "installing optional packages..."
     installOpts
-
 
     installExitCode=$?
     case $installExitCode in
