@@ -2,15 +2,34 @@
 
 #Define constants
 OS="$(uname -s)"
+
+#Defaults
 WPILIB_VERSION="2021.3.1"
 NI_VERSION="20.0.1"
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
+VERBOSE=false
+INSTALL_PATH=""
 
 #Define functions
 
-#Has: check if a program is in PATH
+#has: check if a program is in PATH
 has() { type -p "$1" &> /dev/null; }
+
+#showHelp: show help information for the program
+showHelp() { printf "Usage: bashInstaller --option \"value\" --option \"value\"
+    bashInstaller is a script to automatically install toold used for developing code for FIRST Robotics Competition.
+
+    Options:
+        --help, -h          show this help message
+        --verbose, -v       give a more verbose output
+        --path              set the path to install programs to (experimental, windows only)
+        --wpilib_version    set the version of wpilib to install
+        --ni_version        set the version of ni to install (windows only)
+        --no_update         don't update installed packages when running installer
+        --no_opts           don't install optional packages when running installer
+";
+}
 
 #Error, Warn, ok: print message in red, orange, or green text
 #use of a variable in printf fstring is intentional here
@@ -23,24 +42,41 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         -h|--help)
             #Display Help message and exit
+            showHelp
+            exit 0
             ;;
         -v|--verbose)
-            #Toggle verbose output
+            #Toggle verbose output on
+            VERBOSE=true
+            shift
             ;;
         --path)
             #Set install path
+            INSTALL_PATH=$2
+            shift
+            shift
             ;;
         --wpilib_version)
             #set wpilib version
+            WPILIB_VERSION=$2
+            shift
+            shift
             ;;
         --ni_version)
             #set ni version
+            NI_VERSION=$2
+            shift
+            shift
             ;;
         --no_update)
-            #toggle update off
+            #Toggle updating on install off
+            RUN_UPDATE=false
+            shift
             ;;
         --no_opts)
-            #toggle optional packages off
+            #Toggle installing optional packages off
+            RUN_INSTALLOPTS=false
+            shift
             ;;
         -*)
             error "Unknown option $1"
@@ -199,16 +235,17 @@ else
     error "no supported package manager found, try verifying that one is installed and in your PATH"
     exit 1
 fi
+if $RUN_UPDATE ; then
+    #run the defined update, installReqs, and installOpts functions
+    ok "$PKG_MANAGER installation detected, upgrading $PKG_MANAGER..."
+    update
 
-#run the defined update, installReqs, and installOpts functions
-ok "$PKG_MANAGER installation detected, upgrading $PKG_MANAGER..."
-update
-
-updateExitCode=$?
-case $updateExitCode in
-    0)  ok "update completed successfully";;
-    *)  warn "update failed with exit code $updateExitCode" #don't exit if the update fails
-esac
+    updateExitCode=$?
+    case $updateExitCode in
+        0)  ok "update completed successfully";;
+        *)  warn "update failed with exit code $updateExitCode" #don't exit if the update fails
+    esac
+fi
 
 ok "installing required packages..."
 installReqs
@@ -220,14 +257,17 @@ case $installExitCode in
         exit $installExitCode ;; #exit if a non-0 exit code is recieved 
 esac
 
-ok "installing optional packages..."
-installOpts
+if $RUN_INSTALLOPTS ; then
+    ok "installing optional packages..."
+    installOpts
 
-installExitCode=$?
-case $installExitCode in
-    0)  ok "installOpts completed successfully" ;;
-    *)  warn "installOpts failed with exit code $installExitCode" #don't exit if installOpts fails, as the build can still work
-esac
+
+    installExitCode=$?
+    case $installExitCode in
+        0)  ok "installOpts completed successfully" ;;
+        *)  warn "installOpts failed with exit code $installExitCode" #don't exit if installOpts fails, as the build can still work
+    esac
+fi
 
 if $NEEDS_WPILIB_DOWNLOAD ; then
     ok "downloading wpilib installer..."
