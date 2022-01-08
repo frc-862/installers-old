@@ -19,11 +19,10 @@ Write-Host "All checks have passed" -ForegroundColor Green
 # Handle parameters here
 if ($uninstall) {
     Write-Host "Tools like git, chocolatey, and the Java JDK will not be uninstalled" -ForegroundColor Yellow
-    exit
+    Write-Host "Starting uninstall" -ForegroundColor Yellow
     & "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh --uninstall"
+    exit
 }
-
-exit
 
 # Pre-install warning/starting
 Write-Host "Starting install (check back here in about 10 minutes)..." -ForegroundColor Green
