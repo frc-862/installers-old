@@ -102,20 +102,17 @@ bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/bashInstal
 After the installer downloads the WPILib installer, (this can take several minutes on slower connections) a new window will launch that will look something like this:  
 ![wpilib1.png](https://github.com/frc-862/installers/raw/main/assets/wpilib1.png)
 
-Press start, and you will see the vscode install screen:  
-![wpilib2.png](https://github.com/frc-862/installers/raw/main/assets/wpilib2.png)
+Press start, and you will see an install mode screen:  
+![wpilib2.png](https://github.com/frc-862/installers/raw/main/assets/wpilib2.png)  
 
-*If you already have vs code, you can press skip and move past the installation instructions.*
+Select "Everything" and press "Install for this User"
 
-*If you already have vs code downloaded for installation, you can select the "Use downloaded installer" option.*
-
-Otherwise, press "download vs code for single install."  
-Press continue once the loading bar has finished.
-
-On the next screen, select the following options:  
+On the next screen, you should see vscode install options:  
 ![wpilib3.png](https://github.com/frc-862/installers/raw/main/assets/wpilib3.png)
 
-Press "Install for single user" to install.
+*If you already have **THE CURRENT WPILIB VERSION** of vs code, you can press "Skip and don't use VS Code" and continue.*
+
+Otherwise, press "Download for this computer only" to install.
 
 If nothing goes wrong, you should see a screen like this:  
 ![wpilib4.png](https://github.com/frc-862/installers/raw/main/assets/wpilib4.png)
