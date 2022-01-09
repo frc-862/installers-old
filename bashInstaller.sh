@@ -44,49 +44,49 @@ ok() { printf "\033[92mOK: $1\n\033[39m"; }
 #Interpret parameters
 while [[ $# -gt 0 ]]; do
     case $1 in
-        -h|--help)
+        "-h"|"--help")
             #Display Help message and exit
             showHelp
             exit 0
             ;;
-        -v|--verbose)
+        "-v"|"--verbose")
             #Toggle verbose output on
             set -x
             shift
             ;;
-        -V|--version)
+        "-V"|"--version")
             #Print the current version and exit
             printf 'bashInstaller %s\n' "$INSTALLER_VERSION"
             exit 0
             ;;
-        --uninstall)
+        "--uninstall")
             #Switch to uninstall mode
             RUN_UPDATE=false
             RUN_INSTALLOPTS=false
             UNINSTALL=true
             shift
             ;;
-        --wpilib_version)
+        "--wpilib_version")
             #set wpilib version
             WPILIB_VERSION=$2
             shift 2
             ;;
-        --ni_version)
+        "--ni_version")
             #set ni version
             NI_VERSION=$2
             shift 2
             ;;
-        --no_update)
+        "--no_update")
             #Toggle updating on install off
             RUN_UPDATE=false
             shift
             ;;
-        --no_opts)
+        "--no_opts")
             #Toggle installing optional packages off
             RUN_INSTALLOPTS=false
             shift
             ;;
-        -*)
+        "-"*)
             error "Unknown option $1"
             exit 1
             ;;
