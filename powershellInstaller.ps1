@@ -1,28 +1,13 @@
-# Define script parameters -> Ex. '.\script.ps1 -noMacro'
-# Many params do not work, they are just defined here for future implemenation
-param (
-    # [string]$path = "$HOME\Documents\lightning",
-    # [switch]$noMacro = $false,
-    [switch]$uninstall = $false
-)
-
 # Run checks to make sure the installer can install
 #requires -version 4.0
 #requires -RunAsAdministrator
+
 $freespace = (Get-CimInstance CIM_LogicalDisk -Filter "DeviceId='C:'").FreeSpace
 if (($freespace -lt 15gb) -and (-Not ($uninstall))) {
     Write-Host "You do not have enough disk space ('C:\') for this install! You need at least 15 gigabytes to run this installer." -ForegroundColor Red
     exit
 }
 Write-Host "All checks have passed" -ForegroundColor Green
-
-# Handle parameters here
-if ($uninstall) {
-    Write-Host "Tools like git, chocolatey, and the Java JDK will not be uninstalled" -ForegroundColor Yellow
-    Write-Host "Starting uninstall" -ForegroundColor Yellow
-    & "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh --uninstall"
-    exit
-}
 
 # Pre-install warning/starting
 Write-Host "Starting install (check back here in about 10 minutes)..." -ForegroundColor Green
@@ -37,7 +22,7 @@ Write-Host "Installing git..." -ForegroundColor Green
 choco install -y git
 refreshenv
 
-& "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh"
+& "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh" $args
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
 $env:JAVA_HOME = "C:\Program Files\OpenJDK\openjdk-11.0.13_8"
