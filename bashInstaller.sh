@@ -7,8 +7,13 @@ INSTALLER_VERSION="2022-2 DEV"
 #Defaults
 WPILIB_VERSION="2022.1.1"
 NI_VERSION="22.0.0"
+
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
+RUN_BUILD=true
+INSTALL_WPILIB=true
+INSTALL_NI=true
+INSTALL_LIGHTNING=false
 UNINSTALL=false
 
 #Define functions
@@ -32,6 +37,10 @@ Options:
     --ni_version        set the version of ni to install (windows only)
     --no_update         don't update installed packages when running installer
     --no_opts           don't install optional packages when running installer
+    --no_wpilib         don't install wpilib
+    --no_ni             don't install ni game tools
+    --no_build          don't build lightning at the end
+    --no_lightning      don't clone or pull from lightning repo during install
 ";
 }
 
@@ -64,6 +73,10 @@ while [[ $# -gt 0 ]]; do
             RUN_UPDATE=false
             RUN_INSTALLOPTS=false
             UNINSTALL=true
+            INSTALL_WPILIB=false
+            INSTALL_NI=false
+            RUN_BUILD=false
+            INSTALL_LIGHTNING=false
             shift
             ;;
         "--wpilib_version")
@@ -84,6 +97,22 @@ while [[ $# -gt 0 ]]; do
         "--no_opts")
             #Toggle installing optional packages off
             RUN_INSTALLOPTS=false
+            shift
+            ;;
+        "--no_wpilib")
+            INSTALL_WPILIB=false
+            shift
+            ;;
+        "--no_ni")
+            INSTALL_NI=false
+            shift
+            ;;
+        "--no_build")
+            RUN_BUILD=false
+            shift
+            ;;
+        "--no_lightning")
+            INSTALL_LIGHTNING=false
             shift
             ;;
         "-"*)
@@ -210,7 +239,9 @@ elif [[ $OS == *"MINGW"* ]] ; then
     installOpts() {
         #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
         choco install -y lazygit;
-        choco install -y ni-frcgametools --version="$NI_VERSION";
+        if $INSTALL_NI ; then
+            choco install -y ni-frcgametools --version="$NI_VERSION";
+        fi
         choco install -y ctre-phoenixframework;
     }
 
@@ -237,6 +268,7 @@ elif has apt ; then
         installOpts() {
             $ROOT_STRING apt -y install software-properties-common
             $ROOT_STRING add-apt-repository "ppa:lazygit-team/release"
+            #check no_update flag here and give a warning since it's required
             $ROOT_STRING apt -y update
             $ROOT_STRING apt -y install lazygit
         }
@@ -317,7 +349,7 @@ if $RUN_INSTALLOPTS ; then
     esac
 fi
 
-if $NEEDS_WPILIB_DOWNLOAD && ! $UNINSTALL ; then
+if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
     ok "downloading wpilib installer..."
     if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
         curl -L "$WPILIB_URL" --output "$WPILIB_FILENAME"
@@ -342,63 +374,68 @@ if $NEEDS_WPILIB_DOWNLOAD && ! $UNINSTALL ; then
     esac
 fi
 
-#clone lightning repo
-ok "cloning lightning source code into $HOME/Documents/"
 
-#check if lightning is already cloned
-if [ -d "$HOME/Documents/lightning" ] ; then
-    ok "lightning code detected, pulling latest version..."
-    git -C "$HOME/Documents/lightning" pull
+if $INSTALL_LIGHTNING ; then
+    #clone lightning repo
+    ok "cloning lightning source code into $HOME/Documents/"
 
-    gitExitCode=$?
-    case $gitExitCode in
-        0)  ok "pull completed successfully" ;;
-        *)
-            error "pull failed with exit code $gitExitCode. please open an issue on jira for assistance"
-            exit $gitExitCode ;;
-    esac
-else
-    ok "no lightning code detected, cloning new code..."
-    #check if ssh is set up
-    if [[ "$(ssh -o StrictHostKeyChecking=no git@github.com &> /dev/stdout)" == *"success"* ]] ; then
-        git clone "git@github.com:frc-862/lightning.git" "$HOME/Documents/lightning"
+    #check if lightning is already cloned
+    if [ -d "$HOME/Documents/lightning" ] ; then
+        ok "lightning code detected, pulling latest version..."
+        git -C "$HOME/Documents/lightning" pull
+
+        gitExitCode=$?
+        case $gitExitCode in
+            0)  ok "pull completed successfully" ;;
+            *)
+                error "pull failed with exit code $gitExitCode. please open an issue on jira for assistance"
+                exit $gitExitCode ;;
+        esac
     else
-        git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
-        warn "note: you will need to clone over ssh in order to contribute code"
+        ok "no lightning code detected, cloning new code..."
+        #check if ssh is set up
+        if [[ "$(ssh -o StrictHostKeyChecking=no git@github.com &> /dev/stdout)" == *"success"* ]] ; then
+            git clone "git@github.com:frc-862/lightning.git" "$HOME/Documents/lightning"
+        else
+            git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
+            warn "note: you will need to clone over ssh in order to contribute code"
+        fi
+
+        gitExitCode=$?
+        case $gitExitCode in
+            0)  ok "pull completed successfully" ;;
+            *)
+                error "clone failed with exit code $gitExitCode. please open an issue on jira for assistance"
+                exit $gitExitCode ;;
+        esac
+    fi
+fi
+
+if $RUN_BUILD ; then
+    #Check if user has a properly set up gradle.properties file
+    if [ -f "$HOME/.gradle/gradle.properties" ] ; then
+        if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] || [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
+            ok "gradle.properties properly configured"
+        else
+            warn "gradle.properties missing one or more required values"
+        fi
+    else
+        warn "no gradle.properties file found"
     fi
 
-    gitExitCode=$?
-    case $gitExitCode in
-        0)  ok "pull completed successfully" ;;
-        *)
-            error "clone failed with exit code $gitExitCode. please open an issue on jira for assistance"
-            exit $gitExitCode ;;
+    #build lightning repo
+    ok "building gradle..."
+
+    #Don't run build if running from git bash inside powershell terminal, as gradle special characters won't work
+    if [[ $OS == *"MINGW"* ]] && [ -n "$PSExecutionPolicyPreference" ] ; then
+        exit 0
+    fi
+
+    "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
+
+    buildExitCode=$?
+    case $buildExitCode in
+        0) ok "build completed successfully" ;;
+        *) error "build failed with exit code $buildExitCode. please open an issue on jira for assistance" ;;
     esac
 fi
-
-#Check if user has a properly set up gradle.properties file
-if [ -f "$HOME/.gradle/gradle.properties" ] ; then
-    if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] || [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
-        ok "gradle.properties properly configured"
-    else
-        warn "gradle.properties missing one or more required values"
-    fi
-else
-    warn "no gradle.properties file found"
-fi
-
-#build lightning repo
-ok "building gradle..."
-
-#Don't run build if running from git bash inside powershell terminal, as gradle special characters won't work
-if [[ $OS == *"MINGW"* ]] && [ -n "$PSExecutionPolicyPreference" ] ; then
-    exit 0
-fi
-
-"$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
-
-buildExitCode=$?
-case $buildExitCode in
-    0) ok "build completed successfully" ;;
-    *) error "build failed with exit code $buildExitCode. please open an issue on jira for assistance" ;;
-esac
