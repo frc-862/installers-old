@@ -377,12 +377,9 @@ fi
 
 
 if $INSTALL_LIGHTNING ; then
-    #clone lightning repo
-    ok "cloning lightning source code into $HOME/Documents/"
-
     #check if lightning is already cloned
     if [ -d "$HOME/Documents/lightning" ] ; then
-        ok "lightning code detected, pulling latest version..."
+        ok "lightning code detected at '$HOME/Documents/lightning', pulling latest version..."
         git -C "$HOME/Documents/lightning" pull
 
         gitExitCode=$?
@@ -393,9 +390,10 @@ if $INSTALL_LIGHTNING ; then
                 exit $gitExitCode ;;
         esac
     else
-        ok "no lightning code detected, cloning new code..."
+        #clone lightning repo
+        ok "cloning lightning source code into $HOME/Documents/"
         #check if ssh is set up
-        if [[ "$(ssh -o StrictHostKeyChecking=no git@github.com &> /dev/stdout)" == *"success"* ]] ; then
+        if [[ "$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null git@github.com &> /dev/stdout)" == *"success"* ]] ; then
             git clone "git@github.com:frc-862/lightning.git" "$HOME/Documents/lightning"
         else
             git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
