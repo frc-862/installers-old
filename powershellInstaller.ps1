@@ -1,3 +1,7 @@
+function ok { Write-Host "OK: $args" -ForegroundColor Green }
+function warn { Write-Host "WARNING: $args" -ForegroundColor Yellow }
+function showError { Write-Host "ERROR: $args" -ForegroundColor Red } #use showError instead of error to avoid issues when overriding built in cmdlets
+
 # Run checks to make sure the installer can install
 #requires -version 4.0
 #requires -RunAsAdministrator
@@ -5,21 +9,21 @@
 #Check for enough disk space
 $freespace = (Get-CimInstance CIM_LogicalDisk -Filter "DeviceId='C:'").FreeSpace
 if (($freespace -lt 15gb)) {
-    Write-Host "You do not have enough disk space ('C:\') for this install! You need at least 15 gigabytes to run this installer." -ForegroundColor Red
+    showError "You do not have enough disk space ('C:\') for this install! You need at least 15 gigabytes to run this installer."
     exit
 }
-Write-Host "All checks have passed" -ForegroundColor Green
+ok "All checks have passed"
 
 # Pre-install warning/starting
-Write-Host "Starting install (check back here in about 10 minutes)..." -ForegroundColor Green
-Write-Host "Please do not touch or terminate this install (a macro is setup to do everything for you)" -ForegroundColor Yellow
+ok "Starting install (check back here in about 10 minutes)..."
+warn "Please try not to touch the mouse while the installer is running. (a macro is setup to do everything for you)"
 
 #Install Chocolatey
-Write-Host "Installing Chocolatey..." -ForegroundColor Green
+ok "Installing Chocolatey..."
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 #Install git in order to use git bash
-Write-Host "Installing git..." -ForegroundColor Green
+ok "Installing git..."
 choco install -y git
 refreshenv
 
