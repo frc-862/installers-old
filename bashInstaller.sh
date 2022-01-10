@@ -249,7 +249,7 @@ elif has apt ; then
         installOpts() { true; } #no optional packages on debian
 
         uninstall() {
-            $ROOT_STRING apt -y uninstall git
+            $ROOT_STRING apt -y purge git
         }
 
         PKG_MANAGER="apt"
