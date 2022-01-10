@@ -11,10 +11,11 @@ NI_VERSION="22.0.0"
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
 RUN_BUILD=true
+RUN_UNINSTALL=false
+
 INSTALL_WPILIB=true
 INSTALL_NI=true
-INSTALL_LIGHTNING=false
-UNINSTALL=false
+INSTALL_LIGHTNING=true
 
 #Define functions
 
@@ -72,7 +73,7 @@ while [[ $# -gt 0 ]]; do
             #Switch to uninstall mode
             RUN_UPDATE=false
             RUN_INSTALLOPTS=false
-            UNINSTALL=true
+            RUN_UNINSTALL=true
             INSTALL_WPILIB=false
             INSTALL_NI=false
             RUN_BUILD=false
@@ -323,7 +324,7 @@ if $RUN_UPDATE ; then
     esac
 fi
 
-if $UNINSTALL ; then
+if $RUN_UNINSTALL ; then
     ok "uninstalling all packages..."
     uninstall
 else
