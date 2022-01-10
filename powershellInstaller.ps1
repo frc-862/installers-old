@@ -2,8 +2,9 @@
 #requires -version 4.0
 #requires -RunAsAdministrator
 
+#Check for enough disk space
 $freespace = (Get-CimInstance CIM_LogicalDisk -Filter "DeviceId='C:'").FreeSpace
-if (($freespace -lt 15gb) -and (-Not ($uninstall))) {
+if (($freespace -lt 15gb)) {
     Write-Host "You do not have enough disk space ('C:\') for this install! You need at least 15 gigabytes to run this installer." -ForegroundColor Red
     exit
 }
@@ -22,6 +23,7 @@ Write-Host "Installing git..." -ForegroundColor Green
 choco install -y git
 refreshenv
 
+#Run the bash script through git bash
 & "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh" $args
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
