@@ -242,7 +242,7 @@ elif has apt ; then
         }
 
         uninstall() {
-            $ROOT_STRING apt -y uninstall git lazygit
+            $ROOT_STRING apt -y purge git lazygit
         }
         PKG_MANAGER="apt (ubuntu)"
     else
