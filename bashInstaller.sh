@@ -329,14 +329,14 @@ if $UNINSTALL ; then
 else
     ok "installing required packages..."
     installReqs
-fi
 
-installExitCode=$?
-case $installExitCode in
-    0)  ok "installReqs completed successfully" ;;
-    *)  error "installReqs failed with exit code $installExitCode. please open an issue on jira for assistance"
-        exit $installExitCode ;; #exit if a non-0 exit code is recieved 
-esac
+    installExitCode=$?
+    case $installExitCode in
+        0)  ok "installReqs completed successfully" ;;
+        *)  error "installReqs failed with exit code $installExitCode. please open an issue on jira for assistance"
+            exit $installExitCode ;; #exit if a non-0 exit code is recieved
+    esac
+fi
 
 if $RUN_INSTALLOPTS ; then
     ok "installing optional packages..."
