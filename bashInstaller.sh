@@ -263,7 +263,7 @@ elif has apt ; then
         $ROOT_STRING apt -y install git curl tar;
     }
 
-    if [ -f "/etc/ubuntu-release" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
+    if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
 
         installOpts() {
             $ROOT_STRING apt -y install software-properties-common
