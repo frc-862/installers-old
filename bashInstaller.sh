@@ -317,7 +317,7 @@ if $RUN_INSTALLOPTS ; then
     esac
 fi
 
-if $NEEDS_WPILIB_DOWNLOAD ; then
+if $NEEDS_WPILIB_DOWNLOAD && ! $UNINSTALL ; then
     ok "downloading wpilib installer..."
     if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
         curl -L "$WPILIB_URL" --output "$WPILIB_FILENAME"
