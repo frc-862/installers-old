@@ -30,7 +30,7 @@ showHelp() { printf "Usage:
     bashInstaller --option \"value\" --option \"value\"
 
 Description:
-    bashInstaller is a script to automatically install toold used for developing code for FIRST Robotics Competition.
+    bashInstaller is a script to automatically install tools used for developing code for FIRST Robotics Competition.
 
 Options:
     --help, -h          show this help message
