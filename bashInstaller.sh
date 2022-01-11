@@ -45,8 +45,8 @@ Options:
     --no_ni             don't install ni game tools
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
-    --fallback_wpilib   use fallback downloading method for wpilib (download from github)
-    --fallback_ni       use fallback downloading method for ni tools (download from ni website)
+    --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
+    --fallback_ni       use fallback downloading method for ni tools on windows (download from ni website)
 ";
 }
 
