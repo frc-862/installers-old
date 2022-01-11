@@ -273,7 +273,7 @@ elif [[ $OS == *"MINGW"* ]] ; then
                 "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
 
             else
-                choco install -y ni-frcgametools --version="$NI_VERSION";
+                choco install -y ni-frcgametools --version="20.0.0"; #left to old version as 22.0.0 isn't on choco yet
             fi
         fi
         if $FALLBACK_WPILIB || $FALLBACK_NI ; then
