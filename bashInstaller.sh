@@ -17,6 +17,9 @@ INSTALL_WPILIB=true
 INSTALL_NI=true
 INSTALL_LIGHTNING=true
 
+FALLBACK_WPILIB=false
+FALLBACK_NI=false
+
 #Define functions
 
 #has: check if a program is in PATH
@@ -42,6 +45,8 @@ Options:
     --no_ni             don't install ni game tools
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
+    --fallback_wpilib   use fallback downloading method for wpilib (download from github)
+    --fallback_ni       use fallback downloading method for ni tools (download from ni website)
 ";
 }
 
@@ -116,6 +121,14 @@ while [[ $# -gt 0 ]]; do
             INSTALL_LIGHTNING=false
             shift
             ;;
+        "--fallback_wpilib")
+            FALLBACK_WPILIB=true
+            shift
+            ;;
+        "--fallback_ni")
+            FALLBACK_NI=true
+            shift
+            ;;
         "-"*)
             error "Unknown option $1"
             exit 1
@@ -172,9 +185,13 @@ case $OS in
         WPILIB_EXTENSION="dmg" ;;
 
     *"MINGW"*)
-        NEEDS_WPILIB_DOWNLOAD=false
-        WPILIB_TYPE=""
-        WPILIB_EXTENSION="" ;;
+        if $FALLBACK_WPILIB ; then
+            NEEDS_WPILIB_DOWNLOAD=true
+        else
+            NEEDS_WPILIB_DOWNLOAD=false
+        fi
+        WPILIB_TYPE="Windows64"
+        WPILIB_EXTENSION="iso" ;;
 
 esac
 
@@ -242,6 +259,9 @@ elif [[ $OS == *"MINGW"* ]] ; then
         choco install -y lazygit;
         if $INSTALL_NI ; then
             choco install -y ni-frcgametools --version="$NI_VERSION";
+        fi
+        if $FALLBACK_WPILIB ; then
+            choco install -y 7zip
         fi
         choco install -y ctre-phoenixframework;
     }
@@ -372,6 +392,13 @@ if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
 
             ok "launching wpilib installer..."
             "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
+        "iso")
+            ok "extracting wpilib installer..."
+            7z.exe x -y "./$WPILIB_FILENAME"
+
+            ok "launching wpilib installer..."
+            "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
+
     esac
 fi
 
