@@ -200,10 +200,11 @@ WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_
 WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 
 #This will break next century but that's fine lol
+NI_EXTENSION="iso"
 NI_YEAR_SHORT="${NI_VERSION::2}"
 NI_VERSION_SHORT="${NI_VERSION::4}"
 NI_URL="https://download.ni.com/support/nipkg/products/ni-f/ni-frc-20$NI_YEAR_SHORT-game-tools/$NI_VERSION_SHORT/offline/ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline.iso"
-NI_FILENAME="ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline.iso"
+NI_FILENAME="ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline"
 
 #detect a compatible package manager to install packages
 if [ "$OS" == "Darwin" ] ; then
@@ -267,9 +268,9 @@ elif [[ $OS == *"MINGW"* ]] ; then
         choco install -y lazygit;
         if $INSTALL_NI ; then
             if $FALLBACK_NI ; then
-                curl -L "$NI_URL" --output "$NI_FILENAME"
+                curl -L "$NI_URL" --output "$NI_FILENAME.$NI_EXTENSION"
                 ok "extracting ni installer..."
-                7z.exe x -y "./$NI_FILENAME"
+                7z.exe x -y -o "./$NI_FILENAME" "./$NI_FILENAME.$NI_EXTENSION"
 
                 ok "launching ni installer..."
                 "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
@@ -412,7 +413,7 @@ if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
             "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
         "iso")
             ok "extracting wpilib installer..."
-            7z.exe x -y "./$WPILIB_FILENAME"
+            7z.exe x -y -o "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "./$WPILIB_FILENAME"
 
             ok "launching wpilib installer..."
             "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
