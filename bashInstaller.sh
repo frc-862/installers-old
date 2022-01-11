@@ -256,7 +256,9 @@ elif [[ $OS == *"MINGW"* ]] ; then
 
     installReqs() {
         choco install -y openjdk11
-        choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
+        if $INSTALL_WPILIB || ! $FALLBACK_WPILIB ; then
+            choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
+        fi
         export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
     }
 
