@@ -283,7 +283,7 @@ elif [[ $OS == *"MINGW"* ]] ; then
     }
 
     uninstall() {
-        choco uninstall openjdk11 wpilib lazygit ni-frcgametools ctre-phoenixframework
+        choco uninstall -y openjdk11 wpilib lazygit ni-frcgametools ctre-phoenixframework
     }
 
     PKG_MANAGER="chocolatey"
