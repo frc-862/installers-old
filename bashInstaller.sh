@@ -199,6 +199,12 @@ esac
 WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
 
+#This will break next century but that's fine lol
+NI_YEAR_SHORT="${NI_VERSION::2}"
+NI_VERSION_SHORT="${NI_VERSION::4}"
+NI_URL="https://download.ni.com/support/nipkg/products/ni-f/ni-frc-20$NI_YEAR_SHORT-game-tools/$NI_VERSION_SHORT/offline/ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline.iso"
+NI_FILENAME="ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline.iso"
+
 #detect a compatible package manager to install packages
 if [ "$OS" == "Darwin" ] ; then
     # only install brew from scratch on mac
@@ -258,9 +264,19 @@ elif [[ $OS == *"MINGW"* ]] ; then
         #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
         choco install -y lazygit;
         if $INSTALL_NI ; then
-            choco install -y ni-frcgametools --version="$NI_VERSION";
+            if $FALLBACK_NI ; then
+                curl -L "$NI_URL" --output "$NI_FILENAME"
+                ok "extracting ni installer..."
+                7z.exe x -y "./$NI_FILENAME"
+
+                ok "launching ni installer..."
+                "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
+
+            else
+                choco install -y ni-frcgametools --version="$NI_VERSION";
+            fi
         fi
-        if $FALLBACK_WPILIB ; then
+        if $FALLBACK_WPILIB || $FALLBACK_NI ; then
             choco install -y 7zip
         fi
         choco install -y ctre-phoenixframework;
