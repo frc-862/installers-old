@@ -1,6 +1,7 @@
 # FRC Installers
 
 These scripts can be used to install the essential software for [FRC](https://www.firstinspires.org/robotics/frc) code development.
+If you have a windows machine, click [here](#windows-installation). If you have a macbook or other linux based machine, click [here](#unix-installation). If you are having trouble with the "WPI Installer", click [here](#wiplib-install-proccess).
 
 # Table of Contents
 
