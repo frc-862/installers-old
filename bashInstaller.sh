@@ -244,9 +244,9 @@ case $OS in
             choco install -y lazygit;
             if $INSTALL_NI ; then
                 if $FALLBACK_NI ; then
-                    curl -L "$NI_URL" --output "$NI_FILENAME.$NI_EXTENSION"
+                    curl -L "$NI_URL" --output "$NI_FILENAME"
                     ok "extracting ni installer..."
-                    7z.exe x -y -o"./$NI_FILENAME" "./$NI_FILENAME.$NI_EXTENSION"
+                    7z.exe x -y -o"./$NI_FILENAME" "./$NI_FILENAME.iso"
 
                     ok "launching ni installer..."
                     "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
