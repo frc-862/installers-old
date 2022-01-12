@@ -372,7 +372,7 @@ if $RUN_UNINSTALL ; then
     installExitCode=$?
     case $installExitCode in
         0)  ok "installReqs completed successfully" ;;
-        127) warn "some chocolatey packages may not have been uninstalled properly."
+        127) warn "some chocolatey packages may not have been uninstalled properly." ;;
         *)  error "uninstall failed with exit code $installExitCode. please open an issue on jira for assistance"
             exit $installExitCode ;; #exit if a non-0 exit code is recieved
     esac
