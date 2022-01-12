@@ -243,6 +243,10 @@ case $OS in
             #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
             choco install -y lazygit;
             if $INSTALL_NI ; then
+                if $FALLBACK_WPILIB || $FALLBACK_NI ; then
+                    choco install -y 7zip
+                fi
+
                 if $FALLBACK_NI ; then
                     if [ ! -f "./$NI_FILENAME.iso" ] ; then
                         curl -L "$NI_URL" --output "$NI_FILENAME.iso"
@@ -256,9 +260,6 @@ case $OS in
                 else
                     choco install -y ni-frcgametools --version="20.0.0"; #left to old version as 22.0.0 isn't on choco yet
                 fi
-            fi
-            if $FALLBACK_WPILIB || $FALLBACK_NI ; then
-                choco install -y 7zip
             fi
             choco install -y ctre-phoenixframework;
         }
