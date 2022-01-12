@@ -156,15 +156,15 @@ if [ "$OS" == "Darwin" ] ; then
     ok "no root privileges needed on macOS"
 elif [[ "$OS" == *"MINGW"* ]] ; then
     ok "windows os detected"
+elif [ "$EUID" -eq 0 ] ; then
+    ROOT_STRING=""
+    ok "using current user ($USER) for root privileges"
 elif has sudo ; then
     ROOT_STRING="sudo"
     ok "using sudo ($(type -p $ROOT_STRING)) for root privileges"
 elif has doas ; then
     ROOT_STRING="doas"
     ok "using doas ($(type -p $ROOT_STRING)) for root privileges"
-elif [ "$EUID" -eq 0 ] ; then
-    ROOT_STRING=""
-    ok "using current user ($USER) for root privileges"
 else
     error "no root privilege"
     error "try running this script as root and verifying that sudo/doas is installed and in your PATH"
