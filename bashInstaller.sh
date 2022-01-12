@@ -233,7 +233,7 @@ case $OS in
 
         installReqs() {
             choco install -y openjdk11
-            if $INSTALL_WPILIB || ! $FALLBACK_WPILIB ; then
+            if $INSTALL_WPILIB && ! $FALLBACK_WPILIB ; then
                 choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
             fi
             export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
