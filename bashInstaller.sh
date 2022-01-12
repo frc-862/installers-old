@@ -2,21 +2,26 @@
 
 #Define constants
 OS="$(uname -s)"
-INSTALLER_VERSION="2022-2 DEV"
 
-#Defaults
+#Version Constants
+INSTALLER_VERSION="2022-2 DEV"
 WPILIB_VERSION="2022.1.1"
 NI_VERSION="22.0.0"
 
+#Option Defaults
+
+#Function switches
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
 RUN_BUILD=true
 RUN_UNINSTALL=false
 
+#Package Switches
 INSTALL_WPILIB=true
 INSTALL_NI=true
 INSTALL_LIGHTNING=true
 
+#Fallback switches
 FALLBACK_WPILIB=false
 FALLBACK_NI=false
 
@@ -47,6 +52,7 @@ Options:
     --no_lightning      don't clone or pull from lightning repo during install
     --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
     --fallback_ni       use fallback downloading method for ni tools on windows (download from ni website)
+    --spoof_os          set \$OS to the provided value
 ";
 }
 
@@ -129,6 +135,10 @@ while [[ $# -gt 0 ]]; do
             FALLBACK_NI=true
             shift
             ;;
+        "--spoof_os")
+            OS=$2
+            shift 2
+            ;;
         "-"*)
             error "Unknown option $1"
             exit 1
@@ -152,220 +162,216 @@ fi
 
 #detect a program to use for root privileges
 #and set ROOT_STRING variable to the found command
-if [ "$OS" == "Darwin" ] ; then
-    ok "no root privileges needed on macOS"
-elif [[ "$OS" == *"MINGW"* ]] ; then
-    ok "windows os detected"
-elif [ "$EUID" -eq 0 ] ; then
-    ROOT_STRING=""
-    ok "using current user ($USER) for root privileges"
-elif has sudo ; then
-    ROOT_STRING="sudo"
-    ok "using sudo ($(type -p $ROOT_STRING)) for root privileges"
-elif has doas ; then
-    ROOT_STRING="doas"
-    ok "using doas ($(type -p $ROOT_STRING)) for root privileges"
-else
-    error "no root privilege"
-    error "try running this script as root and verifying that sudo/doas is installed and in your PATH"
-    exit 1
-fi
-
-#detect which wpilib release to download based on the info from uname -s
 case $OS in
 
-    "Linux")
-        NEEDS_WPILIB_DOWNLOAD=true
-        WPILIB_TYPE="Linux"
-        WPILIB_EXTENSION="tar.gz" ;;
-
     "Darwin")
+
+        #WPILIB Constants
         NEEDS_WPILIB_DOWNLOAD=true
         WPILIB_TYPE="macOS"
-        WPILIB_EXTENSION="dmg" ;;
+        WPILIB_EXTENSION="dmg"
+
+        # only install brew from scratch on mac
+        if ! has brew ; then
+            ok "no brew installation detected, installing brew..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        #define functions for each package manager
+        #these functions are also defined for all other package managers
+        #update: get the latest version of all installed packages
+        update() {
+            brew update;
+            brew upgrade;
+        }
+
+        #installReqs: install required packages
+        installReqs() {
+            brew install git;
+        }
+
+        #installOpts: install optional packages
+        installOpts() {
+            brew install lazygit;
+        }
+
+        #uninstall: remove all previosuly installed programs
+        uninstall() {
+            brew uninstall git lazygit
+        }
+
+        #PKG_MANAGER: the name of the detected package manager
+        PKG_MANAGER="brew"
+        ;;
 
     *"MINGW"*)
-        if $FALLBACK_WPILIB ; then
-            NEEDS_WPILIB_DOWNLOAD=true
-        else
-            NEEDS_WPILIB_DOWNLOAD=false
-        fi
+
+        #WPILIB Constants
+        NEEDS_WPILIB_DOWNLOAD=$FALLBACK_WPILIB #only download if fallback method is selected
         WPILIB_TYPE="Windows64"
-        WPILIB_EXTENSION="iso" ;;
+        WPILIB_EXTENSION="iso"
 
-esac
+        #NI Constants
+        NI_YEAR_SHORT="${NI_VERSION::2}"
+        NI_VERSION_SHORT="${NI_VERSION::4}"
+        NI_FILENAME="ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline"
+        NI_URL="https://download.ni.com/support/nipkg/products/ni-f/ni-frc-20$NI_YEAR_SHORT-game-tools/$NI_VERSION_SHORT/offline/$NI_FILENAME.iso"
 
-#define constants for download url and filename to save to
-WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
-WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
-
-#This will break next century but that's fine lol
-NI_EXTENSION="iso"
-NI_YEAR_SHORT="${NI_VERSION::2}"
-NI_VERSION_SHORT="${NI_VERSION::4}"
-NI_URL="https://download.ni.com/support/nipkg/products/ni-f/ni-frc-20$NI_YEAR_SHORT-game-tools/$NI_VERSION_SHORT/offline/ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline.iso"
-NI_FILENAME="ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline"
-
-#detect a compatible package manager to install packages
-if [ "$OS" == "Darwin" ] ; then
-    # only install brew from scratch on mac
-    if ! has brew ; then
-        ok "no brew installation detected, installing brew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
-    #define functions for each package manager
-    #these functions are also defined for all other package managers
-    #update: get the latest version of all installed packages
-    update() {
-        brew update;
-        brew upgrade;
-    }
-
-    #installReqs: install required packages
-    installReqs() {
-        brew install git;
-    }
-
-    #installOpts: install optional packages
-    installOpts() {
-        brew install lazygit;
-    }
-
-    #uninstall: remove all previosuly installed programs
-    uninstall() {
-        brew uninstall git lazygit
-    }
-
-    #PKG_MANAGER: the name of the detected package manager
-    PKG_MANAGER="brew"
-
-elif [[ $OS == *"MINGW"* ]] ; then
-
-    if ! has choco ; then
-        ok "no chocolatey installation detected, installing chocolatey..."
-        error "sorry, installing chocolatey from git bash hasn't been implemented yet :("
-        exit 1
-        #powershell.exe -ExecutionPolicy Bypass -NoProfile
-        #requires -version 4.0
-        #requires -RunAsAdministrator
-        #Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-        #choco install -y git
-        #refreshenv
-    fi
-
-    update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
-
-    installReqs() {
-        choco install -y openjdk11
-        if $INSTALL_WPILIB || ! $FALLBACK_WPILIB ; then
-            choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
+        #Package manager setup functions
+        if ! has choco ; then #TODO: add chocolatey installation functionality
+            ok "no chocolatey installation detected, installing chocolatey..."
+            error "sorry, installing chocolatey from git bash hasn't been implemented yet :("
+            exit 1
+            #powershell.exe -ExecutionPolicy Bypass -NoProfile
+            #requires -version 4.0
+            #requires -RunAsAdministrator
+            #Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+            #choco install -y git
+            #refreshenv
         fi
-        export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
-    }
 
-    installOpts() {
-        #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-        choco install -y lazygit;
-        if $INSTALL_NI ; then
-            if $FALLBACK_NI ; then
-                curl -L "$NI_URL" --output "$NI_FILENAME.$NI_EXTENSION"
-                ok "extracting ni installer..."
-                7z.exe x -y -o "./$NI_FILENAME" "./$NI_FILENAME.$NI_EXTENSION"
+        update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
 
-                ok "launching ni installer..."
-                "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
-
-            else
-                choco install -y ni-frcgametools --version="20.0.0"; #left to old version as 22.0.0 isn't on choco yet
+        installReqs() {
+            choco install -y openjdk11
+            if $INSTALL_WPILIB || ! $FALLBACK_WPILIB ; then
+                choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
             fi
-        fi
-        if $FALLBACK_WPILIB || $FALLBACK_NI ; then
-            choco install -y 7zip
-        fi
-        choco install -y ctre-phoenixframework;
-    }
-
-    uninstall() {
-        choco uninstall -y openjdk11 wpilib lazygit ni-frcgametools ctre-phoenixframework
-    }
-
-    PKG_MANAGER="chocolatey"
-
-
-elif has apt ; then
-
-    update() {
-        $ROOT_STRING apt update;
-        $ROOT_STRING apt -y upgrade;
-    }
-
-    installReqs() {
-        $ROOT_STRING apt -y install git curl tar;
-    }
-
-    if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
+            export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
+        }
 
         installOpts() {
-            $ROOT_STRING apt -y install software-properties-common
-            $ROOT_STRING add-apt-repository "ppa:lazygit-team/release"
-            #check no_update flag here and give a warning since it's required
-            $ROOT_STRING apt -y update
-            $ROOT_STRING apt -y install lazygit
+            #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
+            choco install -y lazygit;
+            if $INSTALL_NI ; then
+                if $FALLBACK_NI ; then
+                    curl -L "$NI_URL" --output "$NI_FILENAME.$NI_EXTENSION"
+                    ok "extracting ni installer..."
+                    7z.exe x -y -o"./$NI_FILENAME" "./$NI_FILENAME.$NI_EXTENSION"
+
+                    ok "launching ni installer..."
+                    "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
+
+                else
+                    choco install -y ni-frcgametools --version="20.0.0"; #left to old version as 22.0.0 isn't on choco yet
+                fi
+            fi
+            if $FALLBACK_WPILIB || $FALLBACK_NI ; then
+                choco install -y 7zip
+            fi
+            choco install -y ctre-phoenixframework;
         }
 
         uninstall() {
-            $ROOT_STRING apt -y purge git lazygit
-        }
-        PKG_MANAGER="apt (ubuntu)"
-    else
-        installOpts() { true; } #no optional packages on debian
-
-        uninstall() {
-            $ROOT_STRING apt -y purge git
+            choco uninstall -y openjdk11 wpilib lazygit ni-frcgametools ctre-phoenixframework
         }
 
-        PKG_MANAGER="apt"
-    fi
+        PKG_MANAGER="chocolatey"
+        ;;
 
-elif has pacman ; then
+    "Linux")
+        if [ "$EUID" -eq 0 ] ; then
+            ROOT_STRING=""
+            ok "using current user ($USER) for root privileges"
+        elif has sudo ; then
+            ROOT_STRING="sudo"
+            ok "using sudo ($(type -p $ROOT_STRING)) for root privileges"
+        elif has doas ; then
+            ROOT_STRING="doas"
+            ok "using doas ($(type -p $ROOT_STRING)) for root privileges"
+        else
+            error "no root privilege"
+            error "try running this script as root and verifying that sudo/doas is installed and in your PATH"
+            exit 1
+        fi
 
-    update() {
-        $ROOT_STRING pacman --noconfirm -Syu;
-    }
+        NEEDS_WPILIB_DOWNLOAD=true
+        WPILIB_TYPE="Linux"
+        WPILIB_EXTENSION="tar.gz"
 
-    installReqs() {
-        $ROOT_STRING pacman --noconfirm -S git curl tar;
-    }
+        if has apt ; then
 
-    installOpts() {
-        $ROOT_STRING pacman --noconfirm -S lazygit;
-    }
+            update() {
+                $ROOT_STRING apt update;
+                $ROOT_STRING apt -y upgrade;
+            }
 
-    uninstall() {
-        $ROOT_STRING pacman --noconfirm -R git lazygit
-    }
+            installReqs() {
+                $ROOT_STRING apt -y install git curl tar;
+            }
 
-    PKG_MANAGER="pacman"
+            if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
 
-else
-    error "no supported package manager found, try verifying that one is installed and in your PATH"
-    exit 1
-fi
+                installOpts() {
+                    $ROOT_STRING apt -y install software-properties-common
+                    $ROOT_STRING add-apt-repository "ppa:lazygit-team/release"
+                    #check no_update flag here and give a warning since it's required
+                    $ROOT_STRING apt -y update
+                    $ROOT_STRING apt -y install lazygit
+                }
+
+                uninstall() {
+                    $ROOT_STRING apt -y purge git lazygit
+                }
+                PKG_MANAGER="apt (ubuntu)"
+            else
+                installOpts() { true; } #no optional packages on debian
+
+                uninstall() {
+                    $ROOT_STRING apt -y purge git
+                }
+
+                PKG_MANAGER="apt"
+            fi
+
+        elif has pacman ; then
+
+            update() {
+                $ROOT_STRING pacman --noconfirm -Syu;
+            }
+
+            installReqs() {
+                $ROOT_STRING pacman --noconfirm -S git curl tar;
+            }
+
+            installOpts() {
+                $ROOT_STRING pacman --noconfirm -S lazygit;
+            }
+
+            uninstall() {
+                $ROOT_STRING pacman --noconfirm -R git lazygit
+            }
+
+            PKG_MANAGER="pacman"
+        fi
+        ;;
+esac
+
+#wpilib constants
+WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
+WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/$WPILIB_FILENAME"
+
+#Run defined package manager functions
 if $RUN_UPDATE ; then
-    #run the defined update, installReqs, and installOpts functions
-    ok "$PKG_MANAGER installation detected, upgrading $PKG_MANAGER..."
+    ok "$PKG_MANAGER installation detected ($(type -p $PKG_MANAGER)), upgrading $PKG_MANAGER..."
     update
 
     updateExitCode=$?
     case $updateExitCode in
         0)  ok "update completed successfully";;
-        *)  warn "update failed with exit code $updateExitCode" #don't exit if the update fails
+        *)  warn "update failed with exit code $updateExitCode";; #don't exit if the update fails
     esac
 fi
 
 if $RUN_UNINSTALL ; then
     ok "uninstalling all packages..."
     uninstall
+
+    installExitCode=$?
+    case $installExitCode in
+        0)  ok "installReqs completed successfully" ;;
+        *)  error "installReqs failed with exit code $installExitCode. please open an issue on jira for assistance"
+            exit $installExitCode ;; #exit if a non-0 exit code is recieved
+    esac
 else
     ok "installing required packages..."
     installReqs
@@ -413,7 +419,7 @@ if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
             "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
         "iso")
             ok "extracting wpilib installer..."
-            7z.exe x -y -o "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "./$WPILIB_FILENAME"
+            7z.exe x -y -o"./WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "./$WPILIB_FILENAME"
 
             ok "launching wpilib installer..."
             "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
