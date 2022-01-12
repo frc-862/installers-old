@@ -245,7 +245,7 @@ case $OS in
             if $INSTALL_NI ; then
                 if $FALLBACK_NI ; then
                     if [ ! -f "./$NI_FILENAME.iso" ] ; then
-                        curl -L "$NI_URL" --output "$NI_FILENAME"
+                        curl -L "$NI_URL" --output "$NI_FILENAME.iso"
                     fi
                     ok "extracting ni installer..."
                     7z.exe x -y -o"./$NI_FILENAME" "./$NI_FILENAME.iso"
