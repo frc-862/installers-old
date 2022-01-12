@@ -258,7 +258,7 @@ case $OS in
                     "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
 
                 else
-                    choco install -y ni-frcgametools --version="20.0.0"; #left to old version as 22.0.0 isn't on choco yet
+                    choco install -y ni-frcgametools --version="$NI_VERSION"
                 fi
             fi
             choco install -y ctre-phoenixframework;
