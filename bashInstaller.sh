@@ -186,7 +186,7 @@ case $OS in
 
         #installReqs: install required packages
         installReqs() {
-            brew install git;
+            brew install git microsoft-openjdk11;
         }
 
         #installOpts: install optional packages
@@ -299,7 +299,7 @@ case $OS in
             }
 
             installReqs() {
-                $ROOT_STRING apt -y install git curl tar;
+                $ROOT_STRING apt -y install git curl tar openjdk-11-jdk;
             }
 
             if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
@@ -333,7 +333,7 @@ case $OS in
             }
 
             installReqs() {
-                $ROOT_STRING pacman --noconfirm -S git curl tar;
+                $ROOT_STRING pacman --noconfirm -S git curl tar jdk11-openjdk;
             }
 
             installOpts() {
