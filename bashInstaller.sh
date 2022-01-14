@@ -14,6 +14,7 @@ PHOENIX_VERSION="5.20.2.2"
 #Function switches
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
+RUN_INSTALLREQS=true
 RUN_BUILD=true
 RUN_UNINSTALL=false
 
@@ -50,6 +51,7 @@ Options:
     --phoenix_version   set the version of phoenix framework to install (windows only)
     --no_update         don't update installed packages when running installer
     --no_opts           don't install optional packages when running installer
+    --no_reqs           don't install required packages (testing only, this will break things)
     --no_wpilib         don't install wpilib
     --no_ni             don't install ni game tools (windows only)
     --no_phoenix        don't install phoenix framework (windows only)
@@ -90,6 +92,7 @@ while [[ $# -gt 0 ]]; do
             #Switch to uninstall mode
             RUN_UPDATE=false
             RUN_INSTALLOPTS=false
+            RUN_INSTALLREQS=false
             RUN_UNINSTALL=true
             INSTALL_WPILIB=false
             INSTALL_NI=false
@@ -120,6 +123,10 @@ while [[ $# -gt 0 ]]; do
         "--no_opts")
             #Toggle installing optional packages off
             RUN_INSTALLOPTS=false
+            shift
+            ;;
+        "--no_reqs")
+            RUN_INSTALLREQS=false
             shift
             ;;
         "--no_wpilib")
@@ -410,7 +417,9 @@ if $RUN_UNINSTALL ; then
         *)  error "uninstall failed with exit code $installExitCode. please open an issue on jira for assistance"
             exit $installExitCode ;; #exit if a non-0 exit code is recieved
     esac
-else
+fi
+
+if $RUN_INSTALLREQS ; then
     ok "installing required packages..."
     installReqs
 
