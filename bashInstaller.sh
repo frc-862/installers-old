@@ -7,6 +7,7 @@ OS="$(uname -s)"
 INSTALLER_VERSION="2022-3"
 WPILIB_VERSION="2022.1.1"
 NI_VERSION="22.0.0"
+PHOENIX_VERSION="5.20.2.2"
 
 #Option Defaults
 
@@ -20,10 +21,12 @@ RUN_UNINSTALL=false
 INSTALL_WPILIB=true
 INSTALL_NI=true
 INSTALL_LIGHTNING=true
+INSTALL_PHOENIX=true
 
 #Fallback switches
 FALLBACK_WPILIB=false
 FALLBACK_NI=false
+FALLBACK_PHOENIX=false
 
 #Define functions
 
@@ -44,14 +47,17 @@ Options:
     --uninstall         uninstall previously installed programs
     --wpilib_version    set the version of wpilib to install
     --ni_version        set the version of ni to install (windows only)
+    --phoenix_version   set the version of phoenix framework to install (windows only)
     --no_update         don't update installed packages when running installer
     --no_opts           don't install optional packages when running installer
     --no_wpilib         don't install wpilib
-    --no_ni             don't install ni game tools
+    --no_ni             don't install ni game tools (windows only)
+    --no_phoenix        don't install phoenix framework (windows only)
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
     --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
     --fallback_ni       use fallback downloading method for ni tools on windows (download from ni website)
+    --fallback_phoenix  use fallback donwloading method for phoenix framework on windows (download from github)
     --spoof_os          set \$OS to the provided value
 ";
 }
@@ -101,6 +107,11 @@ while [[ $# -gt 0 ]]; do
             NI_VERSION=$2
             shift 2
             ;;
+        "--phoenix_version")
+            #set phoenix framework version
+            PHOENIX_VERSION=$2
+            shift 2
+            ;;
         "--no_update")
             #Toggle updating on install off
             RUN_UPDATE=false
@@ -119,6 +130,10 @@ while [[ $# -gt 0 ]]; do
             INSTALL_NI=false
             shift
             ;;
+        "--no_phoenix")
+            INSTALL_PHOENIX=false
+            shift
+            ;;
         "--no_build")
             RUN_BUILD=false
             shift
@@ -133,6 +148,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         "--fallback_ni")
             FALLBACK_NI=true
+            shift
+            ;;
+        "--fallback_phoenix")
+            FALLBACK_PHOENIX=true
             shift
             ;;
         "--spoof_os")
@@ -216,6 +235,10 @@ case $OS in
         NI_FILENAME="ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline"
         NI_URL="https://download.ni.com/support/nipkg/products/ni-f/ni-frc-20$NI_YEAR_SHORT-game-tools/$NI_VERSION_SHORT/offline/$NI_FILENAME.iso"
 
+        #Phoenix Constants
+        PHOENIX_FILENAME="CTRE_Phoenix_Framework_v$PHOENIX_VERSION.exe"
+        PHOENIX_URL="https://github.com/CrossTheRoadElec/Phoenix-Releases/releases/download/v$PHOENIX_VERSION/$PHOENIX_FILENAME"
+
         #Package manager setup functions
         if ! has choco ; then #TODO: add chocolatey installation functionality
             ok "no chocolatey installation detected, installing chocolatey..."
@@ -261,7 +284,18 @@ case $OS in
                     choco install -y ni-frcgametools --version="$NI_VERSION"
                 fi
             fi
-            choco install -y ctre-phoenixframework;
+
+            if $INSTALL_PHOENIX ; then
+                if $FALLBACK_PHOENIX ; then
+                    if [ ! -f "./$PHOENIX_FILENAME" ] ; then
+                        curl -L "$PHOENIX_URL" --output "$PHOENIX_FILENAME"
+                    fi
+                    ok "launching phoenix installer..."
+                    "./$PHOENIX_FILENAME"
+                else
+                    choco install -y ctre-phoenixframework --version="$PHOENIX_VERSION";
+                fi
+            fi
         }
 
         uninstall() {
