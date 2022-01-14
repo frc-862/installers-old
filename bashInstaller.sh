@@ -263,8 +263,12 @@ case $OS in
 
         installReqs() {
             choco install -y openjdk11
-            if $INSTALL_WPILIB && ! $FALLBACK_WPILIB ; then
-                choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
+            if $INSTALL_WPILIB ; then
+                if $FALLBACK_WPILIB ; then
+                    true;
+                else
+                    choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
+                fi
             fi
             export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
         }
@@ -278,14 +282,14 @@ case $OS in
                 fi
 
                 if $FALLBACK_NI ; then
-                    if [ ! -f "./$NI_FILENAME.iso" ] ; then
-                        curl -L "$NI_URL" --output "$NI_FILENAME.iso"
+                    if [ ! -f "$HOME/Downloads/$NI_FILENAME.iso" ] ; then
+                        curl -L "$NI_URL" --output "$HOME/Downloads/$NI_FILENAME.iso"
                     fi
                     ok "extracting ni installer..."
-                    7z.exe x -y -o"./$NI_FILENAME" "./$NI_FILENAME.iso"
+                    7z.exe x -y -o"$HOME/Downloads/$NI_FILENAME" "$HOME/Downloads/$NI_FILENAME.iso"
 
                     ok "launching ni installer..."
-                    "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
+                    "$HOME/Downloads/$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
 
                 else
                     choco install -y ni-frcgametools --version="$NI_VERSION"
@@ -294,11 +298,11 @@ case $OS in
 
             if $INSTALL_PHOENIX ; then
                 if $FALLBACK_PHOENIX ; then
-                    if [ ! -f "./$PHOENIX_FILENAME" ] ; then
-                        curl -L "$PHOENIX_URL" --output "$PHOENIX_FILENAME"
+                    if [ ! -f "$HOME/Downloads/$PHOENIX_FILENAME" ] ; then
+                        curl -L "$PHOENIX_URL" --output "$HOME/Downloads/$PHOENIX_FILENAME"
                     fi
                     ok "launching phoenix installer..."
-                    "./$PHOENIX_FILENAME"
+                    "$HOME/Downloads/$PHOENIX_FILENAME"
                 else
                     choco install -y ctre-phoenixframework --version="$PHOENIX_VERSION";
                 fi
@@ -444,14 +448,14 @@ fi
 
 if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
     ok "downloading wpilib installer..."
-    if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
-        curl -L "$WPILIB_URL" --output "$WPILIB_FILENAME"
+    if [ ! -f "$HOME/Downloads/$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
+        curl -L "$WPILIB_URL" --output "$HOME/Downloads/$WPILIB_FILENAME"
     fi
 
     case $WPILIB_EXTENSION in #different methods for installing and running each archive
         "dmg")
             ok "Mounting wpilib installer..."
-            hdiutil attach -readonly "./$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
+            hdiutil attach -readonly "$HOME/Downloads/$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
 
             ok "Launching wpilib installer..."
             /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
@@ -460,16 +464,16 @@ if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
             hdiutil detach /Volumes/WPILibInstaller ;;
         "tar.gz")
             ok "extracting wpilib installer..."
-            tar -xvzf "./$WPILIB_FILENAME" #.tar.gz can be extracted using tar
+            tar -xvzf "$HOME/Downloads/$WPILIB_FILENAME" #.tar.gz can be extracted using tar
 
             ok "launching wpilib installer..."
-            "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
+            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
         "iso")
             ok "extracting wpilib installer..."
-            7z.exe x -y -o"./WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "./$WPILIB_FILENAME"
+            7z.exe x -y -o"$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "$HOME/Downloads/$WPILIB_FILENAME"
 
             ok "launching wpilib installer..."
-            "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
+            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
 
     esac
 fi
