@@ -263,6 +263,7 @@ case $OS in
 
         installReqs() {
             choco install -y openjdk11
+            export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
             if $INSTALL_WPILIB ; then
                 if $FALLBACK_WPILIB ; then
                     true;
@@ -270,7 +271,6 @@ case $OS in
                     choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
                 fi
             fi
-            export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
         }
 
         installOpts() {
@@ -347,7 +347,8 @@ case $OS in
                 $ROOT_STRING apt -y install git curl tar openjdk-11-jdk;
             }
 
-            if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
+            # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
+            if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then
 
                 installOpts() {
                     $ROOT_STRING apt -y install software-properties-common
@@ -516,7 +517,8 @@ fi
 if $RUN_BUILD ; then
     #Check if user has a properly set up gradle.properties file
     if [ -f "$HOME/.gradle/gradle.properties" ] ; then
-        if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] || [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
+        if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] ||
+           [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
             ok "gradle.properties properly configured"
         else
             warn "gradle.properties missing one or more required values"
