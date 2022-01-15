@@ -22,13 +22,13 @@ ok "Starting install (check back here in about 10 minutes)..."
 warn "Please try not to touch the mouse while the installer is running. (a macro is setup to do everything for you)"
 
 #Install Chocolatey
-if (-not has "choco") {
+if (-not (has "choco")) {
     ok "Installing Chocolatey..."
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
 #Install git in order to use git bash
-if (-not has "git") {
+if (-not (has "git")) {
     ok "Installing git..."
     choco install -y git
     refreshenv
