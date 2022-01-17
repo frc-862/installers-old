@@ -4,15 +4,17 @@
 OS="$(uname -s)"
 
 #Version Constants
-INSTALLER_VERSION="2022-3"
+INSTALLER_VERSION="2022-4 DEV"
 WPILIB_VERSION="2022.1.1"
 NI_VERSION="22.0.0"
+PHOENIX_VERSION="5.20.2.2"
 
 #Option Defaults
 
 #Function switches
 RUN_UPDATE=true
 RUN_INSTALLOPTS=true
+RUN_INSTALLREQS=true
 RUN_BUILD=true
 RUN_UNINSTALL=false
 
@@ -20,10 +22,12 @@ RUN_UNINSTALL=false
 INSTALL_WPILIB=true
 INSTALL_NI=true
 INSTALL_LIGHTNING=true
+INSTALL_PHOENIX=true
 
 #Fallback switches
 FALLBACK_WPILIB=false
 FALLBACK_NI=false
+FALLBACK_PHOENIX=false
 
 #Define functions
 
@@ -44,14 +48,18 @@ Options:
     --uninstall         uninstall previously installed programs
     --wpilib_version    set the version of wpilib to install
     --ni_version        set the version of ni to install (windows only)
+    --phoenix_version   set the version of phoenix framework to install (windows only)
     --no_update         don't update installed packages when running installer
     --no_opts           don't install optional packages when running installer
+    --no_reqs           don't install required packages (testing only, this will break things)
     --no_wpilib         don't install wpilib
-    --no_ni             don't install ni game tools
+    --no_ni             don't install ni game tools (windows only)
+    --no_phoenix        don't install phoenix framework (windows only)
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
     --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
     --fallback_ni       use fallback downloading method for ni tools on windows (download from ni website)
+    --fallback_phoenix  use fallback donwloading method for phoenix framework on windows (download from github)
     --spoof_os          set \$OS to the provided value
 ";
 }
@@ -84,6 +92,7 @@ while [[ $# -gt 0 ]]; do
             #Switch to uninstall mode
             RUN_UPDATE=false
             RUN_INSTALLOPTS=false
+            RUN_INSTALLREQS=false
             RUN_UNINSTALL=true
             INSTALL_WPILIB=false
             INSTALL_NI=false
@@ -101,6 +110,11 @@ while [[ $# -gt 0 ]]; do
             NI_VERSION=$2
             shift 2
             ;;
+        "--phoenix_version")
+            #set phoenix framework version
+            PHOENIX_VERSION=$2
+            shift 2
+            ;;
         "--no_update")
             #Toggle updating on install off
             RUN_UPDATE=false
@@ -111,12 +125,20 @@ while [[ $# -gt 0 ]]; do
             RUN_INSTALLOPTS=false
             shift
             ;;
+        "--no_reqs")
+            RUN_INSTALLREQS=false
+            shift
+            ;;
         "--no_wpilib")
             INSTALL_WPILIB=false
             shift
             ;;
         "--no_ni")
             INSTALL_NI=false
+            shift
+            ;;
+        "--no_phoenix")
+            INSTALL_PHOENIX=false
             shift
             ;;
         "--no_build")
@@ -133,6 +155,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         "--fallback_ni")
             FALLBACK_NI=true
+            shift
+            ;;
+        "--fallback_phoenix")
+            FALLBACK_PHOENIX=true
             shift
             ;;
         "--spoof_os")
@@ -216,6 +242,10 @@ case $OS in
         NI_FILENAME="ni-frc-20$NI_YEAR_SHORT-game-tools_${NI_VERSION}_offline"
         NI_URL="https://download.ni.com/support/nipkg/products/ni-f/ni-frc-20$NI_YEAR_SHORT-game-tools/$NI_VERSION_SHORT/offline/$NI_FILENAME.iso"
 
+        #Phoenix Constants
+        PHOENIX_FILENAME="CTRE_Phoenix_Framework_v$PHOENIX_VERSION.exe"
+        PHOENIX_URL="https://github.com/CrossTheRoadElec/Phoenix-Releases/releases/download/v$PHOENIX_VERSION/$PHOENIX_FILENAME"
+
         #Package manager setup functions
         if ! has choco ; then #TODO: add chocolatey installation functionality
             ok "no chocolatey installation detected, installing chocolatey..."
@@ -233,10 +263,14 @@ case $OS in
 
         installReqs() {
             choco install -y openjdk11
-            if $INSTALL_WPILIB && ! $FALLBACK_WPILIB ; then
-                choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
-            fi
             export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
+            if $INSTALL_WPILIB ; then
+                if $FALLBACK_WPILIB ; then
+                    true;
+                else
+                    choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
+                fi
+            fi
         }
 
         installOpts() {
@@ -248,20 +282,31 @@ case $OS in
                 fi
 
                 if $FALLBACK_NI ; then
-                    if [ ! -f "./$NI_FILENAME.iso" ] ; then
-                        curl -L "$NI_URL" --output "$NI_FILENAME.iso"
+                    if [ ! -f "$HOME/Downloads/$NI_FILENAME.iso" ] ; then
+                        curl -L "$NI_URL" --output "$HOME/Downloads/$NI_FILENAME.iso"
                     fi
                     ok "extracting ni installer..."
-                    7z.exe x -y -o"./$NI_FILENAME" "./$NI_FILENAME.iso"
+                    7z.exe x -y -o"$HOME/Downloads/$NI_FILENAME" "$HOME/Downloads/$NI_FILENAME.iso"
 
                     ok "launching ni installer..."
-                    "$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
+                    "$HOME/Downloads/$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
 
                 else
                     choco install -y ni-frcgametools --version="$NI_VERSION"
                 fi
             fi
-            choco install -y ctre-phoenixframework;
+
+            if $INSTALL_PHOENIX ; then
+                if $FALLBACK_PHOENIX ; then
+                    if [ ! -f "$HOME/Downloads/$PHOENIX_FILENAME" ] ; then
+                        curl -L "$PHOENIX_URL" --output "$HOME/Downloads/$PHOENIX_FILENAME"
+                    fi
+                    ok "launching phoenix installer..."
+                    "$HOME/Downloads/$PHOENIX_FILENAME"
+                else
+                    choco install -y ctre-phoenixframework --version="$PHOENIX_VERSION";
+                fi
+            fi
         }
 
         uninstall() {
@@ -302,7 +347,8 @@ case $OS in
                 $ROOT_STRING apt -y install git curl tar openjdk-11-jdk;
             }
 
-            if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
+            # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
+            if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then
 
                 installOpts() {
                     $ROOT_STRING apt -y install software-properties-common
@@ -376,7 +422,9 @@ if $RUN_UNINSTALL ; then
         *)  error "uninstall failed with exit code $installExitCode. please open an issue on jira for assistance"
             exit $installExitCode ;; #exit if a non-0 exit code is recieved
     esac
-else
+fi
+
+if $RUN_INSTALLREQS ; then
     ok "installing required packages..."
     installReqs
 
@@ -401,14 +449,14 @@ fi
 
 if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
     ok "downloading wpilib installer..."
-    if [ ! -f "./$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
-        curl -L "$WPILIB_URL" --output "$WPILIB_FILENAME"
+    if [ ! -f "$HOME/Downloads/$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
+        curl -L "$WPILIB_URL" --output "$HOME/Downloads/$WPILIB_FILENAME"
     fi
 
     case $WPILIB_EXTENSION in #different methods for installing and running each archive
         "dmg")
             ok "Mounting wpilib installer..."
-            hdiutil attach -readonly "./$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
+            hdiutil attach -readonly "$HOME/Downloads/$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
 
             ok "Launching wpilib installer..."
             /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
@@ -417,16 +465,16 @@ if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
             hdiutil detach /Volumes/WPILibInstaller ;;
         "tar.gz")
             ok "extracting wpilib installer..."
-            tar -xvzf "./$WPILIB_FILENAME" #.tar.gz can be extracted using tar
+            tar -xvzf "$HOME/Downloads/$WPILIB_FILENAME" #.tar.gz can be extracted using tar
 
             ok "launching wpilib installer..."
-            "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
+            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
         "iso")
             ok "extracting wpilib installer..."
-            7z.exe x -y -o"./WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "./$WPILIB_FILENAME"
+            7z.exe x -y -o"$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "$HOME/Downloads/$WPILIB_FILENAME"
 
             ok "launching wpilib installer..."
-            "./WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
+            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
 
     esac
 fi
@@ -469,7 +517,8 @@ fi
 if $RUN_BUILD ; then
     #Check if user has a properly set up gradle.properties file
     if [ -f "$HOME/.gradle/gradle.properties" ] ; then
-        if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] || [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
+        if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] ||
+           [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
             ok "gradle.properties properly configured"
         else
             warn "gradle.properties missing one or more required values"

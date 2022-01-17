@@ -1,6 +1,7 @@
 function ok { Write-Host "OK: $args" -ForegroundColor Green }
 function warn { Write-Host "WARNING: $args" -ForegroundColor Yellow }
 function showError { Write-Host "ERROR: $args" -ForegroundColor Red } #use showError instead of error to avoid issues when overriding built-in cmdlets
+function has { Get-Command "$args" -ErrorAction SilentlyContinue }
 
 # Run checks to make sure the installer can install
 #requires -version 4.0
@@ -21,17 +22,21 @@ ok "Starting install (check back here in about 10 minutes)..."
 warn "Please try not to touch the mouse while the installer is running. (a macro is setup to do everything for you)"
 
 #Install Chocolatey
-ok "Installing Chocolatey..."
-Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+if (-not (has "choco")) {
+    ok "Installing Chocolatey..."
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+}
 
 #Install git in order to use git bash
-ok "Installing git..."
-choco install -y git
-refreshenv
+if (-not (has "git")) {
+    ok "Installing git..."
+    choco install -y git
+    refreshenv
+}
 
 #Run the bash script through git bash
 & "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh" $args
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
 $env:JAVA_HOME = "C:\Program Files\OpenJDK\openjdk-11.0.13_8"
-& "$HOME/Documents/lightning/gradlew.bat" "build"
+& "$HOME/Documents/lightning/gradlew.bat" "-p" "$HOME/Documents/lightning" "build"
