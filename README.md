@@ -37,7 +37,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
 Name | Version | Use
 --- | --- | ---
 [openjdk11](https://github.com/openjdk/) | 11.0.13.8 | the java version we use to write code
-[wpilib](https://github.com/wpilibsuite/allwpilib) | 2022.1.1 | a single image containing vs code, a jdk, and all of the wpilib tools
+[wpilib](https://github.com/wpilibsuite/allwpilib) | 2022.2.1 | a single image containing vs code, a jdk, and all of the wpilib tools
 [lazygit](https://github.com/jesseduffield/lazygit) | 0.32.1 | a nice cui tool for working with git
 [ni-frcgametools](https://www.ni.com/en-us/support/downloads/drivers/download.frc-game-tools.html) | 22.0.0 | a package of tools including the driver station and roborio imaging tool
 [ctre-phoenixframework](https://github.com/CrossTheRoadElec/Phoenix-Releases/releases) | 5.20.2.2 | a tool for managing ctre devices over CAN
@@ -58,7 +58,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 and finally, execute
 
 ```PowerShell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/powershellInstaller.ps1" -OutFile ".\install.ps1"; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh" -OutFile ".\bashInstaller.sh"; .\install.ps1; rm .\install.ps1; rm .\bashInstaller.sh
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/powershellInstaller.ps1" -OutFile ".\install.ps1"; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh" -OutFile ".\bashInstaller.sh"; .\install.ps1 --fallback_wpilib; rm .\install.ps1; rm .\bashInstaller.sh
 ```
 
 (this is a convenient one line script to download and run the installer.)
