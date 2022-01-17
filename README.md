@@ -2,7 +2,7 @@
 
 These scripts can be used to install the essential software for [FRC](https://www.firstinspires.org/robotics/frc) code development.
 
-**If You're using Macos, go to the Unix Installation Section**
+**If You're using Macos, go to the [Unix Installation](#unix-installation) Section**
 
 # Table of Contents
 
