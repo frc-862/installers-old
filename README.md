@@ -2,43 +2,31 @@
 
 These scripts can be used to install the essential software for [FRC](https://www.firstinspires.org/robotics/frc) code development.
 
-### Quick access
-If you have a windows machine, click [here](#windows-installation). If you have a macbook or other linux based machine, click [here](#unix-installation). If you are having trouble with the "WPI Installer", click [here](#wpilib-install-proccess).
+**If You're using Macos, go to the Unix Installation Section**
 
 # Table of Contents
 
 - [FRC Installers](#frc-installers)
 - [Table of Contents](#table-of-contents)
-- [What You Need](#what-you-need)
-    - [Unix Requirements](#unix-requirements)
-    - [Windows Requirements](#windows-requirements)
-- [Included Packages](#included-packages)
-    - [Unix](#unix)
-    - [Windows](#windows)
 - [Windows Installation](#windows-installation)
+    - [What You Need](#what-you-need)
+    - [Included Packages](#included-packages)
+    - [Powershell Installation](#powershell-installation)
 - [Unix Installation](#unix-installation)
+    - [What You Need](#what-you-need-1)
+    - [Included Packages](#included-packages-1)
+    - [Bash Installation](#bash-installation)
     - [WPILib Install Proccess](#wpilib-install-proccess)
 - [GPR Key Instructions](#gpr-key-instructions)
 - [SSH Key Instructions](#ssh-key-instructions)
 
-# What You Need
+# Windows Installation
 
-## Unix Requirements
-
-(Unix means debian, ubuntu, arch, macos, etc.)
-
-- Software:
-    - [bash](https://www.gnu.org/software/bash/) (likely already installed)
-    - [curl](https://curl.se/download.html) (used for one line installation)
-    - Administrator privileges (not required on mac)
-- Hardware:
-    - ~2 gigabytes of space
-
-## Windows Requirements
+## What you need
 
 - Software:
     - [PowerShell](https://github.com/PowerShell/PowerShell) (v2 or higher)
-    - [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework) (version ≥ 4)
+    - [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework) (version 4 or higher)
     - Administrator privileges
 - Hardware
     - 10-30 minutes of free time (may vary based on internet speed)
@@ -46,31 +34,19 @@ If you have a windows machine, click [here](#windows-installation). If you have 
 
 # Included Packages
 
-## Unix
-
-Name | Use
---- | ---
-[git](https://git-scm.com/) | The version control system that we use to manage all of our code.
-[curl](https://curl.se/download.html) | A common utility used in command lines or scripts to transfer data.
-[tar](https://www.gnu.org/software/tar/) | used to extract wpilib image
-[lazygit](https://github.com/jesseduffield/lazygit) | ubuntu only, a nice cui tool for working with git
-[wpilib](https://github.com/wpilibsuite/allwpilib) | a single image containing vs code, a jdk, and all of the wpilib tools
-
-## Windows
-
-Name | Use
---- | ---
-[openjdk11](https://github.com/openjdk/)
-[wpilib](https://github.com/wpilibsuite/allwpilib) | a single image containing vs code, a jdk, and all of the wpilib tools
-[lazygit](https://github.com/jesseduffield/lazygit) | a nice cui tool for working with git
-[ni-frcgametools](https://www.ni.com/en-us/support/downloads/drivers/download.frc-game-tools.html) | a package of tools including the driver station and roborio imaging tool
-[ctre-phoenixframework](https://github.com/CrossTheRoadElec/Phoenix-Releases/releases) | a tool for managing ctre devices over CAN
+Name | Version | Use
+--- | --- | ---
+[openjdk11](https://github.com/openjdk/) | 11.0.13.8 | the java version we use to write code
+[wpilib](https://github.com/wpilibsuite/allwpilib) | 2022.1.1 | a single image containing vs code, a jdk, and all of the wpilib tools
+[lazygit](https://github.com/jesseduffield/lazygit) | 0.32.1 | a nice cui tool for working with git
+[ni-frcgametools](https://www.ni.com/en-us/support/downloads/drivers/download.frc-game-tools.html) | 22.0.0 | a package of tools including the driver station and roborio imaging tool
+[ctre-phoenixframework](https://github.com/CrossTheRoadElec/Phoenix-Releases/releases) | 5.20.2.2 | a tool for managing ctre devices over CAN
 
 At the end of all the installations, the script clones the [lightning](https://github.com/frc-862/lightning) repository into `~/Documents/lightning`
 
 Finally, the script builds the lightning repository. If any errors occur feel free to make a JIRA ticket or put a note on discord, and someone will help you out.
 
-# Windows Installation
+# Powershell Installation
 
 Start by opening powershell as an administrator.  
 Then, to allow powershell script execution, execute
@@ -93,7 +69,30 @@ The only time you may need to click is during the phoenix install, where you wil
 
 # Unix Installation
 
-For systems with bash, use the `bashInstaller.sh` script.  
+(support for macos, debian based linux distros, and arch based linux distros)
+
+## What You Need
+
+- Software:
+    - [bash](https://www.gnu.org/software/bash/) (likely already installed)
+    - [curl](https://curl.se/download.html) (used for one line installation)
+    - Administrator privileges (not required on mac)
+- Hardware:
+    - ~2 gigabytes of space
+
+## Included Packages
+
+Name | Use
+--- | ---
+[git](https://git-scm.com/) | The version control system that we use to manage all of our code.
+[curl](https://curl.se/download.html) | A common utility used in command lines or scripts to transfer data.
+[tar](https://www.gnu.org/software/tar/) | used to extract wpilib image
+[lazygit](https://github.com/jesseduffield/lazygit) | ubuntu only, a nice cui tool for working with git
+[wpilib](https://github.com/wpilibsuite/allwpilib) | a single image containing vs code, a jdk, and all of the wpilib tools
+
+## Bash Installation
+
+to run the installer, run the following command in a terminal window:
 
 ```bash
 bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/bashInstaller.sh)
