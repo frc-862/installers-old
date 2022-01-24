@@ -32,7 +32,7 @@ These scripts can be used to install the essential software for [FRC](https://ww
     - 10-30 minutes of free time (may vary based on internet speed)
     - 15-25 gigabytes of space
 
-# Included Packages
+## Included Packages
 
 Name | Version | Use
 --- | --- | ---
@@ -46,7 +46,7 @@ At the end of all the installations, the script clones the [lightning](https://g
 
 Finally, the script builds the lightning repository. If any errors occur feel free to make a JIRA ticket or put a note on discord, and someone will help you out.
 
-# Powershell Installation
+## Powershell Installation
 
 Start by opening powershell as an administrator.  
 Then, to allow powershell script execution, execute
@@ -101,22 +101,22 @@ bash <(curl https://raw.githubusercontent.com/frc-862/installers/main/bashInstal
 ## WPILib Install Proccess
 
 After the installer downloads the WPILib installer, (this can take several minutes on slower connections) a new window will launch that will look something like this:  
-![wpilib1.png](https://github.com/frc-862/installers/raw/main/assets/wpilib1.png)
+![wpilib1.png](./assets/wpilib1.png)
 
 Press start, and you will see an install mode screen:  
-![wpilib2.png](https://github.com/frc-862/installers/raw/main/assets/wpilib2.png)  
+![wpilib2.png](./assets/wpilib2.png)  
 
 Select "Everything" and press "Install for this User"
 
 On the next screen, you should see vscode install options:  
-![wpilib3.png](https://github.com/frc-862/installers/raw/main/assets/wpilib3.png)
+![wpilib3.png](./assets/wpilib3.png)
 
 *If you already have **THE CURRENT WPILIB VERSION** of vs code, you can press "Skip and don't use VS Code" and continue.*
 
 Otherwise, press "Download for this computer only" to install.
 
 If nothing goes wrong, you should see a screen like this:  
-![wpilib4.png](https://github.com/frc-862/installers/raw/main/assets/wpilib4.png)
+![wpilib4.png](./assets/wpilib4.png)
 
 Press Finish, and the installer script will continue.
 
@@ -125,17 +125,17 @@ Press Finish, and the installer script will continue.
 Some of our robot projects depend on [lightning](https://github.com/frc-862/lightning), which is published on the GitHub Package Registry (we will just call this the "gpr"). Unfortunately, the gpr requires authentication to use public repositories (not sure why, or when this will change). There are instructions for how to set this up below.
 
 To begin, open settings after clicking on your profile picture.  
-![gpr1.png](https://github.com/frc-862/installers/raw/main/assets/gpr1.png)  
+![gpr1.png](./assets/gpr1.png)  
 Then, click on "Developer settings", near the end of the page.  
-![gpr2.png](https://github.com/frc-862/installers/raw/main/assets/gpr2.png)  
+![gpr2.png](./assets/gpr2.png)  
 Afterward, click on "Personal access tokens".  
-![gpr3.png](https://github.com/frc-862/installers/raw/main/assets/gpr3.png)  
+![gpr3.png](./assets/gpr3.png)  
 Next, click on "Generate new token" to create a token.  
-![gpr4.png](https://github.com/frc-862/installers/raw/main/assets/gpr4.png)  
+![gpr4.png](./assets/gpr4.png)  
 Name your token something memorable, or at least be able to identify the key.  
 For the Expiration, you can set it to expire never, but as advised by GitHub, I would set it to 30-90 days and follow these instructions again when it expires. However, it is usually fine to set it to not expire.  
 Finally, make sure to check the `write:packages` and `delete:packages` scopes (The repo scope will automagically be checked).  
-![gpr5.png](https://github.com/frc-862/installers/raw/main/assets/gpr5.png)  
+![gpr5.png](./assets/gpr5.png)  
 After clicking on "Generate token" at the end of the page, you will get prompted to copy the key for the token. Make sure the copy this and save it for the next steps.  
 If you already ran the install script, you should have a `.gradle/` folder in your home directory. Otherwise, create this folder.  
 Navigate into the folder and open the file `gradle.properties` in your favorite text editor (if it's not there, just create a new file with the same name).  
