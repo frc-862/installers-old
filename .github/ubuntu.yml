@@ -1,0 +1,7 @@
+name: ubuntu
+on: [push]
+jobs:
+  Install:
+    runs-on: ubuntu-latest
+    steps:
+      ./bashInstaller --verbose --no_update
