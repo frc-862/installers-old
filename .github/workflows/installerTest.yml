@@ -24,4 +24,4 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v2
       - name: run bash installer
-        run: ./bashInstaller.sh --verbose --headless --no_update
+        run: ./powershellInstaller.sh --verbose --headless --no_update
