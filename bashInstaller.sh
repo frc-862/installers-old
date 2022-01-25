@@ -317,11 +317,11 @@ case $OS in
         update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
 
         pkgHas() {
-            choco list -lo --pre
+            [[ "$(choco list -lo --pre)" == *"$1"* ]]
         }
 
         pkgVersion() {
-            cver "$1"
+            "$(choco list -lo --pre)" | grep "$1" | sed "s/$1 //"
         }
 
         installReqs() {
