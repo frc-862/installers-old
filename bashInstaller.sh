@@ -37,31 +37,42 @@ has() { type -p "$1" &> /dev/null; }
 
 #showHelp: show help information for the program
 showHelp() { printf "Usage:
-    bashInstaller --option \"value\" --option \"value\"
+    bashInstaller --option1 --option2 \"value\"
 
 Description:
     bashInstaller is a script to automatically install tools used for developing code for FIRST Robotics Competition.
 
-Options:
+General Options:
     --help, -h          show this help message
     --verbose, -v       give a more verbose output
     --version, -V       show program version
     --uninstall         uninstall previously installed programs
+
+Wpilib Options:
     --wpilib_version    set the version of wpilib to install
+    --no_wpilib         don't install wpilib
+    --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
+
+Ni options:
     --ni_version        set the version of ni to install (windows only)
+    --no_ni             don't install ni game tools (windows only)
+    --fallback_ni       use fallback downloading method for ni tools on windows (download from ni website)
+
+Phoenix options:
     --phoenix_version   set the version of phoenix framework to install (windows only)
+    --no_phoenix        don't install phoenix framework (windows only)
+    --fallback_phoenix  use fallback donwloading method for phoenix framework on windows (download from github)
+
+Rev options:
+    --rev_version       set the version of the rev hardware client to install (windows only)
+    --no_rev            don't install rev hardware client (windows only)
+
+Developer options:
     --no_update         don't update installed packages when running installer
     --no_opts           don't install optional packages when running installer
-    --no_reqs           don't install required packages (testing only, this will break things)
-    --no_wpilib         don't install wpilib
-    --no_ni             don't install ni game tools (windows only)
-    --no_phoenix        don't install phoenix framework (windows only)
-    --no_rev            don't install rev hardware client (windows only)
+    --no_reqs           don't install required packages
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
-    --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
-    --fallback_ni       use fallback downloading method for ni tools on windows (download from ni website)
-    --fallback_phoenix  use fallback donwloading method for phoenix framework on windows (download from github)
     --spoof_os          set \$OS to the provided value
 ";
 }
@@ -146,6 +157,10 @@ while [[ $# -gt 0 ]]; do
         "--no_rev")
             INSTALL_REV=false
             shift
+            ;;
+        "--rev_version")
+            REV_VERSION=$2
+            shift 2
             ;;
         "--no_build")
             RUN_BUILD=false
@@ -258,6 +273,7 @@ case $OS in
 
         #Package manager setup functions
         if ! has choco ; then #TODO: add chocolatey installation functionality
+            ok "No chocolatey installation found. installing chocolatey..."
             powershell.exe -ExecutionPolicy Bypass -command "iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
         fi
 
