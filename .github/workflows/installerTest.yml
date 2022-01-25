@@ -14,5 +14,5 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v2
-      - name: run bah installer
+      - name: run bash installer
         run: ./bashInstaller.sh --verbose --headless --no_update

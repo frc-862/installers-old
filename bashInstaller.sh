@@ -229,6 +229,9 @@ case $OS in
         if ! has brew ; then
             ok "no brew installation detected, installing brew..."
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            if ! [[ "$(brew tap)" == *"homebrew/cask"* ]] ; then
+                brew tap "homebrew/cask"
+            fi
         fi
         #define functions for each package manager
         #these functions are also defined for all other package managers
