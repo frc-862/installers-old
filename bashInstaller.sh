@@ -325,9 +325,12 @@ case $OS in
         }
 
         installReqs() {
-            choco install -y openjdk11
-            export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
-            if $INSTALL_WPILIB ; then
+            if ! pkgHas "openjdk11" ; then
+                choco install -y openjdk11
+                export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
+            fi
+
+            if $INSTALL_WPILIB && ! pkgHas "wpilib" ; then
                 if $FALLBACK_WPILIB ; then
                     true;
                 else
@@ -338,8 +341,11 @@ case $OS in
 
         installOpts() {
             #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-            choco install -y lazygit;
-            if $INSTALL_NI ; then
+            if ! pkgHas "lazygit" ; then
+                choco install -y lazygit;
+            fi
+
+            if $INSTALL_NI && ! pkgHas "ni-frcgametools" ; then
                 if $FALLBACK_WPILIB || $FALLBACK_NI ; then
                     choco install -y 7zip
                 fi
@@ -359,7 +365,7 @@ case $OS in
                 fi
             fi
 
-            if $INSTALL_PHOENIX ; then
+            if $INSTALL_PHOENIX && ! pkgHas "ctre-phoenixframework" ; then
                 if $FALLBACK_PHOENIX ; then
                     if [ ! -f "$HOME/Downloads/$PHOENIX_FILENAME" ] ; then
                         curl -L "$PHOENIX_URL" --output "$HOME/Downloads/$PHOENIX_FILENAME"
