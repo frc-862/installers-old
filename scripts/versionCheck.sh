@@ -1,10 +1,55 @@
 #!/bin/bash
 
+
+#TODO: merge this script into the main bashInstaller script
+
 #required packages:
 #curl
 #grep
 #sed
 #coreutils obv
+
+PRINT_VERSIONS=true
+
+showHelp() { printf "Usage:
+    versionCheck --option \"value\" --option \"value\"
+
+Description:
+    versionCheck is a script to get the latest version of the packages installed by bashInstaller
+
+Options:
+    --help, -h          show this help message
+    --verbose, -v       toggle verbose output on
+    --print             print latest versions to screen (default)
+    --write             write latest versions to config file
+"
+}
+
+#Interpret parameters
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        "-h"|"--help")
+            #Display Help message and exit
+            showHelp
+            exit 0
+            ;;
+        "-v"|"--verbose")
+            #Toggle verbose output on
+            set -x
+            shift
+            ;;
+        "--print")
+            #print versions to screen
+            PRINT_VERSIONS=true
+            shift
+            ;;
+        "--write")
+            #save versions to config file
+            PRINT_VERSIONS=false
+            shift
+            ;;
+    esac
+done
 
 latestGithubRelease() {
     curl --silent "https://api.github.com/repos/$1/$2/releases/latest" | # Get latest release from GitHub api
@@ -37,7 +82,20 @@ latestNI() {
     head -n1 # grab the first item, which will be the latest version
 }
 
-printf "Latest Wpilib: $(latestWpilib)\n"
-printf "Latest Phoenix: $(latestPhoenix)\n"
-printf "Latest Rev: $(latestRev)\n"
-printf "Latest NI Tools: $(latestNI)\n"
+WPILIB_VERSION=$(latestWpilib)
+PHOENIX_VERSION=$(latestPhoenix)
+REV_VERSION=$(latestRev)
+NI_VERSION=$(latestNI)
+
+if $PRINT_VERSIONS ; then
+    printf "Wpilib: %s\n" "$WPILIB_VERSION"
+    printf "Phoenix: %s\n" "$PHOENIX_VERSION"
+    printf "Rev: %s\n" "$REV_VERSION"
+    printf "NI Tools: %s\n" "$NI_VERSION"
+else
+    printf "WPILIB_VERSION=%s
+PHOENIX_VERSION=%s
+REV_VERSION=%s
+NI_VERSION=%s
+" "$WPILIB_VERSION" "$PHOENIX_VERSION" "$REV_VERSION" "$NI_VERSION" > "../bashInstaller.conf"
+fi
