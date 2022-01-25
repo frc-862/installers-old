@@ -23,5 +23,6 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v2
-      - name: run bash installer
+      - name: run powershell installer
+        shell: pwsh
         run: ./powershellInstaller.sh --verbose --headless --no_update
