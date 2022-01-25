@@ -231,9 +231,9 @@ case $OS in
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         fi
 
-        #ensure brew casks are tapped on install
-        if ! [[ "$(brew tap)" == *"homebrew/cask"* ]] ; then
-            brew tap "homebrew/cask"
+        #ensure brew cask versions are tapped on install
+        if ! [[ "$(brew tap)" == *"homebrew/cask-versions"* ]] ; then
+            brew tap "homebrew/cask-versions"
         fi
         #define functions for each package manager
         #these functions are also defined for all other package managers
