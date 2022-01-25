@@ -661,7 +661,7 @@ if $RUN_BUILD ; then
         exit 0
     fi
 
-    "$HOME/Documents/lightning/gradlew" -i -p "$HOME/Documents/lightning" build
+    "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
 
     buildExitCode=$?
     case $buildExitCode in

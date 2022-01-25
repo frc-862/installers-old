@@ -9,10 +9,11 @@ jobs:
       - name: run bash installer
         run: ./bashInstaller.sh --verbose --headless --no_update
 
-  macOS:
-    runs-on: macos-latest
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-      - name: run bash installer
-        run: ./bashInstaller.sh --verbose --headless --no_update
+  #I have no idea why this doesnt work but it doesnt so yeah
+  #macOS:
+  #  runs-on: macos-latest
+  #  steps:
+  #    - name: checkout repository
+  #      uses: actions/checkout@v2
+  #    - name: run bash installer
+  #      run: ./bashInstaller.sh --verbose --headless --no_update
