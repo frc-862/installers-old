@@ -244,7 +244,7 @@ case $OS in
 
         #installReqs: install required packages
         installReqs() {
-            if ! pkgHas git ; then
+            if ! has git ; then
                 brew install git
             fi
 
