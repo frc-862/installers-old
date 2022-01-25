@@ -1,0 +1,8 @@
+name: ubuntu
+on: [push]
+jobs:
+  Install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: run bash installer
+        run: ./bashInstaller.sh --verbose --no_update --no_wpilib
