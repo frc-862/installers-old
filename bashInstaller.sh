@@ -254,7 +254,7 @@ case $OS in
 
         #Rev Constants
         REV_FILENAME="REV-Hardware-Client-Setup-$REV_VERSION.exe"
-        REV_URL="https://github.com/REVrobotics/REV-Software-Binaries/releases/download/rhc-$REV_VERSION/$REV_VERSION"
+        REV_URL="https://github.com/REVrobotics/REV-Software-Binaries/releases/download/rhc-$REV_VERSION/$REV_FILENAME"
 
         #Package manager setup functions
         if ! has choco ; then #TODO: add chocolatey installation functionality
