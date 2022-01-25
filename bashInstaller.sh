@@ -258,15 +258,7 @@ case $OS in
 
         #Package manager setup functions
         if ! has choco ; then #TODO: add chocolatey installation functionality
-            ok "no chocolatey installation detected, installing chocolatey..."
-            error "sorry, installing chocolatey from git bash hasn't been implemented yet :("
-            exit 1
-            #powershell.exe -ExecutionPolicy Bypass -NoProfile
-            #requires -version 4.0
-            #requires -RunAsAdministrator
-            #Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-            #choco install -y git
-            #refreshenv
+            powershell.exe -ExecutionPolicy Bypass -command "iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
         fi
 
         update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
