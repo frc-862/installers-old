@@ -4,5 +4,7 @@ jobs:
   Install:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
       - name: run bash installer
         run: ./bashInstaller.sh --verbose --no_update --no_wpilib
