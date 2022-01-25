@@ -190,6 +190,9 @@ while [[ $# -gt 0 ]]; do
             ;;
         "--headless")
             INSTALL_WPILIB=false
+            INSTALL_NI=false
+            INSTALL_PHOENIX=false
+            INSTALL_REV=false
             SKIP_DEVWARN=true
             shift
             ;;

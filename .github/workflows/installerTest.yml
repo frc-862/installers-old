@@ -17,3 +17,11 @@ jobs:
   #      uses: actions/checkout@v2
   #    - name: run bash installer
   #      run: ./bashInstaller.sh --verbose --headless --no_update
+
+  Windows:
+    runs-on: windows-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: run bash installer
+        run: ./bashInstaller.sh --verbose --headless --no_update
