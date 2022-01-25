@@ -25,4 +25,4 @@ jobs:
         uses: actions/checkout@v2
       - name: run powershell installer
         shell: pwsh
-        run: ./powershellInstaller.sh --verbose --headless --no_update
+        run: .\powershellInstaller.sh --verbose --headless --no_update
