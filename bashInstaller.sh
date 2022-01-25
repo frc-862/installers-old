@@ -225,6 +225,17 @@ case $OS in
         fi
         #define functions for each package manager
         #these functions are also defined for all other package managers
+
+        #pkgHas: check if a provided package name is installed
+        pkgHas() {
+            [[ $(brew list) == *"$1"* ]]
+        }
+
+        #pkgVersion: get the latest availible version of a provided package
+        pkgVersion() {
+            brew info "$1" | grep "stable" | grep -Eo "([0-9]{1,}\.)+[0-9]{1,}"
+        }
+
         #update: get the latest version of all installed packages
         update() {
             brew update;
@@ -233,17 +244,31 @@ case $OS in
 
         #installReqs: install required packages
         installReqs() {
-            brew install git microsoft-openjdk11;
+            if ! pkgHas git ; then
+                brew install git
+            fi
+
+            if ! pkgHas microsoft-openjdk11 ; then
+                brew install microsoft-openjdk11
+            fi
         }
 
         #installOpts: install optional packages
         installOpts() {
-            brew install lazygit;
+            if ! pkgHas lazygit ; then
+                brew install lazygit;
+            fi
         }
 
         #uninstall: remove all previosuly installed programs
         uninstall() {
-            brew uninstall git lazygit
+            if pkgHas git ; then
+                brew uninstall git
+            fi
+
+            if pkgHas lazygit ; then
+                brew uninstall lazygit
+            fi
         }
 
         #PKG_MANAGER: the name of the detected package manager
@@ -278,6 +303,14 @@ case $OS in
         fi
 
         update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
+
+        pkgHas() {
+            choco list -lo --pre
+        }
+
+        pkgVersion() {
+            cver "$1"
+        }
 
         installReqs() {
             choco install -y openjdk11
@@ -363,6 +396,13 @@ case $OS in
         WPILIB_EXTENSION="tar.gz"
 
         if has apt ; then
+            pkgHas() {
+                [[ $(apt list "$1") == *"installed"* ]]
+            }
+
+            pkgVersion() {
+                apt show "$1" | grep "Version:" | sed "s/Version: //"
+            }
 
             update() {
                 $ROOT_STRING apt update;
@@ -370,50 +410,98 @@ case $OS in
             }
 
             installReqs() {
-                $ROOT_STRING apt -y install git curl tar openjdk-11-jdk;
+                if ! pkgHas "git" ; then
+                    $ROOT_STRING apt -y install git
+                fi
+
+                if ! pkgHas "curl" ; then
+                    $ROOT_STRING apt -y install curl
+                fi
+
+                if ! pkgHas "tar" ; then
+                    $ROOT_STRING apt -y install tar
+                fi
+
+                if ! pkgHas "openjdk-11-jdk" ; then
+                    $ROOT_STRING apt -y install openjdk-11-jdk
+                fi
+            }
+
+            uninstall() {
+                if pkgHas "git" ; then
+                    $ROOT_STRING apt -y purge git
+                fi
+
+                if pkgHas "lazygit" ; then
+                    $ROOT_STRING apt -y purge openjdk-11-jdk
+                fi
             }
 
             # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
             if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then
 
                 installOpts() {
-                    $ROOT_STRING apt -y install software-properties-common
-                    $ROOT_STRING add-apt-repository "ppa:lazygit-team/release"
-                    #check no_update flag here and give a warning since it's required
-                    $ROOT_STRING apt -y update
-                    $ROOT_STRING apt -y install lazygit
+                    if ! pkgHas "lazygit" ; then
+                        $ROOT_STRING apt -y install software-properties-common
+                        $ROOT_STRING add-apt-repository "ppa:lazygit-team/release"
+                        #check no_update flag here and give a warning since it's required
+                        $ROOT_STRING apt -y update
+                        $ROOT_STRING apt -y install lazygit
+                    fi
                 }
 
-                uninstall() {
-                    $ROOT_STRING apt -y purge git lazygit
-                }
                 PKG_MANAGER="apt (ubuntu)"
             else
                 installOpts() { true; } #no optional packages on debian
-
-                uninstall() {
-                    $ROOT_STRING apt -y purge git
-                }
 
                 PKG_MANAGER="apt"
             fi
 
         elif has pacman ; then
+            pkgHas() {
+                pacman -Q | grep -q "$1"
+            }
+
+            pkgVersion() {
+                pacman -Q "$1" | sed "s/$1 //"
+            }
 
             update() {
                 $ROOT_STRING pacman --noconfirm -Syu;
             }
 
             installReqs() {
-                $ROOT_STRING pacman --noconfirm -S git curl tar jdk11-openjdk;
+                if ! pkgHas "git" ; then
+                    $ROOT_STRING pacman --noconfirm -S git
+                fi
+
+                if ! pkgHas "curl" ; then
+                    $ROOT_STRING pacman --noconfirm -S curl
+                fi
+
+                if ! pkgHas "tar" ; then
+                    $ROOT_STRING pacman --noconfirm -S tar
+                fi
+
+                if ! pkgHas "jdk11-openjdk" ; then
+                    $ROOT_STRING pacman --noconfirm -S jdk11-openjdk
+                fi
             }
 
             installOpts() {
-                $ROOT_STRING pacman --noconfirm -S lazygit;
+                if ! pkgHas "lazygit" ; then
+                    $ROOT_STRING pacman --noconfirm -S lazygit;
+                fi
             }
 
             uninstall() {
-                $ROOT_STRING pacman --noconfirm -R git lazygit
+                if pkgHas "git" ; then
+                    $ROOT_STRING pacman --noconfirm -R git
+                fi
+
+                if pkgHas "lazygit" ; then
+                    $ROOT_STRING pacman --noconfirm -R lazygit
+                fi
             }
 
             PKG_MANAGER="pacman"
