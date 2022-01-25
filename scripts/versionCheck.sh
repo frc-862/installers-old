@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#required packages:
+#curl
+#grep
+#sed
+#coreutils obv
+
 latestGithubRelease() {
     curl --silent "https://api.github.com/repos/$1/$2/releases/latest" | # Get latest release from GitHub api
     grep '"tag_name":' |                                                 # Get tag line
@@ -17,6 +23,12 @@ latestPhoenix() {
     latestGithubRelease "CrossTheRoadElec" "Phoenix-Releases"
 }
 
+latestRev() {
+    # get latest rev hardware client version from github repo
+    latestGithubRelease "REVrobotics" "REV-Software-Binaries" |
+    sed "s/rhc-//"
+}
+
 latestNI() {
     #welcome to the pipe factory
     curl --silent -L "https://www.ni.com/en-us/support/downloads/drivers/download.frc-game-tools.html" | # download the ni webpage
@@ -25,6 +37,7 @@ latestNI() {
     head -n1 # grab the first item, which will be the latest version
 }
 
-printf "Latest Wpilib version: $(latestWpilib)\n"
-printf "Latest Phoenix Version: $(latestPhoenix)\n"
-printf "Latest NI Tools Version: $(latestNI)\n"
+printf "Latest Wpilib: $(latestWpilib)\n"
+printf "Latest Phoenix: $(latestPhoenix)\n"
+printf "Latest Rev: $(latestRev)\n"
+printf "Latest NI Tools: $(latestNI)\n"

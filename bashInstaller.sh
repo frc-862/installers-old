@@ -8,6 +8,7 @@ INSTALLER_VERSION="2022-5 DEV"
 WPILIB_VERSION="2022.2.1"
 NI_VERSION="22.0.0"
 PHOENIX_VERSION="5.20.2.2"
+REV_VERSION="1.4.2"
 
 #Option Defaults
 
@@ -55,6 +56,7 @@ Options:
     --no_wpilib         don't install wpilib
     --no_ni             don't install ni game tools (windows only)
     --no_phoenix        don't install phoenix framework (windows only)
+    --no_rev            don't install rev hardware client (windows only)
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
     --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
@@ -139,6 +141,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         "--no_phoenix")
             INSTALL_PHOENIX=false
+            shift
+            ;;
+        "--no_rev")
+            INSTALL_REV=false
             shift
             ;;
         "--no_build")
@@ -246,6 +252,10 @@ case $OS in
         PHOENIX_FILENAME="CTRE_Phoenix_Framework_v$PHOENIX_VERSION.exe"
         PHOENIX_URL="https://github.com/CrossTheRoadElec/Phoenix-Releases/releases/download/v$PHOENIX_VERSION/$PHOENIX_FILENAME"
 
+        #Rev Constants
+        REV_FILENAME="REV-Hardware-Client-Setup-$REV_VERSION.exe"
+        REV_URL="https://github.com/REVrobotics/REV-Software-Binaries/releases/download/rhc-$REV_VERSION/$REV_VERSION"
+
         #Package manager setup functions
         if ! has choco ; then #TODO: add chocolatey installation functionality
             ok "no chocolatey installation detected, installing chocolatey..."
@@ -306,6 +316,14 @@ case $OS in
                 else
                     choco install -y ctre-phoenixframework --version="$PHOENIX_VERSION";
                 fi
+            fi
+
+            if $INSTALL_REV ; then
+                if [ ! -f "$HOME/Downloads/$REV_FILENAME" ] ; then
+                    curl -L "$REV_URL" --output "$HOME/Downloads/$REV_FILENAME"
+                fi
+                ok "launching rev installer..."
+                "$HOME/Downloads/$REV_FILENAME"
             fi
         }
 
