@@ -18,6 +18,7 @@ RUN_INSTALLOPTS=true
 RUN_INSTALLREQS=true
 RUN_BUILD=true
 RUN_UNINSTALL=false
+SKIP_DEVWARN=false
 
 #Package Switches
 INSTALL_WPILIB=true
@@ -74,6 +75,7 @@ Developer options:
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
     --spoof_os          set \$OS to the provided value
+    --headless          turn off all user interaction, and disable any non-automated software
 ";
 }
 
@@ -186,6 +188,11 @@ while [[ $# -gt 0 ]]; do
             OS=$2
             shift 2
             ;;
+        "--headless")
+            INSTALL_WPILIB=false
+            SKIP_DEVWARN=true
+            shift
+            ;;
         "-"*)
             error "Unknown option $1"
             exit 1
@@ -194,7 +201,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 #give a warning if running a dev build
-if [[ "$INSTALLER_VERSION" == *"DEV" ]] ; then
+if [[ "$INSTALLER_VERSION" == *"DEV" ]] && ! $SKIP_DEVWARN ; then
     warn "You are running a development version of the installer. Some features may not work properly. Only continue if you know what you're doing."
     read -rp "Continue Anyway? [y/N] "
     #TODO: make this less awful
