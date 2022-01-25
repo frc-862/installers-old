@@ -1,0 +1,7 @@
+name: ubuntu
+on: [push]
+jobs:
+  Install:
+    runs-on: ubuntu-latest
+    steps:
+      ${GITHUB_WORKSPACE}/bashInstaller.sh --verbose --no_update
