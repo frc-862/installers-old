@@ -1,38 +1,5 @@
 #!/bin/bash
 
-#Define constants
-OS="$(uname -s)"
-
-#Version Constants
-INSTALLER_VERSION="2022-5 DEV"
-WPILIB_VERSION="2022.2.1"
-NI_VERSION="22.0.0"
-PHOENIX_VERSION="5.20.2.2"
-REV_VERSION="1.4.2"
-
-#Option Defaults
-
-#Function switches
-RUN_UPDATE=true
-RUN_INSTALLOPTS=true
-RUN_INSTALLREQS=true
-RUN_BUILD=true
-RUN_UNINSTALL=false
-SKIP_DEVWARN=false
-
-#Package Switches
-INSTALL_WPILIB=true
-INSTALL_NI=true
-INSTALL_LIGHTNING=true
-INSTALL_PHOENIX=true
-
-#Fallback switches
-FALLBACK_WPILIB=false
-FALLBACK_NI=false
-FALLBACK_PHOENIX=false
-
-#Define functions
-
 #has: check if a program is in PATH
 has() { type -p "$1" &> /dev/null; }
 
@@ -84,6 +51,75 @@ Developer options:
 error() { >&2 printf "\033[91mERROR: $1\n\033[39m"; }
 warn() { >&2 printf "\033[93mWARNING: $1\n\033[39m"; }
 ok() { printf "\033[92mOK: $1\n\033[39m"; }
+
+#function to grab the title of the latest github release on a provided user's repo
+latestGithubRelease() {
+    curl --silent "https://api.github.com/repos/$1/$2/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                                 # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/' |                                       # Pluck JSON value
+    sed "s/^v//"                                                         # remove the v from the front of the version number
+}
+
+latestWpilib() {
+    # Get latest wpilib version from github repo
+    latestGithubRelease "wpilibsuite" "allwpilib"
+}
+
+latestPhoenix() {
+    # get latest phoenix framework version from github repo
+    latestGithubRelease "CrossTheRoadElec" "Phoenix-Releases"
+}
+
+latestRev() {
+    # get latest rev hardware client version from github repo
+    latestGithubRelease "REVrobotics" "REV-Software-Binaries" |
+    sed "s/rhc-//"
+}
+
+latestNI() {
+    #welcome to the pipe factory
+    curl --silent -L "https://www.ni.com/en-us/support/downloads/drivers/download.frc-game-tools.html" | # download the ni webpage
+    grep -Eo "[0-9]{2}\.[0-9]{1,2}\.[0-9]{1,2}" | # search the file for version numbers (in the format that ni uses for their software)
+    sort -ur | # sort the version numbers newest to oldest
+    head -n1 # grab the first item, which will be the latest version
+}
+
+#get the latest versions
+WPILIB_LATEST=$(latestWpilib)
+PHOENIX_LATEST=$(latestPhoenix)
+REV_LATEST=$(latestRev)
+NI_LATEST=$(latestNI)
+
+#Define constants
+OS="$(uname -s)"
+
+#General Options
+INSTALLER_VERSION="2022-5 DEV"
+RUN_UPDATE=true
+RUN_INSTALLOPTS=true
+RUN_INSTALLREQS=true
+RUN_BUILD=true
+RUN_UNINSTALL=false
+SKIP_DEVWARN=false
+INSTALL_LIGHTNING=true
+
+#Wpilib Options
+if ! [[ "$OS" == *"MINGW"* ]] ; then
+    WPILIB_VERSION=$WPILIB_LATEST
+fi
+INSTALL_WPILIB=true
+
+#NI Options
+NI_VERSION=$NI_LATEST
+INSTALL_NI=true
+
+#Phoenix Options
+PHOENIX_VERSION=$PHOENIX_LATEST
+INSTALL_PHOENIX=true
+
+#Rev Options
+REV_VERSION=$REV_LATEST
+INSTALL_REV=true
 
 #Interpret parameters
 while [[ $# -gt 0 ]]; do
@@ -324,7 +360,7 @@ case $OS in
         }
 
         pkgVersion() {
-            "$(choco list -lo --pre)" | grep "$1" | sed "s/$1 //"
+            "$(choco list --pre)" | grep "$1" | sed "s/$1 //"
         }
 
         installReqs() {
@@ -334,6 +370,15 @@ case $OS in
             fi
 
             if $INSTALL_WPILIB && ! pkgHas "wpilib" ; then
+                #determine if fallback mode should be used
+                if [ -z $FALLBACK_WPILIB ] ; then
+                    if [[ "$WPILIB_VERSION" == "$(pkgVersion "wpilib")" ]] ; then
+                        FALLBACK_WPILIB=false
+                    else
+                        FALLBACK_WPILIB=true
+                    fi
+                fi
+
                 if $FALLBACK_WPILIB ; then
                     true;
                 else
@@ -349,6 +394,15 @@ case $OS in
             fi
 
             if $INSTALL_NI && ! pkgHas "ni-frcgametools" ; then
+                #determine if fallback mode should be used
+                if [ -z $FALLBACK_NI ] ; then
+                    if [[ "$NI_VERSION" == "$(pkgVersion "ni-frcgametools")" ]] ; then
+                        FALLBACK_NI=false
+                    else
+                        FALLBACK_NI=true
+                    fi
+                fi
+
                 if $FALLBACK_WPILIB || $FALLBACK_NI ; then
                     choco install -y 7zip
                 fi
@@ -369,6 +423,16 @@ case $OS in
             fi
 
             if $INSTALL_PHOENIX && ! pkgHas "ctre-phoenixframework" ; then
+
+                #determine if fallback mode should be used
+                if [ -z $FALLBACK_PHOENIX ] ; then
+                    if [[ "$PHOENIX_VERSION" == "$(pkgVersion "ctre-phoenixframework")" ]] ; then
+                        FALLBACK_PHOENIX=false
+                    else
+                        FALLBACK_PHOENIX=true
+                    fi
+                fi
+
                 if $FALLBACK_PHOENIX ; then
                     if [ ! -f "$HOME/Downloads/$PHOENIX_FILENAME" ] ; then
                         curl -L "$PHOENIX_URL" --output "$HOME/Downloads/$PHOENIX_FILENAME"
