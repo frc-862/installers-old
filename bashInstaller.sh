@@ -19,17 +19,17 @@ General Options:
 Wpilib Options:
     --wpilib_version    set the version of wpilib to install
     --no_wpilib         don't install wpilib
-    --fallback_wpilib   use fallback downloading method for wpilib on windows (download from github)
+    --fallback_wpilib   force using fallback downloading method for wpilib on windows (download from github) on or off
 
 Ni options:
     --ni_version        set the version of ni to install (windows only)
     --no_ni             don't install ni game tools (windows only)
-    --fallback_ni       use fallback downloading method for ni tools on windows (download from ni website)
+    --fallback_ni       force using fallback downloading method for ni tools on windows (download from ni website) on or off
 
 Phoenix options:
     --phoenix_version   set the version of phoenix framework to install (windows only)
     --no_phoenix        don't install phoenix framework (windows only)
-    --fallback_phoenix  use fallback donwloading method for phoenix framework on windows (download from github)
+    --fallback_phoenix  force using fallback donwloading method for phoenix framework on windows (download from github) on or off
 
 Rev options:
     --rev_version       set the version of the rev hardware client to install (windows only)
@@ -209,16 +209,16 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         "--fallback_wpilib")
-            FALLBACK_WPILIB=true
-            shift
+            FALLBACK_WPILIB=$2
+            shift 2
             ;;
         "--fallback_ni")
-            FALLBACK_NI=true
-            shift
+            FALLBACK_NI=$2
+            shift 2
             ;;
         "--fallback_phoenix")
-            FALLBACK_PHOENIX=true
-            shift
+            FALLBACK_PHOENIX=$2
+            shift 2
             ;;
         "--spoof_os")
             OS=$2
