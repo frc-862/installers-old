@@ -371,7 +371,7 @@ case $OS in
 
             if $INSTALL_WPILIB && ! pkgHas "wpilib" ; then
                 #determine if fallback mode should be used
-                if [ -z $FALLBACK_WPILIB ] ; then
+                if [ -z "$FALLBACK_WPILIB" ] ; then
                     if [[ "$WPILIB_VERSION" == "$(pkgVersion "wpilib")" ]] ; then
                         FALLBACK_WPILIB=false
                     else
@@ -395,7 +395,7 @@ case $OS in
 
             if $INSTALL_NI && ! pkgHas "ni-frcgametools" ; then
                 #determine if fallback mode should be used
-                if [ -z $FALLBACK_NI ] ; then
+                if [ -z "$FALLBACK_NI" ] ; then
                     if [[ "$NI_VERSION" == "$(pkgVersion "ni-frcgametools")" ]] ; then
                         FALLBACK_NI=false
                     else
@@ -425,7 +425,7 @@ case $OS in
             if $INSTALL_PHOENIX && ! pkgHas "ctre-phoenixframework" ; then
 
                 #determine if fallback mode should be used
-                if [ -z $FALLBACK_PHOENIX ] ; then
+                if [ -z "$FALLBACK_PHOENIX" ] ; then
                     if [[ "$PHOENIX_VERSION" == "$(pkgVersion "ctre-phoenixframework")" ]] ; then
                         FALLBACK_PHOENIX=false
                     else
