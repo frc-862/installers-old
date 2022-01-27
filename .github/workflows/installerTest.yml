@@ -26,3 +26,12 @@ jobs:
       - name: run powershell installer
         shell: pwsh
         run: ./powershellInstaller.ps1 --verbose --headless --no_update
+
+  Shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -e SC2059 #ignore known printf format string errors
