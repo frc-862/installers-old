@@ -42,15 +42,16 @@ Developer options:
     --no_build          don't build lightning at the end
     --no_lightning      don't clone or pull from lightning repo during install
     --spoof_os          set \$OS to the provided value
+    --version_check     run a check to show the latest version of software
     --headless          turn off all user interaction, and disable any non-automated software
 ";
 }
 
 #Error, Warn, ok: print message in red, orange, or green text
 #use of a variable in printf fstring is intentional here
-error() { >&2 printf "\033[91mERROR: $1\n\033[39m"; }
-warn() { >&2 printf "\033[93mWARNING: $1\n\033[39m"; }
-ok() { printf "\033[92mOK: $1\n\033[39m"; }
+error() { >&2 echo -e "\033[91mERROR: $1\033[39m"; }
+warn() { >&2 echo -e "\033[93mWARNING: $1\033[39m"; }
+ok() { echo -e "\033[92mOK: $1\033[39m"; }
 
 #function to grab the title of the latest github release on a provided user's repo
 latestGithubRelease() {
@@ -100,6 +101,7 @@ RUN_INSTALLOPTS=true
 RUN_INSTALLREQS=true
 RUN_BUILD=true
 RUN_UNINSTALL=false
+RUN_VERSION_CHECK=false
 SKIP_DEVWARN=false
 INSTALL_LIGHTNING=true
 
@@ -224,6 +226,19 @@ while [[ $# -gt 0 ]]; do
             OS=$2
             shift 2
             ;;
+        "--version_check")
+            RUN_VERSION_CHECK=true
+            RUN_INSTALLOPTS=false
+            RUN_INSTALLREQS=false
+            RUN_UPDATE=false
+            RUN_BUILD=false
+            INSTALL_LIGHTNING=false
+            INSTALL_NI=false
+            INSTALL_PHOENIX=false
+            INSTALL_REV=false
+            INSTALL_WPILIB=false
+            shift
+            ;;
         "--headless")
             INSTALL_WPILIB=false
             INSTALL_NI=false
@@ -284,7 +299,7 @@ case $OS in
 
         #pkgVersion: get the latest availible version of a provided package
         pkgVersion() {
-            brew info "$1" | grep "stable" | grep -Eo "([0-9]{1,}\.)+[0-9]{1,}"
+            brew info "$1" 2> /dev/null | grep "stable" | grep -Eo "([0-9]{1,}\.)+[0-9]{1,}"
         }
 
         #update: get the latest version of all installed packages
@@ -608,6 +623,15 @@ if $RUN_UPDATE ; then
         0)  ok "update completed successfully";;
         *)  warn "update failed with exit code $updateExitCode";; #don't exit if the update fails
     esac
+fi
+
+if $RUN_VERSION_CHECK ; then
+    versionTable="name latest choco\n"
+    versionTable+="wpilib $WPILIB_VERSION $(pkgVersion "wpilib")\n"
+    versionTable+="ni $NI_VERSION $(pkgVersion "ni-frcgametools")\n"
+    versionTable+="phoenix $PHOENIX_VERSION $(pkgVersion "ctre-phoenixframework")\n"
+    versionTable+="rev $REV_VERSION N/A"
+    echo -e "$versionTable" | column --table
 fi
 
 if $RUN_UNINSTALL ; then
