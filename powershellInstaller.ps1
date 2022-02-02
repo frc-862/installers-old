@@ -34,8 +34,11 @@ if (-not (has "git")) {
     refreshenv
 }
 
+#Clone the installers repository
+& "git" "clone" "https://github.com/frc-862/installers.git" "$HOME/Documents/installers"
+
 #Run the bash script through git bash
-& "$Env:Programfiles\git\bin\bash.exe" "./bashInstaller.sh" $args
+& "$Env:Programfiles\git\bin\bash.exe" "$HOME/Documents/installers/bashInstaller.sh" $args
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
 $env:JAVA_HOME = "C:\Program Files\OpenJDK\openjdk-11.0.13_8"
