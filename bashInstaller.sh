@@ -12,24 +12,24 @@ Description:
 
 General Options:
     --help, -h          show this help message
-    --verbose, -v       give a more verbose output
+    --verbose, -v       give a more verbose output, equivalent to running with -x flag
     --version, -V       show program version
     --uninstall         uninstall previously installed programs
 
 Wpilib Options:
     --wpilib_version    set the version of wpilib to install
     --no_wpilib         don't install wpilib
-    --fallback_wpilib   force using fallback downloading method for wpilib on windows (download from github) on or off
+    --fallback_wpilib   (windows only) force download source to be either github (fallback), or chocolatey
 
 Ni options:
     --ni_version        set the version of ni to install (windows only)
     --no_ni             don't install ni game tools (windows only)
-    --fallback_ni       force using fallback downloading method for ni tools on windows (download from ni website) on or off
+    --fallback_ni       (windows only) force download source to be either github (fallback), or chocolatey
 
 Phoenix options:
     --phoenix_version   set the version of phoenix framework to install (windows only)
     --no_phoenix        don't install phoenix framework (windows only)
-    --fallback_phoenix  force using fallback donwloading method for phoenix framework on windows (download from github) on or off
+    --fallback_phoenix  (windows only) force download source to be either github (fallback), or chocolatey
 
 Rev options:
     --rev_version       set the version of the rev hardware client to install (windows only)
@@ -38,11 +38,11 @@ Rev options:
 Developer options:
     --no_update         don't update installed packages when running installer
     --no_opts           don't install optional packages when running installer
-    --no_reqs           don't install required packages
-    --no_build          don't build lightning at the end
+    --no_reqs           don't install required packages (warning: this will cause things to break)
+    --no_build          don't build lightning at the end of the script
     --no_lightning      don't clone or pull from lightning repo during install
     --spoof_os          set \$OS to the provided value
-    --version_check     run a check to show the latest version of software
+    --version_check     prints the latest availible version of software and exits the script.
     --headless          turn off all user interaction, and disable any non-automated software
 ";
 }
@@ -68,6 +68,7 @@ latestWpilib() { latestGithubRelease "wpilibsuite" "allwpilib"; }
 latestPhoenix() { latestGithubRelease "CrossTheRoadElec" "Phoenix-Releases"; }
 
 # get latest rev hardware client version from github repo
+# also remove rhc- prefix from the beginning of the string
 latestRev() { latestGithubRelease "REVrobotics" "REV-Software-Binaries" | sed "s/rhc-//"; }
 
 latestNI() {

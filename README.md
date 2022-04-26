@@ -75,7 +75,8 @@ The only time you may need to click is during the phoenix install, where you wil
 
 - Software:
     - [bash](https://www.gnu.org/software/bash/) (likely already installed)
-    - [curl](https://curl.se/download.html) (used for one line installation)
+    - [curl](https://curl.se/download.html) (used to download files)
+    - [util-linux](https://github.com/util-linux/util-linux) (likely already installed)
     - Administrator privileges (not required on mac)
 - Hardware:
     - ~2 gigabytes of space
