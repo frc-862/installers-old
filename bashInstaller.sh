@@ -61,21 +61,14 @@ latestGithubRelease() {
     sed "s/^v//"                                                         # remove the v from the front of the version number
 }
 
-latestWpilib() {
-    # Get latest wpilib version from github repo
-    latestGithubRelease "wpilibsuite" "allwpilib"
-}
+# Get latest wpilib version from github repo
+latestWpilib() { latestGithubRelease "wpilibsuite" "allwpilib"; }
 
-latestPhoenix() {
-    # get latest phoenix framework version from github repo
-    latestGithubRelease "CrossTheRoadElec" "Phoenix-Releases"
-}
+# get latest phoenix framework version from github repo
+latestPhoenix() { latestGithubRelease "CrossTheRoadElec" "Phoenix-Releases"; }
 
-latestRev() {
-    # get latest rev hardware client version from github repo
-    latestGithubRelease "REVrobotics" "REV-Software-Binaries" |
-    sed "s/rhc-//"
-}
+# get latest rev hardware client version from github repo
+latestRev() { latestGithubRelease "REVrobotics" "REV-Software-Binaries" | sed "s/rhc-//"; }
 
 latestNI() {
     #welcome to the pipe factory
@@ -83,6 +76,12 @@ latestNI() {
     grep -Eo "[0-9]{2}\.[0-9]{1,2}\.[0-9]{1,2}" | # search the file for version numbers (in the format that ni uses for their software)
     sort -ur | # sort the version numbers newest to oldest
     head -n1 # grab the first item, which will be the latest version
+}
+
+installWpilib() {
+    if [[ "$OS" == *"MINGW"* ]] ; then
+        true;
+    fi
 }
 
 #get the latest versions
@@ -258,12 +257,9 @@ done
 if [[ "$INSTALLER_VERSION" == *"DEV" ]] && ! $SKIP_DEVWARN ; then
     warn "You are running a development version of the installer. Some features may not work properly. Only continue if you know what you're doing."
     read -rp "Continue Anyway? [y/N] "
-    #TODO: make this less awful
-    case $REPLY in
+    case "${REPLY,,}" in
         "y") true;;
-        "Y") true;;
         "yes") true;;
-        "Yes") true;;
         *) exit 1;;
     esac
 fi
@@ -273,7 +269,6 @@ fi
 case $OS in
 
     "Darwin")
-
         #WPILIB Constants
         NEEDS_WPILIB_DOWNLOAD=true
         WPILIB_TYPE="macOS"
@@ -342,7 +337,6 @@ case $OS in
         ;;
 
     *"MINGW"*)
-
         #WPILIB Constants
         NEEDS_WPILIB_DOWNLOAD=$FALLBACK_WPILIB #only download if fallback method is selected
         WPILIB_TYPE="Windows64"
@@ -363,7 +357,7 @@ case $OS in
         REV_URL="https://github.com/REVrobotics/REV-Software-Binaries/releases/download/rhc-$REV_VERSION/$REV_FILENAME"
 
         #Package manager setup functions
-        if ! has choco ; then #TODO: add chocolatey installation functionality
+        if ! has choco ; then
             ok "No chocolatey installation found. installing chocolatey..."
             powershell.exe -ExecutionPolicy Bypass -command "iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
         fi
