@@ -753,7 +753,7 @@ if $RUN_BUILD ; then
         exit 0
     fi
 
-    "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" build
+    "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" -Dorg.gradle.java.home="$HOME/wpilib/${WPILIB_VERSION::4}/jdk" build
 
     buildExitCode=$?
     case $buildExitCode in
