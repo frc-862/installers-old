@@ -437,6 +437,8 @@ case $OS in
     If you'd like to update your programs, just run the standard install script.";
         }
 
+        installReqs() { true; }
+
         installOpts() {
             #TODO: add lazygit installation
             #TODO: deal with 7zip dependency
