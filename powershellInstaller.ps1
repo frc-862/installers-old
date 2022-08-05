@@ -42,4 +42,4 @@ if (-not (has "git")) {
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
 $env:JAVA_HOME = "C:\Program Files\OpenJDK\openjdk-11.0.13_8"
-& "$HOME/Documents/lightning/gradlew.bat" "-p" "$HOME/Documents/lightning" "build"
+& "$HOME\Documents\lightning\gradlew.bat" "-p" "$HOME/Documents/lightning" "build"
