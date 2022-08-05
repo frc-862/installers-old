@@ -608,4 +608,3 @@ runTask "$INSTALL_WPILIB" "installWpilib" "WPIlib Install" true
 runTask "$INSTALL_LIGHTNING" "installLightning" "Lightning Repo Install" true
 
 runTask "$RUN_BUILD" "buildLightning" "Build Lightning Repo" true
-
