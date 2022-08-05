@@ -22,7 +22,7 @@ ok "All checks have passed"
 #& "git" "clone" "https://github.com/frc-862/installers.git" "$HOME/Documents/installers"
 
 #Run the bash script through git bash
-Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "$HOME/Documents/installers/bashInstaller.sh",($args | Out-String)
+Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "./bashInstaller.sh",($args | Out-String)
 #& "$Env:Programfiles\git\bin\bash.exe" "$HOME/Documents/installers/bashInstaller.sh" $args
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
