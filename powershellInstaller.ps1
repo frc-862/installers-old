@@ -18,7 +18,7 @@ if (($freespace -lt 15gb)) {
 ok "All checks have passed"
 
 #Clone the installers repository
-Start-Process "git" -NoNewWindow -Wait -ArgumentList "clone","https://github.com/frc-862/installers.git","$HOME/Documents/installers"
+#Start-Process "git" -NoNewWindow -Wait -ArgumentList "clone","https://github.com/frc-862/installers.git","$HOME/Documents/installers"
 #& "git" "clone" "https://github.com/frc-862/installers.git" "$HOME/Documents/installers"
 
 #Run the bash script through git bash
