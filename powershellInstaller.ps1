@@ -18,11 +18,13 @@ if (($freespace -lt 15gb)) {
 ok "All checks have passed"
 
 #Clone the installers repository
-& "git" "clone" "https://github.com/frc-862/installers.git" "$HOME/Documents/installers"
+Start-Process "git" -NoNewWindow -Wait -ArgumentList "clone","https://github.com/frc-862/installers.git","$HOME/Documents/installers"
+#& "git" "clone" "https://github.com/frc-862/installers.git" "$HOME/Documents/installers"
 
 #Run the bash script through git bash
-& "$Env:Programfiles\git\bin\bash.exe" "$HOME/Documents/installers/bashInstaller.sh" $args
+Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "$HOME/Documents/installers/bashInstaller.sh",$args
+#& "$Env:Programfiles\git\bin\bash.exe" "$HOME/Documents/installers/bashInstaller.sh" $args
 
 #Run build in powershell to avoid some weirdness with gradle's loading bar
-$env:JAVA_HOME = "C:\Program Files\OpenJDK\openjdk-11.0.13_8"
-& "$HOME\Documents\lightning\gradlew.bat" "-p" "$HOME/Documents/lightning" "build"
+Start-Process -FilePath "$HOME\Documents\lightning\gradlew.bat" -NoNewWindow -Wait -ArgumentList "-p","$HOME/Documents/lightning","build"
+#& "$HOME\Documents\lightning\gradlew.bat" "-p" "$HOME/Documents/lightning" "build"

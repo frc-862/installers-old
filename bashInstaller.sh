@@ -45,7 +45,6 @@ Developer options:
 }
 
 #Error, Warn, ok: print message in red, orange, or green text
-#use of a variable in printf fstring is intentional here
 error() { >&2 echo -e "\033[91mERROR: $1\033[39m"; exit "$2"; }
 warn() { >&2 echo -e "\033[93mWARNING: $1\033[39m"; }
 ok() { echo -e "\033[92mOK: $1\033[39m"; }
