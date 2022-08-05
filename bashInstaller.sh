@@ -19,17 +19,14 @@ General Options:
 Wpilib Options:
     --wpilib_version    set the version of wpilib to install
     --no_wpilib         don't install wpilib
-    --fallback_wpilib   (windows only) force download source to be either github (fallback), or chocolatey
 
 Ni options:
     --ni_version        set the version of ni to install (windows only)
     --no_ni             don't install ni game tools (windows only)
-    --fallback_ni       (windows only) force download source to be either github (fallback), or chocolatey
 
 Phoenix options:
     --phoenix_version   set the version of phoenix framework to install (windows only)
     --no_phoenix        don't install phoenix framework (windows only)
-    --fallback_phoenix  (windows only) force download source to be either github (fallback), or chocolatey
 
 Rev options:
     --rev_version       set the version of the rev hardware client to install (windows only)
@@ -49,9 +46,25 @@ Developer options:
 
 #Error, Warn, ok: print message in red, orange, or green text
 #use of a variable in printf fstring is intentional here
-error() { >&2 echo -e "\033[91mERROR: $1\033[39m"; }
+error() { >&2 echo -e "\033[91mERROR: $1\033[39m"; exit "$2"; }
 warn() { >&2 echo -e "\033[93mWARNING: $1\033[39m"; }
 ok() { echo -e "\033[92mOK: $1\033[39m"; }
+
+#parseExitCode: give a message based on an install function's exit code
+parseExitCode() {
+    #params:
+    #1: the exit code to parse
+    #2: the name of the install function
+    #3: boolean if it's a critical program or not
+
+    message="Task $2 failed with exit code $1. Please open an issue on jira for assistance"
+
+    case $1 in
+        0) ok "Task $2 completed successfully" ;;
+        *) if $3 ; then error "$message" "$1"; else warn "$message"; fi ;;
+    esac
+
+}
 
 #function to grab the title of the latest github release on a provided user's repo
 latestGithubRelease() {
@@ -80,48 +93,123 @@ latestNI() {
 }
 
 installWpilib() {
-    if [[ "$OS" == *"MINGW"* ]] ; then
-        true;
+    #wpilib constants
+    WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
+    WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/$WPILIB_FILENAME"
+
+    ok "downloading wpilib installer..."
+    if [ ! -f "$HOME/Downloads/$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
+        curl -L "$WPILIB_URL" --output "$HOME/Downloads/$WPILIB_FILENAME"
+    fi
+
+    case $WPILIB_EXTENSION in #different methods for installing and running each archive
+        "dmg")
+            ok "Mounting wpilib installer..."
+            hdiutil attach -readonly "$HOME/Downloads/$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
+
+            ok "Launching wpilib installer..."
+            /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
+
+            ok "Unmounting wpilib installer..."
+            hdiutil detach /Volumes/WPILibInstaller ;;
+        "tar.gz")
+            ok "extracting wpilib installer..."
+            tar -xvzf "$HOME/Downloads/$WPILIB_FILENAME" #.tar.gz can be extracted using tar
+
+            ok "launching wpilib installer..."
+            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
+        "iso")
+            ok "extracting wpilib installer..."
+            7z.exe x -y -o"$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "$HOME/Downloads/$WPILIB_FILENAME"
+
+            ok "launching wpilib installer..."
+            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
+
+    esac
+}
+
+installLightning() {
+    #check if lightning is already cloned
+    if [ -d "$HOME/Documents/lightning" ] ; then
+        ok "lightning code detected at '$HOME/Documents/lightning', pulling latest version..."
+        git -C "$HOME/Documents/lightning" pull
+    else
+        #clone lightning repo
+        ok "cloning lightning source code into $HOME/Documents/"
+        #check if ssh is set up
+        if [[ "$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null git@github.com &> /dev/stdout)" == *"success"* ]] ; then
+            git clone "git@github.com:frc-862/lightning.git" "$HOME/Documents/lightning"
+        else
+            git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
+            warn "note: you will need to clone over ssh in order to contribute code"
+        fi
     fi
 }
 
-#get the latest versions
-WPILIB_LATEST=$(latestWpilib)
-PHOENIX_LATEST=$(latestPhoenix)
-REV_LATEST=$(latestRev)
-NI_LATEST=$(latestNI)
+buildLightning() {
+    #Check if user has a properly set up gradle.properties file
+    if [ -f "$HOME/.gradle/gradle.properties" ] ; then
+        if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] ||
+           [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
+            ok "gradle.properties properly configured"
+        else
+            warn "gradle.properties missing one or more required values"
+        fi
+    else
+        warn "no gradle.properties file found"
+    fi
+
+    #build lightning repo
+    ok "building gradle..."
+
+    #Don't run build if running from git bash inside powershell terminal, as gradle special characters won't work
+    if [[ $OS == *"MINGW"* ]] && [ -n "$PSExecutionPolicyPreference" ] ; then
+        exit 0
+    fi
+
+    "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" -Dorg.gradle.java.home="$HOME/wpilib/${WPILIB_VERSION::4}/jdk" build
+}
+
+versionCheck() {
+    versionTable="name latest\n"
+    versionTable+="wpilib $WPILIB_VERSION\n"
+    versionTable+="ni $NI_VERSION\n"
+    versionTable+="phoenix $PHOENIX_VERSION\n"
+    versionTable+="rev $REV_VERSION"
+    echo -e "$versionTable" | column --table
+}
+
+runTask() {
+    #params:
+    #1: run variable
+    #2: program name
+    #3 frontend name
+    #4 critical?
+    if $1 ; then
+        ok "Running Task $3..." 
+        "$2"
+        parseExitCode "$?" "$3" "$4"
+fi
+}
+
+#pull default values fron config
+if [ -f "./installConfig.conf" ] ; then
+    source "./installConfig.conf"
+else
+    warn "No Config File Found"
+fi
 
 #Define constants
 OS="$(uname -s)"
 
 #General Options
 INSTALLER_VERSION="2022-5 DEV"
-RUN_UPDATE=true
-RUN_INSTALLOPTS=true
-RUN_INSTALLREQS=true
-RUN_BUILD=true
-RUN_UNINSTALL=false
-RUN_VERSION_CHECK=false
-SKIP_DEVWARN=false
-INSTALL_LIGHTNING=true
 
-#Wpilib Options
-if ! [[ "$OS" == *"MINGW"* ]] ; then
-    WPILIB_VERSION=$WPILIB_LATEST
-fi
-INSTALL_WPILIB=true
-
-#NI Options
-NI_VERSION=$NI_LATEST
-INSTALL_NI=true
-
-#Phoenix Options
-PHOENIX_VERSION=$PHOENIX_LATEST
-INSTALL_PHOENIX=true
-
-#Rev Options
-REV_VERSION=$REV_LATEST
-INSTALL_REV=true
+#version detection
+WPILIB_VERSION=$(latestWpilib)
+NI_VERSION=$(latestNI)
+PHOENIX_VERSION=$(latestPhoenix)
+REV_VERSION=$(latestRev)
 
 #Interpret parameters
 while [[ $# -gt 0 ]]; do
@@ -210,18 +298,6 @@ while [[ $# -gt 0 ]]; do
             INSTALL_LIGHTNING=false
             shift
             ;;
-        "--fallback_wpilib")
-            FALLBACK_WPILIB=$2
-            shift 2
-            ;;
-        "--fallback_ni")
-            FALLBACK_NI=$2
-            shift 2
-            ;;
-        "--fallback_phoenix")
-            FALLBACK_PHOENIX=$2
-            shift 2
-            ;;
         "--spoof_os")
             OS=$2
             shift 2
@@ -248,15 +324,14 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         "-"*)
-            error "Unknown option $1"
-            exit 1
+            error "Unknown option $1" "1"
             ;;
     esac
 done
 
 #give a warning if running a dev build
 if [[ "$INSTALLER_VERSION" == *"DEV" ]] && ! $SKIP_DEVWARN ; then
-    warn "You are running a development version of the installer. Some features may not work properly. Only continue if you know what you're doing."
+    warn "You are running a development version of the installer. Some features may not work properly. Continue at your own risk."
     read -rp "Continue Anyway? [y/N] "
     case "${REPLY,,}" in
         "y") true;;
@@ -271,11 +346,13 @@ case $OS in
 
     "Darwin")
         #WPILIB Constants
-        NEEDS_WPILIB_DOWNLOAD=true
         WPILIB_TYPE="macOS"
         WPILIB_EXTENSION="dmg"
 
-        # only install brew from scratch on mac
+        #we use brew on macos because installing git on macos without it can be sketchy
+        #brew is also incredibly common among advanced users, who this script is intended for
+
+        #install brew if it's not already installed
         if ! has brew ; then
             ok "no brew installation detected, installing brew..."
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -286,16 +363,11 @@ case $OS in
             brew tap "homebrew/cask-versions"
         fi
         #define functions for each package manager
-        #these functions are also defined for all other package managers
+        #these functions are also defined for every other package manager based OS
 
         #pkgHas: check if a provided package name is installed
         pkgHas() {
             [[ $(brew list) == *"$1"* ]]
-        }
-
-        #pkgVersion: get the latest availible version of a provided package
-        pkgVersion() {
-            brew info "$1" 2> /dev/null | grep "stable" | grep -Eo "([0-9]{1,}\.)+[0-9]{1,}"
         }
 
         #update: get the latest version of all installed packages
@@ -305,17 +377,15 @@ case $OS in
         }
 
         #installReqs: install required packages
+        #these packages will raise a critical error if they fail to install
         installReqs() {
             if ! has git ; then
                 brew install git
             fi
-
-            if ! pkgHas microsoft-openjdk11 ; then
-                brew install microsoft-openjdk11
-            fi
         }
 
         #installOpts: install optional packages
+        #these packages will not raise a critical error if they fail to install
         installOpts() {
             if ! pkgHas lazygit ; then
                 brew install lazygit;
@@ -338,8 +408,12 @@ case $OS in
         ;;
 
     *"MINGW"*)
+        #Windows is, as always, a little bit special.
+        #Although chocolatey does exist, the FRC software is consistently out of date
+        #So, we download everything from github and make use of git-bash's wonderful builtin programs
+        #This OS is the longest because it has NI tools, Phoenix Tuner, and Rev Tuner in addition to WPIlib
+
         #WPILIB Constants
-        NEEDS_WPILIB_DOWNLOAD=$FALLBACK_WPILIB #only download if fallback method is selected
         WPILIB_TYPE="Windows64"
         WPILIB_EXTENSION="iso"
 
@@ -357,101 +431,32 @@ case $OS in
         REV_FILENAME="REV-Hardware-Client-Setup-$REV_VERSION.exe"
         REV_URL="https://github.com/REVrobotics/REV-Software-Binaries/releases/download/rhc-$REV_VERSION/$REV_FILENAME"
 
-        #Package manager setup functions
-        if ! has choco ; then
-            ok "No chocolatey installation found. installing chocolatey..."
-            powershell.exe -ExecutionPolicy Bypass -command "iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
-        fi
-
-        update() { true; } #intentionally left blank to prevent some issues with upgrading autohotkey
-
-        pkgHas() {
-            [[ "$(choco list -lo --pre)" == *"$1"* ]]
-        }
-
-        pkgVersion() {
-            "$(choco list --pre)" | grep "$1" | sed "s/$1 //"
-        }
-
-        installReqs() {
-            if ! pkgHas "openjdk11" ; then
-                choco install -y openjdk11
-                export JAVA_HOME="C:\Program Files\OpenJDK\openjdk-11.0.13_8";
-            fi
-
-            if $INSTALL_WPILIB && ! pkgHas "wpilib" ; then
-                #determine if fallback mode should be used
-                if [ -z "$FALLBACK_WPILIB" ] ; then
-                    if [[ "$WPILIB_VERSION" == "$(pkgVersion "wpilib")" ]] ; then
-                        FALLBACK_WPILIB=false
-                    else
-                        FALLBACK_WPILIB=true
-                    fi
-                fi
-
-                if $FALLBACK_WPILIB ; then
-                    true;
-                else
-                    choco install -y wpilib --version="$WPILIB_VERSION" --params="'/ProgrammingLanguage:java'";
-                fi
-            fi
+        update() { 
+            warn "Windows Doesn't Use a Package Manager, and Therefore can't be automatically updated.
+    If you'd like to update your programs, just run the standard install script.";
         }
 
         installOpts() {
-            #thanks to DarthJake (https://github.com/DarthJake) from 4146 for most of these repositories
-            if ! pkgHas "lazygit" ; then
-                choco install -y lazygit;
+            #TODO: add lazygit installation
+            #TODO: deal with 7zip dependency
+
+            if $INSTALL_NI ; then
+                if [ ! -f "$HOME/Downloads/$NI_FILENAME.iso" ] ; then
+                    curl -L "$NI_URL" --output "$HOME/Downloads/$NI_FILENAME.iso"
+                fi
+                ok "extracting ni installer..."
+                7z.exe x -y -o"$HOME/Downloads/$NI_FILENAME" "$HOME/Downloads/$NI_FILENAME.iso"
+
+                ok "launching ni installer..."
+                "$HOME/Downloads/$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
             fi
 
-            if $INSTALL_NI && ! pkgHas "ni-frcgametools" ; then
-                #determine if fallback mode should be used
-                if [ -z "$FALLBACK_NI" ] ; then
-                    if [[ "$NI_VERSION" == "$(pkgVersion "ni-frcgametools")" ]] ; then
-                        FALLBACK_NI=false
-                    else
-                        FALLBACK_NI=true
-                    fi
+            if $INSTALL_PHOENIX ; then
+                if [ ! -f "$HOME/Downloads/$PHOENIX_FILENAME" ] ; then
+                    curl -L "$PHOENIX_URL" --output "$HOME/Downloads/$PHOENIX_FILENAME"
                 fi
-
-                if $FALLBACK_WPILIB || $FALLBACK_NI ; then
-                    choco install -y 7zip
-                fi
-
-                if $FALLBACK_NI ; then
-                    if [ ! -f "$HOME/Downloads/$NI_FILENAME.iso" ] ; then
-                        curl -L "$NI_URL" --output "$HOME/Downloads/$NI_FILENAME.iso"
-                    fi
-                    ok "extracting ni installer..."
-                    7z.exe x -y -o"$HOME/Downloads/$NI_FILENAME" "$HOME/Downloads/$NI_FILENAME.iso"
-
-                    ok "launching ni installer..."
-                    "$HOME/Downloads/$NI_FILENAME/Install.exe" --passive --accept-eulas --prevent-reboot --prevent-activation
-
-                else
-                    choco install -y ni-frcgametools --version="$NI_VERSION"
-                fi
-            fi
-
-            if $INSTALL_PHOENIX && ! pkgHas "ctre-phoenixframework" ; then
-
-                #determine if fallback mode should be used
-                if [ -z "$FALLBACK_PHOENIX" ] ; then
-                    if [[ "$PHOENIX_VERSION" == "$(pkgVersion "ctre-phoenixframework")" ]] ; then
-                        FALLBACK_PHOENIX=false
-                    else
-                        FALLBACK_PHOENIX=true
-                    fi
-                fi
-
-                if $FALLBACK_PHOENIX ; then
-                    if [ ! -f "$HOME/Downloads/$PHOENIX_FILENAME" ] ; then
-                        curl -L "$PHOENIX_URL" --output "$HOME/Downloads/$PHOENIX_FILENAME"
-                    fi
-                    ok "launching phoenix installer..."
-                    "$HOME/Downloads/$PHOENIX_FILENAME"
-                else
-                    choco install -y ctre-phoenixframework --version="$PHOENIX_VERSION";
-                fi
+                ok "launching phoenix installer..."
+                "$HOME/Downloads/$PHOENIX_FILENAME"
             fi
 
             if $INSTALL_REV ; then
@@ -464,13 +469,15 @@ case $OS in
         }
 
         uninstall() {
-            choco uninstall -y openjdk11 wpilib lazygit ni-frcgametools ctre-phoenixframework
+            warn "Sorry, There's no uninstall functionality on windws yet. You can remove programs using windows' built in add/remove programs app"
         }
-
-        PKG_MANAGER="chocolatey"
         ;;
 
     "Linux")
+        #linux makes use of whatever the built in package manager is (like a sophisticated OS)
+        #pacman and apt are supported
+
+        #figure out how to acqure root access to install packages
         if [ "$EUID" -eq 0 ] ; then
             ROOT_STRING=""
             ok "using current user ($USER) for root privileges"
@@ -481,22 +488,15 @@ case $OS in
             ROOT_STRING="doas"
             ok "using doas ($(type -p $ROOT_STRING)) for root privileges"
         else
-            error "no root privilege"
-            error "try running this script as root and verifying that sudo/doas is installed and in your PATH"
-            exit 1
+            error "no root privilege\ntry running this script as root and verifying that sudo/doas is installed and in your PATH" "1"
         fi
 
-        NEEDS_WPILIB_DOWNLOAD=true
         WPILIB_TYPE="Linux"
         WPILIB_EXTENSION="tar.gz"
 
         if has apt ; then
             pkgHas() {
                 [[ $(apt list "$1") == *"installed"* ]]
-            }
-
-            pkgVersion() {
-                apt show "$1" | grep "Version:" | sed "s/Version: //"
             }
 
             update() {
@@ -516,19 +516,11 @@ case $OS in
                 if ! pkgHas "tar" ; then
                     $ROOT_STRING apt -y install tar
                 fi
-
-                if ! pkgHas "openjdk-11-jdk" ; then
-                    $ROOT_STRING apt -y install openjdk-11-jdk
-                fi
             }
 
             uninstall() {
                 if pkgHas "git" ; then
                     $ROOT_STRING apt -y purge git
-                fi
-
-                if pkgHas "lazygit" ; then
-                    $ROOT_STRING apt -y purge openjdk-11-jdk
                 fi
             }
 
@@ -555,10 +547,6 @@ case $OS in
         elif has pacman ; then
             pkgHas() {
                 pacman -Q | grep -q "$1"
-            }
-
-            pkgVersion() {
-                pacman -Q "$1" | sed "s/$1 //"
             }
 
             update() {
@@ -604,160 +592,20 @@ case $OS in
         ;;
 esac
 
-#wpilib constants
-WPILIB_FILENAME="WPILib_$WPILIB_TYPE-$WPILIB_VERSION.$WPILIB_EXTENSION"
-WPILIB_URL="https://github.com/wpilibsuite/allwpilib/releases/download/v$WPILIB_VERSION/$WPILIB_FILENAME"
 
-#Run defined package manager functions
-if $RUN_UPDATE ; then
-    ok "$PKG_MANAGER installation detected ($(type -p $PKG_MANAGER)), upgrading $PKG_MANAGER..."
-    update
+runTask "$RUN_UPDATE" "update" "Update $PKG_MANAGER" false
 
-    updateExitCode=$?
-    case $updateExitCode in
-        0)  ok "update completed successfully";;
-        *)  warn "update failed with exit code $updateExitCode";; #don't exit if the update fails
-    esac
-fi
+runTask "$RUN_VERSION_CHECK" "versioncheck" "Version Check" false
 
-if $RUN_VERSION_CHECK ; then
-    versionTable="name latest choco\n"
-    versionTable+="wpilib $WPILIB_VERSION $(pkgVersion "wpilib")\n"
-    versionTable+="ni $NI_VERSION $(pkgVersion "ni-frcgametools")\n"
-    versionTable+="phoenix $PHOENIX_VERSION $(pkgVersion "ctre-phoenixframework")\n"
-    versionTable+="rev $REV_VERSION N/A"
-    echo -e "$versionTable" | column --table
-fi
+runTask "$RUN_UNINSTALL" "uninstall" "Uninstall" true
 
-if $RUN_UNINSTALL ; then
-    ok "uninstalling all packages..."
-    uninstall
+runTask "$RUN_INSTALLREQS" "installReqs" "Install Required Packages" true
 
-    installExitCode=$?
-    case $installExitCode in
-        0)  ok "installReqs completed successfully" ;;
-        127) warn "some chocolatey packages may not have been uninstalled properly." ;;
-        *)  error "uninstall failed with exit code $installExitCode. please open an issue on jira for assistance"
-            exit $installExitCode ;; #exit if a non-0 exit code is recieved
-    esac
-fi
+runTask "$RUN_INSTALLOPTS" "installOpts" "Install Optional Packages" false
 
-if $RUN_INSTALLREQS ; then
-    ok "installing required packages..."
-    installReqs
+runTask "$INSTALL_WPILIB" "installWpilib" "WPIlib Install" true
 
-    installExitCode=$?
-    case $installExitCode in
-        0)  ok "installReqs completed successfully" ;;
-        *)  error "installReqs failed with exit code $installExitCode. please open an issue on jira for assistance"
-            exit $installExitCode ;; #exit if a non-0 exit code is recieved
-    esac
-fi
+runTask "$INSTALL_LIGHTNING" "installLightning" "Lightning Repo Install" true
 
-if $RUN_INSTALLOPTS ; then
-    ok "installing optional packages..."
-    installOpts
+runTask "$RUN_BUILD" "buildLightning" "Build Lightning Repo" true
 
-    installExitCode=$?
-    case $installExitCode in
-        0)  ok "installOpts completed successfully" ;;
-        *)  warn "installOpts failed with exit code $installExitCode" #don't exit if installOpts fails, as the build can still work
-    esac
-fi
-
-if $NEEDS_WPILIB_DOWNLOAD && $INSTALL_WPILIB ; then
-    ok "downloading wpilib installer..."
-    if [ ! -f "$HOME/Downloads/$WPILIB_FILENAME" ] ; then #skip download if file is already downloaded or isn't required
-        curl -L "$WPILIB_URL" --output "$HOME/Downloads/$WPILIB_FILENAME"
-    fi
-
-    case $WPILIB_EXTENSION in #different methods for installing and running each archive
-        "dmg")
-            ok "Mounting wpilib installer..."
-            hdiutil attach -readonly "$HOME/Downloads/$WPILIB_FILENAME" #dmg needs to be mounted using hdiutil on mac
-
-            ok "Launching wpilib installer..."
-            /Volumes/WPILibInstaller/WPILibInstaller.app/Contents/MacOS/WPILibInstaller
-
-            ok "Unmounting wpilib installer..."
-            hdiutil detach /Volumes/WPILibInstaller ;;
-        "tar.gz")
-            ok "extracting wpilib installer..."
-            tar -xvzf "$HOME/Downloads/$WPILIB_FILENAME" #.tar.gz can be extracted using tar
-
-            ok "launching wpilib installer..."
-            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
-        "iso")
-            ok "extracting wpilib installer..."
-            7z.exe x -y -o"$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION" "$HOME/Downloads/$WPILIB_FILENAME"
-
-            ok "launching wpilib installer..."
-            "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
-
-    esac
-fi
-
-
-if $INSTALL_LIGHTNING ; then
-    #check if lightning is already cloned
-    if [ -d "$HOME/Documents/lightning" ] ; then
-        ok "lightning code detected at '$HOME/Documents/lightning', pulling latest version..."
-        git -C "$HOME/Documents/lightning" pull
-
-        gitExitCode=$?
-        case $gitExitCode in
-            0)  ok "pull completed successfully" ;;
-            *)
-                error "pull failed with exit code $gitExitCode. please open an issue on jira for assistance"
-                exit $gitExitCode ;;
-        esac
-    else
-        #clone lightning repo
-        ok "cloning lightning source code into $HOME/Documents/"
-        #check if ssh is set up
-        if [[ "$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null git@github.com &> /dev/stdout)" == *"success"* ]] ; then
-            git clone "git@github.com:frc-862/lightning.git" "$HOME/Documents/lightning"
-        else
-            git clone "https://github.com/frc-862/lightning.git" "$HOME/Documents/lightning"
-            warn "note: you will need to clone over ssh in order to contribute code"
-        fi
-
-        gitExitCode=$?
-        case $gitExitCode in
-            0)  ok "pull completed successfully" ;;
-            *)
-                error "clone failed with exit code $gitExitCode. please open an issue on jira for assistance"
-                exit $gitExitCode ;;
-        esac
-    fi
-fi
-
-if $RUN_BUILD ; then
-    #Check if user has a properly set up gradle.properties file
-    if [ -f "$HOME/.gradle/gradle.properties" ] ; then
-        if [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.key"*"gpr.user"* ]] ||
-           [[ "$(<"$HOME/.gradle/gradle.properties")" == *"gpr.user"*"gpr.key"* ]] ; then
-            ok "gradle.properties properly configured"
-        else
-            warn "gradle.properties missing one or more required values"
-        fi
-    else
-        warn "no gradle.properties file found"
-    fi
-
-    #build lightning repo
-    ok "building gradle..."
-
-    #Don't run build if running from git bash inside powershell terminal, as gradle special characters won't work
-    if [[ $OS == *"MINGW"* ]] && [ -n "$PSExecutionPolicyPreference" ] ; then
-        exit 0
-    fi
-
-    "$HOME/Documents/lightning/gradlew" -p "$HOME/Documents/lightning" -Dorg.gradle.java.home="$HOME/wpilib/${WPILIB_VERSION::4}/jdk" build
-
-    buildExitCode=$?
-    case $buildExitCode in
-        0) ok "build completed successfully" ;;
-        *) error "build failed with exit code $buildExitCode. please open an issue on jira for assistance" ;;
-    esac
-fi
