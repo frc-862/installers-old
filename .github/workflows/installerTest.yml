@@ -7,7 +7,7 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v2
       - name: run bash installer
-        run: ./bashInstaller.sh --verbose --headless --no_update --no_build
+        run: ./bashInstaller.sh --verbose --headless
 
   #I have no idea why this doesnt work but it doesnt so yeah
   macOS:
@@ -16,7 +16,7 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v2
       - name: run bash installer
-        run: ./bashInstaller.sh --verbose --headless --no_update --no_build
+        run: ./bashInstaller.sh --verbose --headless
 
   Windows:
     runs-on: windows-latest
@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v2
       - name: run powershell installer
         shell: pwsh
-        run: ./powershellInstaller.ps1 --verbose --headless --no_update --no_build
+        run: ./powershellInstaller.ps1 --verbose --headless
 
   Shellcheck:
     runs-on: ubuntu-latest

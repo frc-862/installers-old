@@ -40,7 +40,7 @@ Developer options:
     --no_lightning      don't clone or pull from lightning repo during install
     --spoof_os          set \$OS to the provided value
     --version_check     prints the latest availible version of software and exits the script.
-    --headless          turn off all user interaction, and disable any non-automated software
+    --headless          preset used for github workflows
 ";
 }
 
@@ -321,6 +321,8 @@ while [[ $# -gt 0 ]]; do
             INSTALL_PHOENIX=false
             INSTALL_REV=false
             SKIP_DEVWARN=true
+            RUN_UPDATE=false
+            RUN_BUILD=false
             shift
             ;;
         "-"*)
