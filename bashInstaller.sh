@@ -114,7 +114,7 @@ installWpilib() {
             hdiutil detach /Volumes/WPILibInstaller ;;
         "tar.gz")
             ok "extracting wpilib installer..."
-            tar -xvzf "$HOME/Downloads/$WPILIB_FILENAME" #.tar.gz can be extracted using tar
+            tar -xvzf "$HOME/Downloads/$WPILIB_FILENAME" -C "$HOME/Downloads" #.tar.gz can be extracted using tar
 
             ok "launching wpilib installer..."
             "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller" ;;
