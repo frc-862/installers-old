@@ -1,13 +1,25 @@
+#a couple of requirments to make sure nothing dies
+#requires -version 4.0
+#requires -RunAsAdministrator
+
 function ok { Write-Host "OK: $args" -ForegroundColor Green }
 function warn { Write-Host "WARNING: $args" -ForegroundColor Yellow }
 function showError { Write-Host "ERROR: $args" -ForegroundColor Red } #use showError instead of error to avoid issues when overriding built-in cmdlets
 function has { Get-Command "$args" -ErrorAction SilentlyContinue }
 
-# Run checks to make sure the installer can install
-#requires -version 4.0
-#requires -RunAsAdministrator
-
-#TODO: install git here
+function installGit {
+    ok "Installing Git..."
+    $gitUrl = "https://api.github.com/repos/git-for-windows/git/releases/latest"
+    $asset = Invoke-RestMethod -Method Get -Uri $gitUrl | ForEach-Object assets | Where-Object name -like "*64-bit.exe"
+    # download installer
+    $installer = "$env:temp\$($asset.name)"
+    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $installer
+    # run installer
+    $git_install_inf = "./gitInstall.inf"
+    $install_args = "/SP- /VERYSILENT /SUPPRESSMSGBOXES /NOCANCEL /NORESTART /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /LOADINF=""$git_install_inf"""
+    Start-Process -FilePath $installer -ArgumentList $install_args -Wait
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+}
 
 #Run the bash script through git bash
 Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "./bashInstaller.sh",($args | Out-String)
