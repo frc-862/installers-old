@@ -21,8 +21,17 @@ function installGit {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
+#imstall git if not already installed
+if (!(has git)) {
+    installGit
+}
+
 #Run the bash script through git bash
-Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "./bashInstaller.sh",($args | Out-String)
+if ($args.Count -eq 0) {
+    Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "./bashInstaller.sh"
+} else {
+    Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "./bashInstaller.sh",($args | Out-String)
+}
 
 if (-Not($args.Contains("--headless"))) { #don't run build in headless mode because it will just hang
     #Run build in powershell to avoid some weirdness with gradle's loading bar
