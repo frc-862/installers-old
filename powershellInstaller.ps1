@@ -7,20 +7,12 @@ function has { Get-Command "$args" -ErrorAction SilentlyContinue }
 #requires -version 4.0
 #requires -RunAsAdministrator
 
-#Check for enough disk space
-$freespace = (Get-CimInstance CIM_LogicalDisk -Filter "DeviceId='C:'").FreeSpace #TODO: check whatever drive the programs are installed to, not just C:/
-if (($freespace -lt 15gb)) {
-    #TODO: this disk space number is made up, need to make it more accurate
-    #TODO: make user able to override this error
-    showError "You do not have enough disk space ('C:\') for this install! You need at least 15 gigabytes to run this installer."
-    exit
-}
-ok "All checks have passed"
+#TODO: install git here
 
 #Run the bash script through git bash
 Start-Process -FilePath "$Env:Programfiles\git\bin\bash.exe" -NoNewWindow -Wait -ArgumentList "./bashInstaller.sh",($args | Out-String)
 
-if (-Not($args.Contains("--headless"))) { #don't run build in headless mode due to windows weirdness
+if (-Not($args.Contains("--headless"))) { #don't run build in headless mode because it will just hang
     #Run build in powershell to avoid some weirdness with gradle's loading bar
     Start-Process -FilePath "$HOME\Documents\lightning\gradlew.bat" -NoNewWindow -Wait -ArgumentList "-p","$HOME/Documents/lightning","build"
 }
