@@ -14,7 +14,6 @@ General Options:
     --help, -h          show this help message
     --verbose, -v       give a more verbose output, equivalent to running with -x flag
     --version, -V       show program version
-    --uninstall         uninstall previously installed programs
 
 Wpilib Options:
     --wpilib_version    set the version of wpilib to install
@@ -33,7 +32,6 @@ Rev options:
     --no_rev            don't install rev hardware client (windows only)
 
 Developer options:
-    --no_update         don't update installed packages when running installer
     --no_opts           don't install optional packages when running installer
     --no_reqs           don't install required packages (warning: this will cause things to break)
     --no_build          don't build lightning at the end of the script
@@ -45,6 +43,8 @@ Developer options:
 }
 
 #Error, Warn, ok: print message in red, orange, or green text
+#error and warn will send message to stderr
+#error will exit with provided exit code
 error() { >&2 echo -e "\033[91mERROR: $1\033[39m"; exit "$2"; }
 warn() { >&2 echo -e "\033[93mWARNING: $1\033[39m"; }
 ok() { echo -e "\033[92mOK: $1\033[39m"; }
@@ -55,7 +55,6 @@ parseExitCode() {
     #1: the exit code to parse
     #2: the name of the install function
     #3: boolean if it's a critical program or not
-
     message="Task $2 failed with exit code $1. Please open an issue on jira for assistance"
 
     case $1 in
@@ -72,16 +71,6 @@ latestGithubRelease() {
     sed -E 's/.*"([^"]+)".*/\1/' |                                       # Pluck JSON value
     sed "s/^v//"                                                         # remove the v from the front of the version number
 }
-
-# Get latest wpilib version from github repo
-latestWpilib() { latestGithubRelease "wpilibsuite" "allwpilib"; }
-
-# get latest phoenix framework version from github repo
-latestPhoenix() { latestGithubRelease "CrossTheRoadElec" "Phoenix-Releases"; }
-
-# get latest rev hardware client version from github repo
-# also remove rhc- prefix from the beginning of the string
-latestRev() { latestGithubRelease "REVrobotics" "REV-Software-Binaries" | sed "s/rhc-//"; }
 
 latestNI() {
     #welcome to the pipe factory
@@ -123,7 +112,6 @@ installWpilib() {
 
             ok "launching wpilib installer..."
             "$HOME/Downloads/WPILib_$WPILIB_TYPE-$WPILIB_VERSION/WPILibInstaller.exe"
-
     esac
 }
 
@@ -204,11 +192,12 @@ OS="$(uname -s)"
 #General Options
 INSTALLER_VERSION="2022-5 DEV"
 
+#TODO: resolve curl dependency here
 #version detection
-WPILIB_VERSION=$(latestWpilib)
+WPILIB_VERSION=$(latestGithubRelease "wpilibsuite" "allwpilib")
 NI_VERSION=$(latestNI)
-PHOENIX_VERSION=$(latestPhoenix)
-REV_VERSION=$(latestRev)
+PHOENIX_VERSION=$(latestGithubRelease "CrossTheRoadElec" "Phoenix-Releases")
+REV_VERSION=$(latestGithubRelease "REVrobotics" "REV-Software-Binaries" | sed "s/rhc-//")
 
 #Interpret parameters
 while [[ $# -gt 0 ]]; do
@@ -228,18 +217,6 @@ while [[ $# -gt 0 ]]; do
             printf 'bashInstaller %s\n' "$INSTALLER_VERSION"
             exit 0
             ;;
-        "--uninstall")
-            #Switch to uninstall mode
-            RUN_UPDATE=false
-            RUN_INSTALLOPTS=false
-            RUN_INSTALLREQS=false
-            RUN_UNINSTALL=true
-            INSTALL_WPILIB=false
-            INSTALL_NI=false
-            RUN_BUILD=false
-            INSTALL_LIGHTNING=false
-            shift
-            ;;
         "--wpilib_version")
             #set wpilib version
             WPILIB_VERSION=$2
@@ -254,11 +231,6 @@ while [[ $# -gt 0 ]]; do
             #set phoenix framework version
             PHOENIX_VERSION=$2
             shift 2
-            ;;
-        "--no_update")
-            #Toggle updating on install off
-            RUN_UPDATE=false
-            shift
             ;;
         "--no_opts")
             #Toggle installing optional packages off
@@ -305,7 +277,6 @@ while [[ $# -gt 0 ]]; do
             RUN_VERSION_CHECK=true
             RUN_INSTALLOPTS=false
             RUN_INSTALLREQS=false
-            RUN_UPDATE=false
             RUN_BUILD=false
             INSTALL_LIGHTNING=false
             INSTALL_NI=false
@@ -320,7 +291,6 @@ while [[ $# -gt 0 ]]; do
             INSTALL_PHOENIX=false
             INSTALL_REV=false
             SKIP_DEVWARN=true
-            RUN_UPDATE=false
             RUN_BUILD=false
             shift
             ;;
@@ -371,12 +341,6 @@ case $OS in
             [[ $(brew list) == *"$1"* ]]
         }
 
-        #update: get the latest version of all installed packages
-        update() {
-            brew update;
-            brew upgrade;
-        }
-
         #installReqs: install required packages
         #these packages will raise a critical error if they fail to install
         installReqs() {
@@ -392,20 +356,6 @@ case $OS in
                 brew install lazygit;
             fi
         }
-
-        #uninstall: remove all previosuly installed programs
-        uninstall() {
-            if pkgHas git ; then
-                brew uninstall git
-            fi
-
-            if pkgHas lazygit ; then
-                brew uninstall lazygit
-            fi
-        }
-
-        #PKG_MANAGER: the name of the detected package manager
-        PKG_MANAGER="brew"
         ;;
 
     *"MINGW"*)
@@ -432,12 +382,7 @@ case $OS in
         REV_FILENAME="REV-Hardware-Client-Setup-$REV_VERSION.exe"
         REV_URL="https://github.com/REVrobotics/REV-Software-Binaries/releases/download/rhc-$REV_VERSION/$REV_FILENAME"
 
-        update() { 
-            warn "Windows Doesn't Use a Package Manager, and Therefore can't be automatically updated.
-    If you'd like to update your programs, just run the standard install script.";
-        }
-
-        installReqs() { true; }
+        installReqs() { true; } # on windows, required packages are handled by powershell script
 
         installOpts() {
             #TODO: add lazygit installation
@@ -470,10 +415,6 @@ case $OS in
                 "$HOME/Downloads/$REV_FILENAME"
             fi
         }
-
-        uninstall() {
-            warn "Sorry, There's no uninstall functionality on windws yet. You can remove programs using windows' built in add/remove programs app"
-        }
         ;;
 
     "Linux")
@@ -502,11 +443,6 @@ case $OS in
                 [[ $(apt list "$1") == *"installed"* ]]
             }
 
-            update() {
-                $ROOT_STRING apt update;
-                $ROOT_STRING apt -y upgrade;
-            }
-
             installReqs() {
                 if ! pkgHas "git" ; then
                     $ROOT_STRING apt -y install git
@@ -521,12 +457,6 @@ case $OS in
                 fi
             }
 
-            uninstall() {
-                if pkgHas "git" ; then
-                    $ROOT_STRING apt -y purge git
-                fi
-            }
-
             # seperate ubuntu and debian installers because lazygit PPA is ubuntu only
             if [ -f "/etc/os-release" ] && [ "$(awk -F= '/^NAME/{print $2}' /etc/os-release)" == "Ubuntu" ] ; then
 
@@ -534,26 +464,17 @@ case $OS in
                     if ! pkgHas "lazygit" ; then
                         $ROOT_STRING apt -y install software-properties-common
                         $ROOT_STRING add-apt-repository "ppa:lazygit-team/release"
-                        #check no_update flag here and give a warning since it's required
                         $ROOT_STRING apt -y update
                         $ROOT_STRING apt -y install lazygit
                     fi
                 }
-
-                PKG_MANAGER="apt (ubuntu)"
             else
                 installOpts() { true; } #no optional packages on debian
-
-                PKG_MANAGER="apt"
             fi
 
         elif has pacman ; then
             pkgHas() {
                 pacman -Q | grep -q "$1"
-            }
-
-            update() {
-                $ROOT_STRING pacman --noconfirm -Syu;
             }
 
             installReqs() {
@@ -579,28 +500,14 @@ case $OS in
                     $ROOT_STRING pacman --noconfirm -S lazygit;
                 fi
             }
-
-            uninstall() {
-                if pkgHas "git" ; then
-                    $ROOT_STRING pacman --noconfirm -R git
-                fi
-
-                if pkgHas "lazygit" ; then
-                    $ROOT_STRING pacman --noconfirm -R lazygit
-                fi
-            }
-
-            PKG_MANAGER="pacman"
         fi
         ;;
 esac
 
 
-runTask "$RUN_UPDATE" "update" "Update $PKG_MANAGER" false
+#      toggle boolean, function name, pretty name, toggle required
 
 runTask "$RUN_VERSION_CHECK" "versioncheck" "Version Check" false
-
-runTask "$RUN_UNINSTALL" "uninstall" "Uninstall" true
 
 runTask "$RUN_INSTALLREQS" "installReqs" "Install Required Packages" true
 
