@@ -21,7 +21,7 @@ function installGit {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
-#imstall git if not already installed
+#install git if not already installed
 if (!(has git)) {
     installGit
 }
